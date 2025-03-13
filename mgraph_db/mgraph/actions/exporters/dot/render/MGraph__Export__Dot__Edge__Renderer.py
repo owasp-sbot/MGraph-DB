@@ -52,7 +52,7 @@ class MGraph__Export__Dot__Edge__Renderer(MGraph__Export__Dot__Base):
             if len(label_parts) == 1:
                 return [f'label="{label_parts[0]}"']
             else:
-                return [f'label="{"\l".join(label_parts)}\\l"']
+                return [f'label="{"\\l".join(label_parts)}\\l"']
         return label_parts
 
     def format_edge_definition(self, source: str, target: str, attrs: List[str]) -> str:
