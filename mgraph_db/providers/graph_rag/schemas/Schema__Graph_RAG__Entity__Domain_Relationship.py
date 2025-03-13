@@ -8,7 +8,7 @@ class Schema__Graph_RAG__Entity__Domain_Relationship(Type_Safe):
     concept           : str
     relationship_type : str
     category          : str
-    strength          : Annotated[float, Min(0), Max(1)]
+    strength          : float    # strength level (between 0 and 1)
 
 
  # Domain concept
