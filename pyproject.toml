@@ -1,6 +1,6 @@
 [tool.poetry]
 name        = "mgraph_db"
-version     = "v1.2.9"
+version     = "v1.2.10"
 description = "MGraph-DB"
 authors     = ["Dinis Cruz <dinis.cruz@owasp.org>"]
 license     = "Apache 2.0"
