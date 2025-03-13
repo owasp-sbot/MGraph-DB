@@ -3,8 +3,6 @@ from mgraph_db.providers.graph_rag.schemas.Schema__Graph_RAG__Entity__Direct_Rel
 from mgraph_db.providers.graph_rag.schemas.Schema__Graph_RAG__Entity__Domain_Relationship   import Schema__Graph_RAG__Entity__Domain_Relationship
 from mgraph_db.providers.graph_rag.schemas.Schema__Graph_RAG__Entity__Ecosystem             import Schema__Graph_RAG__Entity__Ecosystem
 from osbot_utils.type_safe.Type_Safe                                                        import Type_Safe
-from osbot_utils.type_safe.validators.Validator__Max                                        import Max
-from osbot_utils.type_safe.validators.Validator__Min                                        import Min
 
 class Schema__Graph_RAG__Entity__LLM(Type_Safe):
     confidence           : float                                                     # Confidence level (between 0 and 1)
