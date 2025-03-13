@@ -1,5 +1,7 @@
-from unittest                                                            import TestCase
-from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Data  import Schema__Mermaid__Node__Data
+import re
+import pytest
+from unittest                                                           import TestCase
+from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Data    import Schema__Mermaid__Node__Data
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Shape   import Schema__Mermaid__Node__Shape
 
 
@@ -22,22 +24,18 @@ class test_Schema__Mermaid__Node__Data(TestCase):
         assert self.node_data.wrap_with_quotes   is True
 
     def test_type_safety_validation(self):                                          # Tests type safety validations
-        with self.assertRaises(ValueError) as context:
-            Schema__Mermaid__Node__Data(
-                markdown         = "not-a-bool"                      ,
-                node_shape      = Schema__Mermaid__Node__Shape.circle,
-                show_label      = True                               ,
-                wrap_with_quotes= True
-            )
-        assert "Invalid type for attribute" in str(context.exception)
+        expected_error_1 = "Invalid type for attribute 'markdown'. Expected '<class 'bool'>' but got '<class 'str'>'"
+        with pytest.raises(ValueError, match=re.escape(expected_error_1)):
+            Schema__Mermaid__Node__Data(markdown         = "not-a-bool"                      ,
+                                        node_shape      = Schema__Mermaid__Node__Shape.circle,
+                                        show_label      = True                               ,
+                                        wrap_with_quotes= True)
 
-        with self.assertRaises(ValueError) as context:
-            Schema__Mermaid__Node__Data(
-                markdown         = True                ,
-                node_shape      = "not-a-shape"       ,
-                show_label      = True                ,
-                wrap_with_quotes= True
-            )
-        assert "Invalid type for attribute" in str(context.exception)
+        expected_error_2 = "Invalid value 'not-a-shape' for enum Schema__Mermaid__Node__Shape"
+        with pytest.raises(ValueError, match=re.escape(expected_error_2)):
+            Schema__Mermaid__Node__Data(markdown         = True                ,
+                                        node_shape      = "not-a-shape"       ,
+                                        show_label      = True                ,
+                                        wrap_with_quotes= True                )
 
 

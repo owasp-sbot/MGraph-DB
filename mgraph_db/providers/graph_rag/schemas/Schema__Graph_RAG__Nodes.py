@@ -1,8 +1,5 @@
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value import Schema__MGraph__Node__Value
 
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node import Schema__MGraph__Node
-
-
 class Schema__MGraph__RAG__Node__Source_Id  (Schema__MGraph__Node__Value): pass
 class Schema__MGraph__RAG__Node__Text_Id    (Schema__MGraph__Node__Value): pass
 class Schema__MGraph__RAG__Node__Entity     (Schema__MGraph__Node__Value): pass

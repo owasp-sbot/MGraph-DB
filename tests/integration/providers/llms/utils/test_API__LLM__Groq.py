@@ -1,6 +1,5 @@
 from unittest                                       import TestCase
 
-from mgraph_db.providers.llms.utils.API__LLM import ENV_NAME_OPEN_AI__API_KEY
 
 from mgraph_db.providers.llms.utils.API__LLM__Groq import ENV_NAME_GROQ__API_KEY, API__LLM__Groq, \
     GROQ__LLM_MODEL__MIXTRAL

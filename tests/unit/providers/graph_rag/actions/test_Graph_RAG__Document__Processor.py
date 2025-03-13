@@ -3,7 +3,6 @@ from unittest                                                                   
 import pytest
 
 from mgraph_db.providers.graph_rag.actions.Graph_RAG__Document__Processor       import Graph_RAG__Document__Processor, DEFAULT__OPEN_AI__MODEL
-from mgraph_db.providers.llms.utils.API__LLM                                    import API__LLM
 from osbot_utils.helpers.xml.rss.RSS__Item                                      import RSS__Item
 from osbot_utils.utils.Env                                                      import load_dotenv
 
@@ -15,7 +14,7 @@ class test_Graph_RAG__Document__Processor(TestCase):
         load_dotenv()
 
     def setUp(self):                                                                             # Initialize test environment
-        self.api_llm   = API__LLM()
+        self.api_llm   = API__LLM__Open()
         self.processor = Graph_RAG__Document__Processor(api_llm=self.api_llm)                   # Create processor instance
         self.sample_rss_item             = RSS__Item()                                          # Create sample RSS item
         self.sample_rss_item.title       = "Test Article"

@@ -8,6 +8,8 @@ from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph          import 
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph__Config  import Schema__Mermaid__Graph__Config
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node           import Schema__Mermaid__Node
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Data     import Schema__Mermaid__Node__Data
+from osbot_utils.type_safe.Type_Safe__List                               import Type_Safe__List
+
 
 class test_Schema__Mermaid__Graph(TestCase):
 
@@ -37,7 +39,7 @@ class test_Schema__Mermaid__Graph(TestCase):
         assert self.graph.graph_data         == self.graph_data
         assert len(self.graph.nodes)         == 1
         assert len(self.graph.edges)         == 1
-        assert type(self.graph.mermaid_code) is list
+        assert type(self.graph.mermaid_code) is Type_Safe__List
         assert len(self.graph.mermaid_code)  == 2
 
     def test_type_safety_validation(self):                                          # Tests type safety validations
