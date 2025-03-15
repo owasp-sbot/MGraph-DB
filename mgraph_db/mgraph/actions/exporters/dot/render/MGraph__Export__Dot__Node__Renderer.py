@@ -148,7 +148,10 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
     def create_node_label_attributes(self, node: Domain__MGraph__Node) -> List[str]:
         label_parts = []
         if self.config.display.node_id:                                                       # Add node_id if requested
-            label_parts.append(f"node_id='{node.node_id}'")
+            label_part = node.node_id                                                        # todo: refactor out this logic (since it is repeated multiple times and we are reusing a local variable)
+            if self.config.render.label_show_var_name:
+                label_part = f"node_id='{label_part}'"
+            label_parts.append(label_part)
         if self.config.display.node_type:
             node_type = node.node.data.node_type
             type_name = self.type_name__from__type(node_type)

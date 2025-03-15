@@ -255,6 +255,9 @@ class MGraph__Index(Type_Safe):
     ##### getters for data
     # todo refactor this to names like edges__from__node , nodes_from_node
 
+    def get_edge_predicate(self, edge_id: Obj_Id):
+        return self.index_data.edges_predicates.get(edge_id)
+
     def get_nodes_connected_to_value(self, value     : Any ,
                                            edge_type : Type[Schema__MGraph__Edge       ] = None ,
                                            node_type : Type[Schema__MGraph__Node__Value] = None
@@ -285,10 +288,6 @@ class MGraph__Index(Type_Safe):
 
     def get_node_connected_to_node__outgoing(self, node_id: Obj_Id, edge_type: str) -> Optional[Obj_Id]:
         connected_edges = self.index_data.nodes_to_outgoing_edges_by_type.get(node_id, {}).get(edge_type, set())
-
-
-        #elif direction == 'incoming':
-        #    connected_edges = self.index_data.nodes_to_incoming_edges_by_type.get(node_id, {}).get(edge_type, set())
 
         if connected_edges:
             edge_id = next(iter(connected_edges))                                                   # Get the first edge ID from the set

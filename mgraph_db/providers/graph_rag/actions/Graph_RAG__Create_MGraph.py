@@ -1,5 +1,5 @@
+from mgraph_db.providers.graph_rag.mgraph.MGraph__Graph_RAG__Entity     import MGraph__Graph_RAG__Entity
 from mgraph_db.providers.graph_rag.schemas.Schema__Graph_RAG__Entity    import Schema__Graph_RAG__Entity
-from mgraph_db.providers.graph_rag.mgraph                               import MGraph__Graph_RAG__Entity
 from mgraph_db.providers.graph_rag.schemas.Schema__Graph_RAG__Nodes     import Schema__MGraph__RAG__Node__Source_Id, Schema__MGraph__RAG__Node__Text_Id, Schema__MGraph__RAG__Node__Entity, Schema__MGraph__RAG__Node__Concept, Schema__MGraph__RAG__Node__Role, Schema__MGraph__RAG__Node__Domain, Schema__MGraph__RAG__Node__Standard, Schema__MGraph__RAG__Node__Platform, Schema__MGraph__RAG__Node__Technology
 from osbot_utils.decorators.methods.cache_on_self                       import cache_on_self
 from osbot_utils.helpers.Obj_Id                                         import Obj_Id
@@ -132,14 +132,6 @@ class Graph_RAG__Create_MGraph(Type_Safe):
             self.add__standards           (entity)
             self.add__technologies        (entity)
             _.up()
-
-
-
-
-
-
-
-
         return self
 
     @cache_on_self

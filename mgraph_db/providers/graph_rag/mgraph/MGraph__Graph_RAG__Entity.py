@@ -1,6 +1,4 @@
-from osbot_utils.type_safe.Type_Safe import Type_Safe
+from mgraph_db.mgraph.MGraph import MGraph
 
-
-class Graph_RAG__MGraph__Entity(Type_Safe):
-
+class MGraph__Graph_RAG__Entity(MGraph):                    # todo see why this is needed, since at the moment we could just use MGraph
     pass

@@ -22,6 +22,41 @@ class MGraph__Builder(Type_Safe):
 
     # Node Operations -------------------------------------------------------
 
+    def add_connected_node(self, value                                  ,
+                                 edge_type : Optional[Type[Schema__MGraph__Edge]] = None,
+                                 predicate : Optional[str]                        = None,
+                                 node_type : Optional[Type[Schema__MGraph__Node]] = None,
+                                 **kwargs
+                          ) -> 'MGraph__Builder':                                          # Add a new node connected to the current one
+
+        if not self.node__current:
+            raise ValueError("No current node set. Use add_node() or set_current_node() first.")
+
+        if self.config__unique_values:                                              # Create the new node
+            kwargs['key'] = Obj_Id()
+
+        node_kwargs = kwargs.copy()                                                 # Use node_type if provided, otherwise default behavior
+        if node_type:
+            node_kwargs['node_type'] = node_type
+
+
+        previous_current = self.node__current                                       # Create the new node without changing the current context
+        new_node = self.mgraph_edit.new_value(value, **node_kwargs)
+
+        self.node__current = previous_current                                       # Re-establish the previous current node (since new_value may have changed it)
+
+        if predicate:                                                               # Use existing add_predicate method to connect with predicate
+            return self.add_predicate(predicate = predicate,
+                                      target    = new_node,
+                                      edge_type = edge_type)
+        else:
+            edge = self.mgraph_edit.connect_nodes(from_node = self.node__current,       # Create standard connection
+                                                  to_node   = new_node,
+                                                  edge_type = edge_type)
+
+            return self.register_edge(edge, new_node)
+
+
     def add_node(self, value, **kwargs) -> 'MGraph__Builder':   # Add a new value node and make it the current context.
         if self.config__unique_values:
             kwargs['key'] = Obj_Id()
@@ -102,15 +137,12 @@ class MGraph__Builder(Type_Safe):
             target_node = self.mgraph_edit.new_value(target, node_type=node_type, **kwargs)
 
 
-        # domain_edge = self.mgraph_edit.connect_nodes(from_node = self.node__current,             # Create edge between current node and target
-        #                                              to_node   = target_node       ,
-        #                                              edge_type = edge_type         )
         domain_edge = self.mgraph_edit.get_or_create_edge(edge_type    = edge_type                 ,
                                                           from_node_id = self.node__current.node_id,             # Create edge between current node and target
                                                           to_node_id   = target_node       .node_id)
 
         edge_data   = domain_edge.edge.data
-        edge_label  = Schema__MGraph__Edge__Label(predicate=Safe_Id(predicate))
+        edge_label  = Schema__MGraph__Edge__Label(predicate=Safe_Id(predicate), outgoing=Safe_Id(predicate))
         edge_data.edge_label = edge_label                                               # todo refactor this to use a helper method to set an edge label's value
 
         return self.register_edge(domain_edge, target_node)
