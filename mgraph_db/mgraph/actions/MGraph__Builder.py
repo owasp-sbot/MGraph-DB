@@ -63,10 +63,15 @@ class MGraph__Builder(Type_Safe):
         node = self.mgraph_edit.new_value(value, **kwargs)
         return self.register_node(node)
 
+    def graph(self):
+        return self.node__current.graph
+
     def new_node(self, **kwargs) -> 'MGraph__Builder':          # Add a new node (non-value) and make it the current context.
         node = self.mgraph_edit.new_node(**kwargs)
         return self.register_node(node)
 
+    def node_id(self):
+        return self.current_node().node_id
 
     def set_current_node(self, node_or_id: Union[Domain__MGraph__Node, Obj_Id]) -> 'MGraph__Builder':           # Set the current node context by node object or ID."""
         if isinstance(node_or_id, Domain__MGraph__Node):
@@ -156,6 +161,7 @@ class MGraph__Builder(Type_Safe):
             self.node__current = self.node__history[-1]                 # Now the top of history is the previous node, so assign it to current
         elif len(self.node__history) == 1:                              # Special case: only one item in history, pop it but don't change current
             self.node__history.pop()
+            self.node__current = self.node__root
         return self
 
     def edge_up(self) -> 'MGraph__Builder':                             # Navigate to the previous edge in history.

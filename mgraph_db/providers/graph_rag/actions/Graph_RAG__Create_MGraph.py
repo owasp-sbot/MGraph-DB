@@ -179,7 +179,7 @@ class Graph_RAG__Create_MGraph(Type_Safe):
                 _.set_node__shape__type__box()
                 _.set_node__shape__rounded()
                 _.show_edge__predicate__str()
-                _.set_graph__splines__ortho()
+                #_.set_graph__splines__ortho()
 
                 #dot.show_node__type      ()
                 _.show_node__value     ()

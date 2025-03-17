@@ -102,6 +102,10 @@ class MGraph__Screenshot(Type_Safe):
         self.export().export_dot().show_edge__type__str()
         return self
 
+    def show_edge_predicate(self):
+        self.export().export_dot().show_edge__predicate__str()
+        return self
+
     def show_node_id(self):
         self.export().export_dot().show_node__id()
         return self

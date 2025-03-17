@@ -47,3 +47,6 @@ class Domain__MGraph__Node(Type_Safe):                                          
         if edge.to_node_id() == self.node_id:
             return self.graph.node(edge.from_node_id())
         return None
+
+    def value(self):
+        return self.node_data.value
