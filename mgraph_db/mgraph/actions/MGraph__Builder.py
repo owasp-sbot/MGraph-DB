@@ -41,7 +41,7 @@ class MGraph__Builder(Type_Safe):
 
 
         previous_current = self.node__current                                       # Create the new node without changing the current context
-        new_node = self.mgraph_edit.new_value(value, **node_kwargs)
+        new_node         = self.mgraph_edit.new_value(value, **node_kwargs)
 
         self.node__current = previous_current                                       # Re-establish the previous current node (since new_value may have changed it)
 
@@ -86,7 +86,7 @@ class MGraph__Builder(Type_Safe):
 
     # Edge Operations -------------------------------------------------------
     # todo add support for connecting using edge's predicate and labels
-    def connect_to(self, target, edge_type: Type[Schema__MGraph__Edge] = None, **kwargs) -> 'MGraph__Builder':  # Connect the current node to another node.
+    def connect_to(self, target, edge_type: Type[Schema__MGraph__Edge] = None, unique_link=False, **kwargs) -> 'MGraph__Builder':  # Connect the current node to another node.
         if not self.node__current:
             raise ValueError("No current node set. Use add_node() or set_current_node() first.")
 
@@ -99,9 +99,15 @@ class MGraph__Builder(Type_Safe):
         else:
             target_node = self.mgraph_edit.new_value(target, **kwargs)              # If target is a value, create a new node for it
 
-        edge = self.mgraph_edit.connect_nodes(from_node = self.node__current,       # Create edge between current node and target
-                                              to_node   = target_node       ,
-                                              edge_type = edge_type         )
+
+        if unique_link:
+            edge = self.mgraph_edit.get_or_create_edge(edge_type    = edge_type                 ,      # Create an unique edge between current node and target
+                                                       from_node_id = self.node__current.node_id,
+                                                       to_node_id   = target_node.node_id       )
+        else:
+            edge = self.mgraph_edit.connect_nodes     (edge_type    = edge_type                 ,       # Create edge between current node and target
+                                                       from_node    = self.node__current        ,
+                                                       to_node      = target_node               )
 
         return self.register_edge(edge, target_node)
 
