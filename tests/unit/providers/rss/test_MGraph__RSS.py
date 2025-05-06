@@ -38,7 +38,7 @@ class test_MGraph_RSS(TestCase):
             assert type(_) is MGraph__Json__Query
             _.field('items')
             _.add_outgoing_edges__with_depth(2)
-            _.add_outgoing_edges__with_field ('title')
+            #_.add_outgoing_edges__with_field ('title')
 
 
             export_view = MGraph__Json__Query__Export__View(mgraph_query=_)

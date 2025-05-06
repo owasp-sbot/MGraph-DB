@@ -1,4 +1,7 @@
-from typing                                              import Type
+from typing import Type, Set, Dict, Any
+
+from mgraph_db.query.models.Model__MGraph__Query__View import Model__MGraph__Query__View
+
 from mgraph_db.mgraph.actions.MGraph__Data               import MGraph__Data
 from mgraph_db.mgraph.actions.MGraph__Index              import MGraph__Index
 from mgraph_db.query.models.Model__MGraph__Query__Views  import Model__MGraph__Query__Views
@@ -11,6 +14,7 @@ class Domain__MGraph__Query(Type_Safe):
     mgraph_data : MGraph__Data                  = None
     query_views : Model__MGraph__Query__Views                                        # Query view management
     query_type  : Type['Domain__MGraph__Query']                                      # Self type reference
+    root_nodes  : Set[Obj_Id]
 
     def setup(self):
         if self.mgraph_data is None:
@@ -48,19 +52,36 @@ class Domain__MGraph__Query(Type_Safe):
                 edges.update(incoming_edges)
         return edges
 
-    def create_view(self, nodes_ids: set[Obj_Id],                                   # Create new query view
-                          edges_ids : set[Obj_Id],
+    # def create_view(self, nodes_ids: set[Obj_Id],                                   # Create new query view
+    #                       edges_ids : set[Obj_Id],
+    #                       operation : str,
+    #                       params    : dict) -> None:
+    #     current_view = self.current_view()
+    #     previous_id  = current_view.view_id() if current_view else None
+    #
+    #     self.query_views.add_view(nodes_ids   = nodes_ids ,
+    #                               edges_ids    = edges_ids ,
+    #                               operation    = operation ,
+    #                               params       = params    ,
+    #                               previous_id  = previous_id)
+    #     return self
+
+    def create_view(self, nodes_ids : Set[Obj_Id],
+                          edges_ids : Set[Obj_Id],
                           operation : str,
-                          params    : dict) -> None:
-        current_view = self.current_view()
+                          params    : Dict[str, Any]
+                    )  -> Model__MGraph__Query__View:
+        current_view = self.query_views.current_view()
         previous_id  = current_view.view_id() if current_view else None
 
-        self.query_views.add_view(nodes_ids   = nodes_ids ,
-                                  edges_ids    = edges_ids ,
-                                  operation    = operation ,
-                                  params       = params    ,
-                                  previous_id  = previous_id)
-        return self
+        if self.in_initial_view() and nodes_ids:
+            self.root_nodes = nodes_ids
+
+        return self.query_views.add_view(nodes_ids   = nodes_ids  ,
+                                         edges_ids   = edges_ids  ,
+                                         operation   = operation  ,
+                                         params      = params     ,
+                                         previous_id = previous_id)
 
     def in_initial_view(self) -> bool:                                             # Check if in initial view
         current_view = self.current_view()
