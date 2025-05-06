@@ -36,6 +36,9 @@ class test_Perf_Test__MGraph_Json(TestCase):
             file_delete('/tmp/mgraph_2.json')
 
     def test_run_workflow__on_url(self):
+
+        pytest.skip("dbpedia server started to behave erratically") # returned error message: "The web-site you are currently trying to access is under maintenance at this time"
+
         if current_host_offline():
             pytest.skip("Current server is offline")
         url = URL__DBPEDIA__ZAP                                                   #  0.291 sec (from  1 sec )
