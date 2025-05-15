@@ -22,8 +22,8 @@ class MGraph__Export(Type_Safe):
         return MGraph__Export__Dot(graph=self.graph)
 
     @cache_on_self
-    def export_tree_values(self) -> MGraph__Export__Tree_Values:
-        return MGraph__Export__Tree_Values(graph=self.graph)
+    def export_tree_values(self, **kwargs) -> MGraph__Export__Tree_Values:
+        return MGraph__Export__Tree_Values(graph=self.graph, **kwargs)
 
     def to__mgraph_json(self):                                                                  # Export full graph data
         return self.graph.model.data.json()

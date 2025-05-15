@@ -4,11 +4,14 @@ from mgraph_db.mgraph.domain.Domain__MGraph__Node               import Domain__M
 from osbot_utils.helpers.Obj_Id                                 import Obj_Id
 from osbot_utils.type_safe.decorators.type_safe                 import type_safe
 
+PREDICATE__MGRAPH__CONNECTS_TO = 'connects_to'
+
 class MGraph__Export__Tree_Values(MGraph__Export__Base):
     max_depth          : int = 5                                                                # Maximum recursion depth   # todo: see impact of this
     max_children       : int = 20                                                               # Maximum children per node # todo: see impact of this
     root_nodes_ids     : List[Obj_Id]                                                           # IDs of the root nodes
     visited_nodes      : Set[Obj_Id]                                                            # Track visited nodes to prevent cycles
+    show_predicate     : bool               = True                                              # todo: move to config class
 
     def create_node_data(self, node: Domain__MGraph__Node) -> Dict[str, Any]:                   # Create node data for tree export
         node_id = str(node.node_id)
@@ -43,7 +46,7 @@ class MGraph__Export__Tree_Values(MGraph__Export__Base):
             if child_count >= self.max_children:                                                    # todo: see impact of this (at least log when it happens)
                 break
 
-            predicate = "connects_to"                                                               # Default predicate (relationship type)
+            predicate = PREDICATE__MGRAPH__CONNECTS_TO                                                               # Default predicate (relationship type)
 
             if hasattr(edge.data, 'edge_label') and edge.data.edge_label:                           # Try to get edge label if available
                 if hasattr(edge.data.edge_label, 'predicate') and edge.data.edge_label.predicate:
@@ -94,11 +97,16 @@ class MGraph__Export__Tree_Values(MGraph__Export__Base):
             return ""
 
         result = [" " * indent + tree['value']]
+        indent__predicate = indent + 4
+        indent__child     = indent + 4
+        if self.show_predicate:
+            indent__child += 4
 
         for predicate, children in tree['children'].items():
-            result.append(" " * (indent + 4) + predicate + ":")
+            if self.show_predicate:
+                result.append(" " * (indent__predicate) + predicate + ":")
             for child in children:
-                result.append(self.format_as_text(child, indent + 8))
+                result.append(self.format_as_text(child, indent__child))
 
         return "\n".join(result)
 
@@ -107,7 +115,8 @@ class MGraph__Export__Tree_Values(MGraph__Export__Base):
         tree_as_text = ""
         for tree in self.format_output().get('trees'):
             tree_as_text += self.format_as_text(tree)
-            tree_as_text += "\n\n--------\n\n"
+            if len(root_nodes_ids) > 1:
+                tree_as_text += "\n\n--------\n\n"
         return tree_as_text
 
     def print_as_text(self, root_nodes_ids: List[Obj_Id]):

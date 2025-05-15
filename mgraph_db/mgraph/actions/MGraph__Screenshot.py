@@ -1,4 +1,5 @@
 from typing                                         import Type
+from urllib.error                                   import URLError
 from mgraph_db.mgraph.actions.MGraph__Export        import MGraph__Export
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph  import Domain__MGraph__Graph
 from osbot_utils.decorators.methods.cache_on_self   import cache_on_self
@@ -69,10 +70,15 @@ class MGraph__Screenshot(Type_Safe):
             return screenshot_bytes
 
     def execute_request(self, method_path, method_params):
-        target_url       = self.url__render_method(method_path)
-        response         = POST_json_get_bytes(url=target_url, data=method_params)
-        screenshot_bytes = self.handle_response(response)
-        return screenshot_bytes
+        try:
+            target_url       = self.url__render_method(method_path)
+            response         = POST_json_get_bytes(url=target_url, data=method_params)
+            screenshot_bytes = self.handle_response(response)
+            return screenshot_bytes
+        except URLError as url_error:
+            message = (f"In MGraph Screenshot failed to connect to server, is the URL__MGRAPH_DB_SERVERLESS environment var setup?"
+                       f"error: {url_error}")
+            raise ConnectionError(message) from None
 
     def save(self):
         return self.save_to(DEFAULT__FILE_NAME__SCREENSHOT__SAVE_TO)
