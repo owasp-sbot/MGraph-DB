@@ -1,10 +1,9 @@
 from typing                                                                 import List
-
-from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Render__Config import Schema__Mermaid__Render__Config
-from osbot_utils.type_safe.methods.type_safe_property import set_as_property
+from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Render__Config    import Schema__Mermaid__Render__Config
+from osbot_utils.type_safe.type_safe_core.methods.type_safe_property        import set_as_property
 from osbot_utils.utils.Str                                                  import safe_str
-from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Node                       import LINE_PADDING, Domain__Mermaid__Node
-from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Graph                      import Domain__Mermaid__Graph
+from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Node               import LINE_PADDING, Domain__Mermaid__Node
+from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Graph              import Domain__Mermaid__Graph
 from osbot_utils.type_safe.Type_Safe                                        import Type_Safe
 
 

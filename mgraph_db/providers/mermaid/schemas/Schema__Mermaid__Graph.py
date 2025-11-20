@@ -5,7 +5,7 @@ from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge           import 
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph__Config  import Schema__Mermaid__Graph__Config
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node           import Schema__Mermaid__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                      import Schema__MGraph__Graph
-from osbot_utils.helpers.Obj_Id                                          import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
 
 class Schema__Mermaid__Graph(Schema__MGraph__Graph):
     schema_types: Schema__Mermaid__Types

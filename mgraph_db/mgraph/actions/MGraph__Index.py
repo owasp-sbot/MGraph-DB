@@ -1,15 +1,15 @@
-from typing                                               import Type, Set, Any, Dict, Optional
-from mgraph_db.mgraph.actions.MGraph__Index__Values       import MGraph__Index__Values
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value import Schema__MGraph__Node__Value
-from osbot_utils.helpers.Safe_Id                          import Safe_Id
-from osbot_utils.utils.Dev                                import pprint
-from mgraph_db.mgraph.domain.Domain__MGraph__Graph        import Domain__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node        import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge        import Schema__MGraph__Edge
-from mgraph_db.mgraph.schemas.Schema__MGraph__Index__Data import Schema__MGraph__Index__Data
-from osbot_utils.helpers.Obj_Id                           import Obj_Id
-from osbot_utils.type_safe.Type_Safe                      import Type_Safe
-from osbot_utils.utils.Json                               import json_file_create, json_load_file
+from typing                                                         import Type, Set, Any, Dict, Optional
+from mgraph_db.mgraph.actions.MGraph__Index__Values                 import MGraph__Index__Values
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.utils.Dev                                          import pprint
+from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.Schema__MGraph__Index__Data           import Schema__MGraph__Index__Data
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from osbot_utils.utils.Json                                         import json_file_create, json_load_file
 
 class MGraph__Index(Type_Safe):
     index_data  : Schema__MGraph__Index__Data

@@ -1,14 +1,14 @@
 from unittest                                                            import TestCase
-from osbot_utils.helpers.Safe_Id                                         import Safe_Id
+from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__List    import Type_Safe__List
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types          import Schema__Mermaid__Types
-from osbot_utils.helpers.Obj_Id                                          import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id        import Safe_Id
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge           import Schema__Mermaid__Edge
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge__Config   import Schema__Mermaid__Edge__Config
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph          import Schema__Mermaid__Graph
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph__Config  import Schema__Mermaid__Graph__Config
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node           import Schema__Mermaid__Node
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Data     import Schema__Mermaid__Node__Data
-from osbot_utils.type_safe.Type_Safe__List                               import Type_Safe__List
 
 
 class test_Schema__Mermaid__Graph(TestCase):

@@ -1,11 +1,9 @@
-from typing                                          import Set, Optional, Dict, Any, Type
-
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node import Schema__MGraph__Node
-
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge   import Schema__MGraph__Edge
-from mgraph_db.query.domain.Domain__MGraph__Query    import Domain__MGraph__Query
-from osbot_utils.helpers.Obj_Id                      import Obj_Id
-from osbot_utils.type_safe.Type_Safe                 import Type_Safe
+from typing                                                         import Set, Optional, Dict, Any, Type
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from mgraph_db.query.domain.Domain__MGraph__Query                   import Domain__MGraph__Query
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 
 
 class MGraph__Query__Add(Type_Safe):

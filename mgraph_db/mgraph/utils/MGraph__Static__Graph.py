@@ -1,7 +1,7 @@
-from typing                             import List
-from mgraph_db.mgraph.MGraph         import MGraph
-from osbot_utils.helpers.Obj_Id      import Obj_Id
-from osbot_utils.type_safe.Type_Safe import Type_Safe
+from typing                                                         import List
+from mgraph_db.mgraph.MGraph                                        import MGraph
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 
 class MGraph__Static__Graph(Type_Safe):
     graph   : MGraph

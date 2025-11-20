@@ -1,4 +1,5 @@
 from unittest                                                          import TestCase
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id       import is_obj_id
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                      import Domain__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data              import Schema__MGraph__Graph__Data
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data               import Schema__MGraph__Node__Data
@@ -12,9 +13,9 @@ from mgraph_db.providers.json.models.Model__MGraph__Json__Node         import Mo
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Edge       import Schema__MGraph__Json__Edge
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Graph      import Schema__MGraph__Json__Graph
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node       import Schema__MGraph__Json__Node
-from osbot_utils.helpers.Obj_Id                                        import is_obj_id
+from osbot_utils.testing.__                                            import __
 from osbot_utils.type_safe.Type_Safe                                   import Type_Safe
-from osbot_utils.utils.Objects                                         import __, full_type_name, base_classes
+from osbot_utils.utils.Objects                                         import full_type_name, base_classes
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                     import Domain__MGraph__Graph
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Graph       import Domain__MGraph__Json__Graph
 

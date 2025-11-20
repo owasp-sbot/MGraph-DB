@@ -4,7 +4,7 @@ from mgraph_db.providers.time_series.schemas.Schema__MGraph__Node__Time_Point   
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Node__Value__Timestamp       import Schema__MGraph__Node__Value__Timestamp
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Node__Value__Timezone__Name  import Schema__MGraph__Node__Value__Timezone__Name
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Node__Value__UTC_Offset      import Schema__MGraph__Node__Value__UTC_Offset
-from osbot_utils.helpers.Obj_Id                                                           import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                          import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                                      import Type_Safe
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Series__Edges           import \
     Schema__MGraph__Time_Series__Edge__Year, Schema__MGraph__Time_Series__Edge__Month, \

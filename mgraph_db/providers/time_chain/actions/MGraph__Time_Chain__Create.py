@@ -4,15 +4,15 @@ from mgraph_db.mgraph.actions.MGraph__Edit                                      
 from mgraph_db.mgraph.actions.MGraph__Values                                    import MGraph__Values
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                               import Domain__MGraph__Node
 from mgraph_db.providers.time_chain.schemas.Schema__MGraph__Time_Chain__Edge    import Schema__MGraph__Time_Chain__Edge__Month, Schema__MGraph__Time_Chain__Edge__Day, Schema__MGraph__Time_Chain__Edge__Hour, Schema__MGraph__Time_Chain__Edge__Minute, Schema__MGraph__Time_Chain__Edge__Second, Schema__MGraph__Time_Chain__Edge__Source, Schema__MGraph__Time_Chain__Edge__Year
-from mgraph_db.providers.time_chain.schemas.Schema__MGraph__Time_Chain__Types import (Time_Chain__Year, Time_Chain__Month,
-                                                                                      Time_Chain__Day,
-                                                                                      Time_Chain__Hour,
-                                                                                      Time_Chain__Minute,
-                                                                                      Time_Chain__Second,
-                                                                                      Time_Chain__Source)
-from osbot_utils.decorators.methods.cache_on_self                             import cache_on_self
-from osbot_utils.helpers.Obj_Id import Obj_Id
-from osbot_utils.type_safe.Type_Safe                                          import Type_Safe
+from mgraph_db.providers.time_chain.schemas.Schema__MGraph__Time_Chain__Types   import (Time_Chain__Year, Time_Chain__Month,
+                                                                                        Time_Chain__Day,
+                                                                                        Time_Chain__Hour,
+                                                                                        Time_Chain__Minute,
+                                                                                        Time_Chain__Second,
+                                                                                        Time_Chain__Source)
+from osbot_utils.decorators.methods.cache_on_self                               import cache_on_self
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                import Obj_Id
+from osbot_utils.type_safe.Type_Safe                                            import Type_Safe
 
 
 class MGraph__Time_Chain__Create(Type_Safe):

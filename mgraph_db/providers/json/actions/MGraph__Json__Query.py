@@ -1,8 +1,8 @@
-from typing                                                             import Dict, Any, Optional, List, Union, Set
+from typing                                                             import Dict, Any, Union, Set
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Node         import Domain__MGraph__Json__Node
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Node__List   import Domain__MGraph__Json__Node__List
 from mgraph_db.query.MGraph__Query                                      import MGraph__Query
-from osbot_utils.helpers.Obj_Id                                         import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
 
 class MGraph__Json__Query(MGraph__Query):
 

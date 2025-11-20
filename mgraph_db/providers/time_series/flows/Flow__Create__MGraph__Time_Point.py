@@ -1,11 +1,10 @@
 from datetime                                                                           import datetime, UTC
-
-from mgraph_db.mgraph.domain.Domain__MGraph__Node import Domain__MGraph__Node
+from mgraph_db.mgraph.domain.Domain__MGraph__Node                                       import Domain__MGraph__Node
 from mgraph_db.providers.time_series.MGraph__Time_Series                                import MGraph__Time_Series
 from mgraph_db.providers.time_series.actions.MGraph__Time_Point__Builder                import MGraph__Time_Point__Builder
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Point__Create__Data   import Schema__MGraph__Time_Point__Create__Data
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Series__Edges         import Schema__MGraph__Time_Series__Edge__Second
-from osbot_utils.helpers.Obj_Id                                                         import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                        import Obj_Id
 from osbot_utils.helpers.flows.Flow                                                     import Flow
 from osbot_utils.helpers.flows.decorators.task                                          import task
 

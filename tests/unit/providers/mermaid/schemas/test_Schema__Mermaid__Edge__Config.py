@@ -1,7 +1,7 @@
 from unittest                                                           import TestCase
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge__Config  import Schema__Mermaid__Edge__Config
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node          import Schema__Mermaid__Node
-from osbot_utils.helpers.Obj_Id                                         import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
 
 
 class test_Schema__Mermaid__Edge__Config(TestCase):

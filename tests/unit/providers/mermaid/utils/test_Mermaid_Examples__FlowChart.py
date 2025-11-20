@@ -2,7 +2,7 @@ from unittest                                                           import T
 from mgraph_db.providers.mermaid.MGraph__Mermaid                        import MGraph__Mermaid
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Diagram__Type import Schema__Mermaid__Diagram__Type
 from mgraph_db.providers.mermaid.utils.Mermaid_Examples__FlowChart      import Mermain_Examples__FlowChart
-from osbot_utils.helpers.Safe_Id                                        import Safe_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id       import Safe_Id
 from osbot_utils.utils.Str                                              import str_dedent
 
 

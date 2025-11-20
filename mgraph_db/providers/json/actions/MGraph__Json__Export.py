@@ -10,7 +10,7 @@ from osbot_utils.utils.Json                                                     
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Graph                import Domain__MGraph__Json__Graph
 from mgraph_db.mgraph.actions.MGraph__Export                                    import MGraph__Export
 from mgraph_db.mgraph.actions.MGraph__Index                                     import MGraph__Index
-from osbot_utils.helpers.Obj_Id                                                 import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                import Obj_Id
 
 class MGraph__Json__Export(MGraph__Export):
     graph: Domain__MGraph__Json__Graph

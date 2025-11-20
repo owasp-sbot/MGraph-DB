@@ -6,10 +6,10 @@ class test_README_examples(TestCase):
 
     def test_1__add_two_nodes_and_one_edge(self):                                               # Test creating and connecting two nodes with an edge
 
-        from osbot_utils.helpers.Obj_Id                         import Obj_Id                   # Required for object ID handling
-        from mgraph_db.mgraph.MGraph                            import MGraph                   # Core MGraph functionality
-        from mgraph_db.mgraph.domain.Domain__MGraph__Node       import Domain__MGraph__Node     # Node domain class
-        from mgraph_db.mgraph.domain.Domain__MGraph__Edge       import Domain__MGraph__Edge     # Edge domain class
+        from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id                   # Required for object ID handling
+        from mgraph_db.mgraph.MGraph                                        import MGraph                   # Core MGraph functionality
+        from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node     # Node domain class
+        from mgraph_db.mgraph.domain.Domain__MGraph__Edge                   import Domain__MGraph__Edge     # Edge domain class
 
         mgraph = MGraph()                                                                       # Create a new graph instance
 

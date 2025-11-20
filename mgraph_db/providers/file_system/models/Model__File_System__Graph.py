@@ -1,7 +1,7 @@
 from mgraph_db.mgraph.models.Model__MGraph__Graph                             import Model__MGraph__Graph
 from mgraph_db.providers.file_system.models.Model__File_System__Default_Types import Model__File_System__Default_Types
 from mgraph_db.providers.file_system.schemas.Schema__File_System__Graph       import Schema__File_System__Graph
-from osbot_utils.helpers.Obj_Id                                               import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id              import Obj_Id
 
 
 class Model__File_System__Graph(Model__MGraph__Graph):                                                   # Model for filesystem graph

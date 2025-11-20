@@ -1,8 +1,8 @@
-from typing                                                     import Dict, Any, List, Optional, Set
-from mgraph_db.mgraph.actions.exporters.MGraph__Export__Base    import MGraph__Export__Base
-from mgraph_db.mgraph.domain.Domain__MGraph__Node               import Domain__MGraph__Node
-from osbot_utils.helpers.Obj_Id                                 import Obj_Id
-from osbot_utils.type_safe.decorators.type_safe                 import type_safe
+from typing                                                         import Dict, Any, List, Optional, Set
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe      import type_safe
+from mgraph_db.mgraph.actions.exporters.MGraph__Export__Base        import MGraph__Export__Base
+from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 
 PREDICATE__MGRAPH__CONNECTS_TO = 'connects_to'
 

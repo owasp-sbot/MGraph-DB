@@ -2,7 +2,7 @@ from datetime                                                                   
 from typing                                                                                 import Optional
 from zoneinfo                                                                               import ZoneInfo
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Point__Create__Data       import Schema__MGraph__Time_Point__Create__Data
-from osbot_utils.helpers.Obj_Id                                                             import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                            import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                                        import Type_Safe
 
 

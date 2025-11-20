@@ -1,6 +1,6 @@
-from unittest                                               import TestCase
-from osbot_utils.helpers.Obj_Id                             import Obj_Id
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge          import Schema__MGraph__Edge
+from unittest                                                       import TestCase
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 
 class test_Schema__MGraph__Edge(TestCase):
 

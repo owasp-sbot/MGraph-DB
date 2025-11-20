@@ -1,12 +1,12 @@
 import pytest
-from unittest                                                import TestCase
-from mgraph_db.mgraph.schemas.Schema__MGraph__Types          import Schema__MGraph__Types
-from mgraph_db.mgraph.schemas.Schema__MGraph__Graph          import Schema__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data    import Schema__MGraph__Graph__Data
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node           import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data     import Schema__MGraph__Node__Data
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge           import Schema__MGraph__Edge
-from osbot_utils.helpers.Obj_Id                              import Obj_Id
+from unittest                                                       import TestCase
+from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                 import Schema__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data           import Schema__MGraph__Graph__Data
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data            import Schema__MGraph__Node__Data
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 
 
 class Simple_Node(Schema__MGraph__Node): pass    # Helper class for testing

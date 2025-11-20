@@ -1,7 +1,7 @@
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                     import Schema__MGraph__Graph
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Graph__Data import Schema__MGraph__Json__Graph__Data
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Types       import Schema__MGraph__Json__Types
-from osbot_utils.helpers.Obj_Id                                         import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
 
 
 class Schema__MGraph__Json__Graph(Schema__MGraph__Graph):

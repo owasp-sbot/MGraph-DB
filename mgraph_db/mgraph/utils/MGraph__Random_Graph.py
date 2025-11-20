@@ -1,13 +1,13 @@
-from typing                                                   import Optional, List
-from mgraph_db.mgraph.MGraph                                  import MGraph
-from mgraph_db.mgraph.domain.Domain__MGraph__Graph            import Domain__MGraph__Graph
-from mgraph_db.mgraph.models.Model__MGraph__Graph             import Model__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Graph           import Schema__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data     import Schema__MGraph__Graph__Data
-from mgraph_db.mgraph.schemas.Schema__MGraph__Types           import Schema__MGraph__Types
-from osbot_utils.helpers.Obj_Id                               import Obj_Id
-from osbot_utils.type_safe.Type_Safe                          import Type_Safe
-from osbot_utils.utils.Misc                                   import random_int
+from typing                                                         import Optional, List
+from mgraph_db.mgraph.MGraph                                        import MGraph
+from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
+from mgraph_db.mgraph.models.Model__MGraph__Graph                   import Model__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                 import Schema__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data           import Schema__MGraph__Graph__Data
+from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from osbot_utils.utils.Misc                                         import random_int
 
 class MGraph__Random_Graph(Type_Safe):
     graph        : MGraph                       = None

@@ -1,6 +1,7 @@
 from unittest                                                           import TestCase
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value import Schema__MGraph__Json__Node__Value
-from osbot_utils.utils.Objects                                          import __, type_full_name
+from osbot_utils.utils.Objects                                          import type_full_name
+from osbot_utils.testing.__                                             import __
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Node         import Domain__MGraph__Json__Node
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Node__Value  import Domain__MGraph__Json__Node__Value
 

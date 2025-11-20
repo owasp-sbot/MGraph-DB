@@ -1,7 +1,9 @@
 from unittest                                                     import TestCase
+from osbot_utils.testing.__helpers                                import obj
+from osbot_utils.utils.Objects                                    import type_full_name, base_types
 from mgraph_db.providers.simple.schemas.Schema__Simple__Node      import Schema__Simple__Node
 from osbot_utils.type_safe.Type_Safe                              import Type_Safe
-from osbot_utils.utils.Objects                                    import __, base_types, obj, type_full_name
+from osbot_utils.testing.__                                       import __
 from mgraph_db.mgraph.actions.exporters.MGraph__Export__Cytoscape import MGraph__Export__Cytoscape
 from mgraph_db.mgraph.actions.exporters.MGraph__Export__Base      import MGraph__Export__Base
 from mgraph_db.providers.simple.MGraph__Simple                    import MGraph__Simple

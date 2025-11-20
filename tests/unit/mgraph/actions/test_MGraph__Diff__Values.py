@@ -69,9 +69,10 @@ class test_MGraph__Diff__Values(TestCase):
             edit_b.add_node(Schema__MGraph__Node__Value(node_data=int_data_b))
 
         diff = self.differ.compare([str, int])
-
-        assert diff.json() == { 'added_values'  : { 'builtins.str': ['str_a']},
-                                'removed_values': { 'builtins.str': ['str_b']}}
+        assert diff.obj()  == __( added_values =__(builtins_str={'str_a'}),
+                                  removed_values=__(builtins_str={'str_b'}))
+        assert diff.json() == { 'added_values'  : { 'builtins.str': {'str_a'}},
+                                'removed_values': { 'builtins.str': {'str_b'}}}
 
         assert str in diff.added_values
         assert str in diff.removed_values

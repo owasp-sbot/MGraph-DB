@@ -6,7 +6,7 @@ from mgraph_db.providers.time_chain.actions.MGraph__Time_Chain__Create          
 from mgraph_db.providers.time_chain.schemas.Schema__MGraph__Time_Chain__Types    import Time_Chain__Year, Time_Chain__Month
 from mgraph_db.providers.time_chain.schemas.Schema__MGraph__Time_Chain__Edge     import Schema__MGraph__Time_Chain__Edge__Month
 from mgraph_db.mgraph.MGraph                                                     import MGraph
-from osbot_utils.helpers.Obj_Id                                                  import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                 import Obj_Id
 from osbot_utils.utils.Env                                                       import load_dotenv
 
 

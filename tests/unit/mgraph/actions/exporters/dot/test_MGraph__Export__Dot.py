@@ -1,8 +1,8 @@
 from unittest                                                                   import TestCase
+from osbot_utils.testing.__                                                     import __
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                              import Schema__MGraph__Edge
 from mgraph_db.providers.simple.schemas.Schema__Simple__Node                    import Schema__Simple__Node
 from osbot_utils.utils.Env                                                      import load_dotenv
-from osbot_utils.utils.Objects                                                  import __
 from mgraph_db.mgraph.actions.exporters.dot.MGraph__Export__Dot                 import MGraph__Export__Dot
 from mgraph_db.mgraph.actions.exporters.dot.models.MGraph__Export__Dot__Config  import MGraph__Export__Dot__Config
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                              import Domain__MGraph__Graph
@@ -44,22 +44,22 @@ class test_MGraph__Export__Dot(TestCase):
 
         assert exporter.graph                          == self.domain_graph
         assert exporter.config.display.node_value      is True
-        assert exporter.config.display.edge_id is False
+        assert exporter.config.display.edge_id         is False
         assert exporter.config.node.font.name          == "Times"
         assert exporter.config.node.font.size          == 12
 
         assert exporter.obj() == __(graph            = self.domain_graph.obj()   ,
-                                    context          = __( nodes         = __()                        ,
-                                                         edges         = __()                          ,
-                                                         counters      = __(node=0, edge=0, other=0))  ,
-                                    config           = exporter.config.obj()                           ,
-                                    dot_code         = None                                              ,
-                                    on_add_node      = None                                            ,
-                                    on_add_edge      = None                                            ,
-                                    node_renderer    = exporter.node_renderer   .obj()                 ,
-                                    edge_renderer    = exporter.edge_renderer   .obj()                 ,
-                                    style_manager    = exporter.style_manager   .obj()                 ,
-                                    format_generator = exporter.format_generator.obj()                 )
+                                    context          = __( nodes         = __()                         ,
+                                                           edges         = __()                         ,
+                                                           counters      = __(node=0, edge=0, other=0)) ,
+                                    config           = exporter.config.obj()                            ,
+                                    dot_code         = None                                             ,
+                                    on_add_node      = None                                             ,
+                                    on_add_edge      = None                                             ,
+                                    node_renderer    = exporter.node_renderer   .obj()                  ,
+                                    edge_renderer    = exporter.edge_renderer   .obj()                  ,
+                                    style_manager    = exporter.style_manager   .obj()                  ,
+                                    format_generator = exporter.format_generator.obj()                  )
 
     def test_create_node_data(self):                                                   # Test node data creation
         node_id = self.nodes_ids[0]                                                    # Get first node (Node 1)

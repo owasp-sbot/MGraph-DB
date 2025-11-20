@@ -1,10 +1,9 @@
 import pytest
 import re
-from unittest                                                              import TestCase
-
-from osbot_utils.helpers.Obj_Id import Obj_Id
-from osbot_utils.helpers.Timestamp_Now                                     import Timestamp_Now
-from mgraph_db.providers.file_system.schemas.Schema__File_System__Item     import Schema__File_System__Item
+from unittest                                                                    import TestCase
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                 import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.safe_int.Timestamp_Now import Timestamp_Now
+from mgraph_db.providers.file_system.schemas.Schema__File_System__Item           import Schema__File_System__Item
 
 class test_Schema__File_System__Item(TestCase):
 

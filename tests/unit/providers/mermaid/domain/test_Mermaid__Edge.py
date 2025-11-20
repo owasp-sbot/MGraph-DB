@@ -1,8 +1,8 @@
-from unittest                                                 import TestCase
-from mgraph_db.providers.mermaid.models.Model__Mermaid__Graph import Model__Mermaid__Graph
-from osbot_utils.helpers.Obj_Id                               import is_obj_id
-from osbot_utils.utils.Objects                                import __
-from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Edge import Domain__Mermaid__Edge
+from unittest                                                    import TestCase
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id import is_obj_id
+from mgraph_db.providers.mermaid.models.Model__Mermaid__Graph    import Model__Mermaid__Graph
+from osbot_utils.testing.__                                      import __
+from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Edge    import Domain__Mermaid__Edge
 
 class test_Mermaid__Edge(TestCase):
 

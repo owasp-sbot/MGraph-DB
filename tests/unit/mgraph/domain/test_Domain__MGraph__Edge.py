@@ -1,13 +1,13 @@
-from unittest                                               import TestCase
-from mgraph_db.mgraph.domain.Domain__MGraph__Node           import Domain__MGraph__Node
-from osbot_utils.helpers.Obj_Id                             import Obj_Id
-from mgraph_db.mgraph.domain.Domain__MGraph__Edge           import Domain__MGraph__Edge
-from mgraph_db.mgraph.models.Model__MGraph__Edge            import Model__MGraph__Edge
-from mgraph_db.mgraph.models.Model__MGraph__Graph           import Model__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge          import Schema__MGraph__Edge
-from mgraph_db.mgraph.schemas.Schema__MGraph__Graph         import Schema__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node          import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data    import Schema__MGraph__Node__Data
+from unittest                                                       import TestCase
+from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from mgraph_db.mgraph.domain.Domain__MGraph__Edge                   import Domain__MGraph__Edge
+from mgraph_db.mgraph.models.Model__MGraph__Edge                    import Model__MGraph__Edge
+from mgraph_db.mgraph.models.Model__MGraph__Graph                   import Model__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                 import Schema__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data            import Schema__MGraph__Node__Data
 
 class test_Domain__MGraph__Edge(TestCase):
 

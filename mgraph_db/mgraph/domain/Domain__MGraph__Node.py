@@ -1,9 +1,9 @@
-from typing                                           import List
-from mgraph_db.mgraph.models.Model__MGraph__Graph     import Model__MGraph__Graph
-from mgraph_db.mgraph.models.Model__MGraph__Node      import Model__MGraph__Node
-from mgraph_db.mgraph.models.Model__MGraph__Edge      import Model__MGraph__Edge
-from osbot_utils.type_safe.Type_Safe                  import Type_Safe
-from osbot_utils.type_safe.methods.type_safe_property import set_as_property
+from typing                                                             import List
+from osbot_utils.type_safe.type_safe_core.methods.type_safe_property    import set_as_property
+from mgraph_db.mgraph.models.Model__MGraph__Graph                       import Model__MGraph__Graph
+from mgraph_db.mgraph.models.Model__MGraph__Node                        import Model__MGraph__Node
+from mgraph_db.mgraph.models.Model__MGraph__Edge                        import Model__MGraph__Edge
+from osbot_utils.type_safe.Type_Safe                                    import Type_Safe
 
 class Domain__MGraph__Node(Type_Safe):                                                       # Domain class for nodes
     node : Model__MGraph__Node                                                              # Reference to node model

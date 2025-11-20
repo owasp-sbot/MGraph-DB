@@ -3,7 +3,7 @@ from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Render__Config    impo
 from osbot_utils.utils.Misc                                                 import random_text
 from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Edge               import Domain__Mermaid__Edge
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Diagram_Direction import Schema__Mermaid__Diagram__Direction
-from osbot_utils.helpers.Safe_Id                                            import Safe_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id           import Safe_Id
 from mgraph_db.providers.mermaid.actions.Mermaid__Data                      import Mermaid__Data
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Diagram__Type     import Schema__Mermaid__Diagram__Type
 from osbot_utils.decorators.methods.cache_on_self                           import cache_on_self

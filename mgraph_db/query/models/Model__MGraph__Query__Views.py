@@ -1,10 +1,10 @@
-from typing                                                     import Set, Dict, Any, Optional
-from mgraph_db.query.models.Model__MGraph__Query__View          import Model__MGraph__Query__View
-from mgraph_db.query.schemas.Schema__MGraph__Query__View        import Schema__MGraph__Query__View
-from mgraph_db.query.schemas.Schema__MGraph__Query__View__Data  import Schema__MGraph__Query__View__Data
-from mgraph_db.query.schemas.Schema__MGraph__Query__Views       import Schema__MGraph__Query__Views
-from osbot_utils.helpers.Obj_Id                                 import Obj_Id
-from osbot_utils.type_safe.Type_Safe                            import Type_Safe
+from typing                                                         import Set, Dict, Any, Optional
+from mgraph_db.query.models.Model__MGraph__Query__View              import Model__MGraph__Query__View
+from mgraph_db.query.schemas.Schema__MGraph__Query__View            import Schema__MGraph__Query__View
+from mgraph_db.query.schemas.Schema__MGraph__Query__View__Data      import Schema__MGraph__Query__View__Data
+from mgraph_db.query.schemas.Schema__MGraph__Query__Views           import Schema__MGraph__Query__Views
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 
 
 class Model__MGraph__Query__Views(Type_Safe):

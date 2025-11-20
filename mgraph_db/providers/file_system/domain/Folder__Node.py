@@ -2,7 +2,7 @@ from typing                                                           import Lis
 from mgraph_db.providers.file_system.domain.File_System__Item         import File_System__Item
 from mgraph_db.providers.file_system.models.Model__File_System__Graph import Model__File_System__Graph
 from mgraph_db.providers.file_system.models.Model__Folder__Node       import Model__Folder__Node
-from osbot_utils.type_safe.methods.type_safe_property import set_as_property
+from osbot_utils.type_safe.type_safe_core.methods.type_safe_property  import set_as_property
 
 
 class Folder__Node(File_System__Item):                                                                   # Domain class for folder nodes

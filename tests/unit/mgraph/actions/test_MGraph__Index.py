@@ -1,17 +1,17 @@
-from unittest                                                   import TestCase
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label       import Schema__MGraph__Edge__Label
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value       import Schema__MGraph__Node__Value
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data import Schema__MGraph__Node__Value__Data
-from mgraph_db.providers.simple.MGraph__Simple__Test_Data       import MGraph__Simple__Test_Data
-from osbot_utils.helpers.Safe_Id                                import Safe_Id
-from osbot_utils.utils.Objects                                  import __
-from osbot_utils.testing.Temp_File                              import Temp_File
-from mgraph_db.mgraph.MGraph                                    import MGraph
-from osbot_utils.utils.Files                                    import file_not_exists, file_exists
-from mgraph_db.mgraph.actions.MGraph__Index                     import MGraph__Index
-from mgraph_db.mgraph.schemas.Schema__MGraph__Index__Data       import Schema__MGraph__Index__Data
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node              import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge              import Schema__MGraph__Edge
+from unittest                                                       import TestCase
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label           import Schema__MGraph__Edge__Label
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data     import Schema__MGraph__Node__Value__Data
+from mgraph_db.providers.simple.MGraph__Simple__Test_Data           import MGraph__Simple__Test_Data
+from osbot_utils.testing.__                                         import __
+from osbot_utils.testing.Temp_File                                  import Temp_File
+from mgraph_db.mgraph.MGraph                                        import MGraph
+from osbot_utils.utils.Files                                        import file_not_exists, file_exists
+from mgraph_db.mgraph.actions.MGraph__Index                         import MGraph__Index
+from mgraph_db.mgraph.schemas.Schema__MGraph__Index__Data           import Schema__MGraph__Index__Data
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 
 class test_MGraph_Index(TestCase):
 

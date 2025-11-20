@@ -1,11 +1,12 @@
-from unittest                                                   import TestCase
-from mgraph_db.mgraph.actions.MGraph__Edit                      import MGraph__Edit
-from mgraph_db.mgraph.actions.MGraph__Screenshot                import MGraph__Screenshot
-from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Graph  import Domain__Mermaid__Graph
-from mgraph_db.query.MGraph__Query                              import MGraph__Query
-from osbot_utils.helpers.Obj_Id                                 import is_obj_id
-from osbot_utils.utils.Objects                                  import __, full_type_name
-from mgraph_db.providers.mermaid.MGraph__Mermaid                import MGraph__Mermaid
+from unittest                                                       import TestCase
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import is_obj_id
+from osbot_utils.utils.Objects                                      import full_type_name
+from mgraph_db.mgraph.actions.MGraph__Edit                          import MGraph__Edit
+from mgraph_db.mgraph.actions.MGraph__Screenshot                    import MGraph__Screenshot
+from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Graph      import Domain__Mermaid__Graph
+from mgraph_db.query.MGraph__Query                                  import MGraph__Query
+from osbot_utils.testing.__                                         import __
+from mgraph_db.providers.mermaid.MGraph__Mermaid                    import MGraph__Mermaid
 
 
 class test_Mermaid(TestCase):

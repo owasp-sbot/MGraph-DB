@@ -1,4 +1,5 @@
 from unittest                                               import TestCase
+from osbot_utils.testing.__                                 import __
 from mgraph_db.mgraph.MGraph                                import MGraph
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph          import Domain__MGraph__Graph
 from mgraph_db.mgraph.models.Model__MGraph__Graph           import Model__MGraph__Graph
@@ -6,7 +7,7 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Graph         import Schema__MGrap
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node          import Schema__MGraph__Node
 from mgraph_db.query.domain.Domain__MGraph__Query           import Domain__MGraph__Query
 from mgraph_db.query.schemas.Schema__MGraph__Query__Views   import Schema__MGraph__Query__Views
-from osbot_utils.utils.Objects                              import __
+
 
 class Simple_Node(Schema__MGraph__Node): pass                                    # Helper class for testing
 

@@ -1,7 +1,7 @@
 import pytest
 from unittest                                                                   import TestCase
 from mgraph_db.providers.file_system.schemas.Schema__File_System__Graph__Config import Schema__File_System__Graph__Config
-from osbot_utils.helpers.Obj_Id                                                 import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                import Obj_Id
 
 
 class test_Schema__File_System__Graph__Config(TestCase):

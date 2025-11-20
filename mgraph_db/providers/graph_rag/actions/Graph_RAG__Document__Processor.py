@@ -2,7 +2,7 @@ from typing                                                                     
 from mgraph_db.providers.graph_rag.schemas.Schema__Graph_RAG__LLM__Entities     import Schema__Graph_RAG__LLM__Entities
 from mgraph_db.providers.graph_rag.testing.MGraph__Graph_Rag__LLM_Cache__Simple import mgraph_llm_cache_simple
 from osbot_utils.helpers.duration.decorators.capture_duration                   import capture_duration
-from osbot_utils.helpers.Obj_Id                                                 import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                import Obj_Id
 from osbot_utils.helpers.llms.platforms.open_ai.API__LLM__Open_AI               import API__LLM__Open_AI
 from osbot_utils.type_safe.Type_Safe                                            import Type_Safe
 from mgraph_db.providers.graph_rag.schemas.Schema__Graph_RAG__Entity            import Schema__Graph_RAG__Entity

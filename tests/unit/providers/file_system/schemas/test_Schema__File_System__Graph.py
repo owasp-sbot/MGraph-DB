@@ -1,10 +1,10 @@
-from unittest                                                                   import TestCase
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                              import Schema__MGraph__Edge
-from osbot_utils.helpers.Obj_Id                                                 import Obj_Id
-from osbot_utils.helpers.Timestamp_Now                                          import Timestamp_Now
-from mgraph_db.providers.file_system.schemas.Schema__File_System__Graph         import Schema__File_System__Graph
-from mgraph_db.providers.file_system.schemas.Schema__Folder__Node               import Schema__Folder__Node
-from mgraph_db.providers.file_system.schemas.Schema__File_System__Graph__Config import Schema__File_System__Graph__Config
+from unittest                                                                    import TestCase
+from osbot_utils.type_safe.primitives.domains.identifiers.safe_int.Timestamp_Now import Timestamp_Now
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                               import Schema__MGraph__Edge
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                 import Obj_Id
+from mgraph_db.providers.file_system.schemas.Schema__File_System__Graph          import Schema__File_System__Graph
+from mgraph_db.providers.file_system.schemas.Schema__Folder__Node                import Schema__Folder__Node
+from mgraph_db.providers.file_system.schemas.Schema__File_System__Graph__Config  import Schema__File_System__Graph__Config
 
 
 class test_Schema__File_System__Graph(TestCase):

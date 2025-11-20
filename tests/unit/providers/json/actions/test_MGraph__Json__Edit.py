@@ -3,7 +3,7 @@ from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__List      impo
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Property  import Schema__MGraph__Json__Node__Property
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value     import Schema__MGraph__Json__Node__Value
 from osbot_utils.utils.Json                                                 import json__equals__list_and_set
-from osbot_utils.helpers.Obj_Id                                             import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id            import Obj_Id
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Node             import Domain__MGraph__Json__Node
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Node__Dict       import Domain__MGraph__Json__Node__Dict
 from mgraph_db.providers.json.models.Model__MGraph__Json__Node__Dict        import Model__MGraph__Json__Node__Dict

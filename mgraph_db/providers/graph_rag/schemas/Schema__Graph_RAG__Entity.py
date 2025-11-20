@@ -1,5 +1,5 @@
 from mgraph_db.providers.graph_rag.schemas.Schema__Graph_RAG__Entity__LLM import Schema__Graph_RAG__Entity__LLM
-from osbot_utils.helpers.Obj_Id                                           import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id          import Obj_Id
 
 class Schema__Graph_RAG__Entity(Schema__Graph_RAG__Entity__LLM):
     entity_id            : Obj_Id                                                    # Unique entity identifier

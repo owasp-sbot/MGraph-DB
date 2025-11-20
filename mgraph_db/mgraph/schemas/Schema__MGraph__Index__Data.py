@@ -1,7 +1,7 @@
-from typing                          import Dict, Any
-from osbot_utils.helpers.Obj_Id      import Obj_Id
-from osbot_utils.helpers.Safe_Id import Safe_Id
-from osbot_utils.type_safe.Type_Safe import Type_Safe
+from typing                                                         import Dict, Any
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 
 # todo: see if the types below can be changed from str to type (since Type_Safe now supports it)
 
