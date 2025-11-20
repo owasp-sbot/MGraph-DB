@@ -48,6 +48,13 @@ class Perf_Test__MGraph_Json(Type_Safe):
             from osbot_utils.utils.Dev import pprint
             json_file_create(exported__mgraph_json, target_file)
             #pprint(file_exists(target_file))
+            print("***************")
+            print()
+            print(json_file_load(target_file))
+
+            print()
+            print(exported__mgraph_json)
+            print("***************")
             assert json_file_load(target_file) == exported__mgraph_json # round trip
 
             #print()
