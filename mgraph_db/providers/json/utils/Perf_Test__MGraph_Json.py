@@ -45,19 +45,10 @@ class Perf_Test__MGraph_Json(Type_Safe):
         with capture_duration() as duration:
             exported__mgraph_json = self.mgraph_json.export().to__mgraph_json()
             target_file = '/tmp/mgraph.json'
-            from osbot_utils.utils.Dev import pprint
+
             json_file_create(exported__mgraph_json, target_file)
-            #pprint(file_exists(target_file))
-            print("***************")
-            print()
-            print(json_file_load(target_file))
+            assert json_file_load(target_file) == exported__mgraph_json # BUG this is not working | round trip
 
-            print()
-            print(exported__mgraph_json)
-            print("***************")
-            assert json_file_load(target_file) == exported__mgraph_json # round trip
-
-            #print()
             mgraph_json = self.mgraph_json.json()
             mgraph_2    = MGraph__Json.from_json(mgraph_json)
             json_file_create(mgraph_json    , '/tmp/mgraph_1.json')
