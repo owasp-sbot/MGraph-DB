@@ -1,5 +1,5 @@
 from unittest                                            import TestCase
-from osbot_utils.utils.Objects                           import __
+from osbot_utils.testing.__                              import __
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data import Schema__MGraph__Node__Data
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node       import Schema__MGraph__Node
 

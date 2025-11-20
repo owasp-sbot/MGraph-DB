@@ -1,11 +1,13 @@
-from unittest                                                import TestCase
-from mgraph_db.mgraph.schemas.Schema__MGraph__Types          import Schema__MGraph__Types
-from mgraph_db.mgraph.schemas.Schema__MGraph__Graph          import Schema__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data    import Schema__MGraph__Graph__Data
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node           import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data     import Schema__MGraph__Node__Data
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge           import Schema__MGraph__Edge
-from osbot_utils.helpers.Obj_Id import Obj_Id
+import re
+import pytest
+from unittest                                                       import TestCase
+from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                 import Schema__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data           import Schema__MGraph__Graph__Data
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data            import Schema__MGraph__Node__Data
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 
 
 class Simple_Node(Schema__MGraph__Node): pass    # Helper class for testing
@@ -37,23 +39,19 @@ class test_Schema__MGraph__Graph(TestCase):
         assert self.graph.edges[self.edge.edge_id            ] == self.edge
 
     def test_type_safety_validation(self):    # Tests type safety validations
-        with self.assertRaises(ValueError) as context:
-            Schema__MGraph__Graph(
-                nodes        = "not-a-dict",
-                edges        = {self.edge.edge_id: self.edge},
-                graph_config = self.graph_data,
-                graph_type   = Schema__MGraph__Graph
-            )
-        assert 'Invalid type for attribute' in str(context.exception)
+        error_message = "On Schema__MGraph__Graph, invalid type for attribute 'nodes'. Expected 'typing.Dict[osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id.Obj_Id, mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node]' but got '<class 'str'>"
+        with pytest.raises(ValueError, match=re.escape(error_message)):
+            Schema__MGraph__Graph(nodes        = "not-a-dict",
+                                  edges        = {self.edge.edge_id: self.edge},
+                                  graph_config = self.graph_data,
+                                  graph_type   = Schema__MGraph__Graph)
 
-        with self.assertRaises(ValueError) as context:
-            Schema__MGraph__Graph(
-                nodes        = {self.node.node_id            : self.node    },
-                edges        = {self.edge.edge_id: "not-an-edge"},
-                graph_config = self.graph_data,
-                graph_type   = Schema__MGraph__Graph
-            )
-        assert "Expected a dictionary, but got '<class 'str'>'" == str(context.exception)
+        expected_error = "Expected 'Schema__MGraph__Edge', but got 'str'"
+        with pytest.raises(TypeError, match=expected_error):
+            Schema__MGraph__Graph(nodes        = {self.node.node_id : self.node     },
+                                  edges        = {self.edge.edge_id : "not-an-edge" },
+                                  graph_config = self.graph_data                     ,
+                                  graph_type   = Schema__MGraph__Graph               )
 
     def test_multiple_nodes_and_edges(self):    # Tests graph with multiple nodes and edges
         node_data_2   = Schema__MGraph__Node__Data  (                                    )

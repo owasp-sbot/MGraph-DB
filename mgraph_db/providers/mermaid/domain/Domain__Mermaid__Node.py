@@ -3,7 +3,7 @@ from mgraph_db.mgraph.domain.Domain__MGraph__Node                      import Do
 from mgraph_db.providers.mermaid.models.Model__Mermaid__Graph          import Model__Mermaid__Graph
 from mgraph_db.providers.mermaid.models.Model__Mermaid__Node           import Model__Mermaid__Node
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Shape  import Schema__Mermaid__Node__Shape
-from osbot_utils.type_safe.methods.type_safe_property                  import set_as_property
+from osbot_utils.type_safe.type_safe_core.methods.type_safe_property   import set_as_property
 
 LINE_PADDING = '    '
 

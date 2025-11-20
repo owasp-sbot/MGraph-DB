@@ -6,7 +6,7 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                              
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Point__Create__Data     import Schema__MGraph__Time_Point__Create__Data
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Point__Created__Objects import Schema__MGraph__Time_Point__Created__Objects
 from osbot_utils.decorators.methods.cache_on_self                                         import cache_on_self
-from osbot_utils.helpers.Obj_Id                                                           import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                          import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                                      import Type_Safe
 
 

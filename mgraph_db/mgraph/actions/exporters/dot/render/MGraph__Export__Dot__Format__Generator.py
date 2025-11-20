@@ -20,7 +20,7 @@ class MGraph__Export__Dot__Format__Generator(MGraph__Export__Dot__Base):
         if self.config.graph.epsilon          : graph_attrs.append(f'epsilon="{self.config.graph.epsilon}"'         )
         if self.config.graph.spring_constant  : graph_attrs.append(f'K="{self.config.graph.spring_constant}"'       )
 
-        if self.config.graph.title            : graph_attrs.append(f'label="{    self.config.graph.title}" labelloc="t"') # adds label to the top
+        if self.config.graph.title            : graph_attrs.append(f'label="\\n{self.config.graph.title}\\n\\n" labelloc="t"') # adds label to the top (with a new line before and after)
         if self.config.graph.title__font.size : graph_attrs.append(f'fontsize="{ self.config.graph.title__font.size}"' )
         if self.config.graph.title__font.color: graph_attrs.append(f'fontcolor="{self.config.graph.title__font.color}"')
         if self.config.graph.title__font.name : graph_attrs.append(f'fontname="{ self.config.graph.title__font.name}"' )

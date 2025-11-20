@@ -1,7 +1,7 @@
-from typing                                              import Set, Optional, Dict, Any
-from osbot_utils.helpers.Obj_Id                          import Obj_Id
-from mgraph_db.query.schemas.Schema__MGraph__Query__View import Schema__MGraph__Query__View
-from osbot_utils.type_safe.Type_Safe                     import Type_Safe
+from typing                                                         import Set, Optional, Dict, Any
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from mgraph_db.query.schemas.Schema__MGraph__Query__View            import Schema__MGraph__Query__View
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 
 
 class Model__MGraph__Query__View(Type_Safe):

@@ -1,4 +1,4 @@
-from typing                                                           import Union, Type, Tuple, Optional, Any
+from typing                                                           import Type, Tuple, Optional, Any
 from mgraph_db.mgraph.actions.MGraph__Edit                            import MGraph__Edit
 from mgraph_db.mgraph.domain.Domain__MGraph__Edge                     import Domain__MGraph__Edge
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                     import Domain__MGraph__Node

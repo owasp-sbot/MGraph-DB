@@ -4,7 +4,7 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data                        
 from mgraph_db.providers.file_system.schemas.Schema__File_System__Types          import Schema__File_System__Types
 from mgraph_db.providers.file_system.schemas.Schema__File_System__Graph__Config  import Schema__File_System__Graph__Config
 from mgraph_db.providers.file_system.schemas.Schema__Folder__Node                import Schema__Folder__Node
-from osbot_utils.utils.Objects                                                   import __
+from osbot_utils.testing.__                                                      import __
 
 class test_Schema__Types(TestCase):
 

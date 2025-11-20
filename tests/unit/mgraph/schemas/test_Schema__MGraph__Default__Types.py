@@ -3,7 +3,7 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Edge              import Schema__M
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data       import Schema__MGraph__Graph__Data
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node              import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data        import Schema__MGraph__Node__Data
-from osbot_utils.utils.Objects                                  import __
+from osbot_utils.testing.__                                     import __
 from mgraph_db.mgraph.schemas.Schema__MGraph__Types    import Schema__MGraph__Types
 
 class test_Schema__MGraph__Types(TestCase):

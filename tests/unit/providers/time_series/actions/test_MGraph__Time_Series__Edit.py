@@ -1,5 +1,6 @@
 from datetime                                                                              import datetime
 from unittest                                                                              import TestCase
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                           import is_obj_id
 from mgraph_db.mgraph.actions.MGraph__Export                                               import MGraph__Export
 from mgraph_db.mgraph.actions.MGraph__Index                                                import MGraph__Index
 from mgraph_db.mgraph.actions.exporters.dot.MGraph__Export__Dot                            import MGraph__Export__Dot
@@ -21,7 +22,6 @@ from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Series__Edges 
     Schema__MGraph__Time_Series__Edge__Second)
 from osbot_utils.utils.Env                                                                 import load_dotenv
 from osbot_utils.utils.Files                                                               import file_exists, file_delete
-from osbot_utils.helpers.Obj_Id                                                            import is_obj_id
 
 
 class test_MGraph__Time_Series__Edit(TestCase):

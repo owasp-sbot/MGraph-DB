@@ -1,15 +1,17 @@
-from typing                                           import List
-from mgraph_db.mgraph.models.Model__MGraph__Types     import Model__MGraph__Types
-from mgraph_db.mgraph.models.Model__MGraph__Edge      import Model__MGraph__Edge
-from mgraph_db.mgraph.models.Model__MGraph__Node      import Model__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Graph   import Schema__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node    import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge    import Schema__MGraph__Edge
-from osbot_utils.helpers.Obj_Id                       import Obj_Id
-from osbot_utils.type_safe.Type_Safe                  import Type_Safe
-from osbot_utils.type_safe.decorators.type_safe       import type_safe
-from osbot_utils.type_safe.methods.type_safe_property import set_as_property
-from osbot_utils.type_safe.shared.Type_Safe__Cache    import type_safe_cache
+from typing                                                             import List
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe          import type_safe
+from osbot_utils.type_safe.type_safe_core.methods.type_safe_property    import set_as_property
+from osbot_utils.type_safe.type_safe_core.shared.Type_Safe__Cache       import type_safe_cache
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data         import Schema__MGraph__Node__Value__Data
+from mgraph_db.mgraph.models.Model__MGraph__Types                       import Model__MGraph__Types
+from mgraph_db.mgraph.models.Model__MGraph__Edge                        import Model__MGraph__Edge
+from mgraph_db.mgraph.models.Model__MGraph__Node                        import Model__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                     import Schema__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                      import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                      import Schema__MGraph__Edge
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
+from osbot_utils.type_safe.Type_Safe                                    import Type_Safe
+
 
 
 class Model__MGraph__Graph(Type_Safe):
@@ -68,8 +70,12 @@ class Model__MGraph__Graph(Type_Safe):
             if key in node_data_type__annotations:
                 node_data__type_kwargs[key] = value
 
-        node_data = node_data_type(**node_data__type_kwargs                )   # Create node data object
-        node      = node_type     (node_data=node_data, **node_type__kwargs)  # Create a node with the node data
+        if issubclass(node_data_type, Schema__MGraph__Node__Value__Data):       # handle edge case which happens when we are creating a new value node
+            if node_data__type_kwargs == {}:                                    # but have not provided any value
+                node_data__type_kwargs['key'] = Obj_Id()                        # which means we need to make sure this is an unique node (or it can't be indexed)
+        node_data = node_data_type(**node_data__type_kwargs                )    # Create node data object           # todo: see if this is be test way (and location) to handle this
+
+        node      = node_type     (node_data=node_data, **node_type__kwargs)    # Create a node with the node data
 
         return self.add_node(node)
 
@@ -113,7 +119,7 @@ class Model__MGraph__Graph(Type_Safe):
         return list(self.data.nodes.keys())
 
     @type_safe
-    def delete_node(self, node_id: Obj_Id) -> 'Model__MGraph__Graph':                              # Remove a node and all its connected edges
+    def delete_node(self, node_id: Obj_Id) -> bool:                              # Remove a node and all its connected edges
         if node_id not in self.data.nodes:
             return False
 
@@ -129,7 +135,7 @@ class Model__MGraph__Graph(Type_Safe):
         return True
 
     @type_safe
-    def delete_edge(self, edge_id: Obj_Id) -> 'Model__MGraph__Graph':                              # Remove an edge from the graph
+    def delete_edge(self, edge_id: Obj_Id) -> bool:                              # Remove an edge from the graph
         if edge_id not in self.data.edges:
             return False
 

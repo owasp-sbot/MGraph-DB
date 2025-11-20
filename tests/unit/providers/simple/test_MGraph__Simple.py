@@ -8,9 +8,9 @@ from mgraph_db.providers.simple.models.Model__Simple__Types         import Model
 from mgraph_db.providers.simple.schemas.Schema__Simple__Graph       import Schema__Simple__Graph
 from mgraph_db.providers.simple.schemas.Schema__Simple__Node        import Schema__Simple__Node
 from mgraph_db.providers.simple.schemas.Schema__Simple__Node__Data  import Schema__Simple__Node__Data
-from osbot_utils.helpers.Obj_Id                                     import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
-from osbot_utils.utils.Objects                                      import base_types, __, type_full_name
+from osbot_utils.utils.Objects                                      import base_types, type_full_name
 from mgraph_db.mgraph.MGraph                                        import MGraph
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data

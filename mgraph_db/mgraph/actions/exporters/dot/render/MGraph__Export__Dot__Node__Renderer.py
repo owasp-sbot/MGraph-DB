@@ -1,7 +1,8 @@
 from typing                                                                  import List
+from mgraph_db.mgraph.actions.MGraph__Index                                  import MGraph__Index
 from mgraph_db.mgraph.actions.exporters.dot.render.MGraph__Export__Dot__Base import MGraph__Export__Dot__Base
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                            import Domain__MGraph__Node
-
+from osbot_utils.decorators.methods.cache_on_self                            import cache_on_self
 
 class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
 
@@ -16,9 +17,10 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
         return []                                                                # Base implementation
 
     def create_node_shape_attributes(self, node: Domain__MGraph__Node) -> List[str]:
-        attrs = {}
-        styles = set()
+        attrs     = {}
+        styles    = set()
         node_type = node.node.data.node_type
+        node_id   = node.node_id
 
         # Start with base node configuration
         if self.config.node.shape.type       : attrs['shape'    ] = f'shape="{self.config.node.shape.type}"'
@@ -56,37 +58,46 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
                 if shape_config.rounded:    styles.add('rounded')
                 if shape_config.style:      styles.update(shape_config.style.split(','))
 
+        index = self.mgraph_index()          # used cache index for performance
 
-        # Check edges where this node is the source
-        for edge in self.graph.model.node__from_edges(node.node_id):
-            edge_type = edge.data.edge_type
-            if edge_type in self.config.type.edge_from:
-                shape = self.config.type.edge_from[edge_type].shapes
-                if shape.type:
-                    attrs['shape'] = f'shape="{shape.type}"'
-                if shape.fill_color:
-                    styles.add('filled')
-                    attrs['fillcolor'] = f'fillcolor="{shape.fill_color}"'
+        # Check edges where this node is the source (using the index)
 
-        # Check edges where this node is the target
-        for edge in self.graph.model.node__to_edges(node.node_id):
-            edge_type = edge.data.edge_type
-            if edge_type in self.config.type.edge_to:
-                shape = self.config.type.edge_to[edge_type].shapes
-                if shape.type:       attrs['shape'] = f'shape="{shape.type}"'
-                if shape.fill_color:
-                    styles.add('filled')
-                    attrs['fillcolor'] = f'fillcolor="{shape.fill_color}"'
+        if node_id in index.nodes_to_outgoing_edges_by_type():
+            for edge_type_name, edge_ids in index.nodes_to_outgoing_edges_by_type()[node_id].items():
+                # Find the matching edge_type by name
+                for edge_type in self.config.type.edge_from:
+                    if edge_type.__name__ == edge_type_name:
+                        shape = self.config.type.edge_from[edge_type].shapes
+                        if shape.type:
+                            attrs['shape'] = f'shape="{shape.type}"'
+                        if shape.fill_color:
+                            styles.add('filled')
+                            attrs['fillcolor'] = f'fillcolor="{shape.fill_color}"'
+                        break
+
+        # Check edges where this node is the target (using the index)
+        if node_id in index.nodes_to_incoming_edges_by_type():
+            for edge_type_name, edge_ids in index.nodes_to_incoming_edges_by_type()[node_id].items():
+                # Find the matching edge_type by name
+                for edge_type in self.config.type.edge_to:
+                    if edge_type.__name__ == edge_type_name:
+                        shape = self.config.type.edge_to[edge_type].shapes
+                        if shape.type:
+                            attrs['shape'] = f'shape="{shape.type}"'
+                        if shape.fill_color:
+                            styles.add('filled')
+                            attrs['fillcolor'] = f'fillcolor="{shape.fill_color}"'
+                        break
 
         # Add style attribute if we have any styles
         if styles:
             attrs['style'] = f'style="{",".join(sorted(styles))}"'
-
         return list(attrs.values())
 
     def create_node_font_attributes(self, node: Domain__MGraph__Node) -> List[str]:
-        attrs = {}                                                                          # Use dict to prevent duplicates
+        attrs     = {}                                                                          # Use dict to prevent duplicates
         node_type = node.node.data.node_type
+        node_id   = node.node_id
 
         # Apply type-specific font configuration first (base styling)
         if node_type in self.config.type.fonts:
@@ -104,24 +115,31 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
                 if font_config.size:  attrs['fontsize'] = f'fontsize="{font_config.size}"'
                 if font_config.color: attrs['fontcolor'] = f'fontcolor="{font_config.color}"'
 
-        # Check edges where this node is the source
-        for edge in self.graph.model.node__from_edges(node.node_id):
-            edge_type = edge.data.edge_type
-            if edge_type in self.config.type.edge_from:
-                font = self.config.type.edge_from[edge_type].fonts
-                if font.name:  attrs['fontname'] = f'fontname="{font.name}"'
-                if font.size:  attrs['fontsize'] = f'fontsize="{font.size}"'
-                if font.color: attrs['fontcolor'] = f'fontcolor="{font.color}"'
+        index = self.mgraph_index()          # use cached index for performance
 
-        # Check edges where this node is the target
-        for edge in self.graph.model.node__to_edges(node.node_id):
-            edge_type = edge.data.edge_type
-            if edge_type in self.config.type.edge_to:
-                font = self.config.type.edge_to[edge_type].fonts
-                if font.name:  attrs['fontname'] = f'fontname="{font.name}"'
-                if font.size:  attrs['fontsize'] = f'fontsize="{font.size}"'
-                if font.color: attrs['fontcolor'] = f'fontcolor="{font.color}"'
+        # Check edges where this node is the source (using the index)
+        if node_id in index.nodes_to_outgoing_edges_by_type():
+            for edge_type_name, edge_ids in index.nodes_to_outgoing_edges_by_type()[node_id].items():
+                # Find the matching edge_type by name
+                for edge_type in self.config.type.edge_from:
+                    if edge_type.__name__ == edge_type_name:
+                        font = self.config.type.edge_from[edge_type].fonts
+                        if font.name:  attrs['fontname'] = f'fontname="{font.name}"'
+                        if font.size:  attrs['fontsize'] = f'fontsize="{font.size}"'
+                        if font.color: attrs['fontcolor'] = f'fontcolor="{font.color}"'
+                        break
 
+        # Check edges where this node is the target (using the index)
+        if node_id in index.nodes_to_incoming_edges_by_type():
+            for edge_type_name, edge_ids in index.nodes_to_incoming_edges_by_type()[node_id].items():
+                # Find the matching edge_type by name
+                for edge_type in self.config.type.edge_to:
+                    if edge_type.__name__ == edge_type_name:
+                        font = self.config.type.edge_to[edge_type].fonts
+                        if font.name:  attrs['fontname'] = f'fontname="{font.name}"'
+                        if font.size:  attrs['fontsize'] = f'fontsize="{font.size}"'
+                        if font.color: attrs['fontcolor'] = f'fontcolor="{font.color}"'
+                        break
         return list(attrs.values())
 
     def create_node_style_attributes(self, node: Domain__MGraph__Node) -> List[str]:
@@ -148,28 +166,47 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
     def create_node_label_attributes(self, node: Domain__MGraph__Node) -> List[str]:
         label_parts = []
         if self.config.display.node_id:                                                       # Add node_id if requested
-            label_parts.append(f"node_id='{node.node_id}'")
+            label_part = node.node_id                                                        # todo: refactor out this logic (since it is repeated multiple times and we are reusing a local variable)
+            if self.config.render.label_show_var_name:
+                label_part = f"node_id='{label_part}'"
+            label_parts.append(label_part)
         if self.config.display.node_type:
             node_type = node.node.data.node_type
             type_name = self.type_name__from__type(node_type)
-            label_parts.append(f"node_type='{type_name}'")
+            label_part = type_name
+            if self.config.render.label_show_var_name:
+                label_part = f"node_type='{label_part}'"
+            label_parts.append(label_part)
         if self.config.display.node_type_full_name:
             type_full_name = node.node.data.node_type.__name__
             label_parts.append(f"node_type_full_name='{type_full_name}'")
         if hasattr(node.node_data, 'value'):                                                  # Only proceed for nodes with value data
-            if self.config.display.node_value_str:                                                # Add value if requested
-                label_parts.append(f"{node.node_data.value}")
+            #if self.config.display.node_value_str:                                                # Add value if requested
+            #    label_parts.append(f"{node.node_data.value}")
             if self.config.display.node_value:                                                # Add value if requested
-                label_parts.append(f"node_value='{node.node_data.value}'")
+                label_part = node.node_data.value                                             # todo: refactor out this logic (since it is repeated multiple times and we are reusing a local variable)
+                if self.config.render.label_show_var_name:
+                    label_part = f"node_value='{label_part}'"
+                label_parts.append(label_part)
             if self.config.display.node_value_type:                                           # Add value_type if requested
                 type_name = self.type_name__from__type(node.node_data.value_type)
                 label_parts.append(f"node_value_type='{type_name}'")
             if self.config.display.node_value_key:                                            # Add key if requested
-                label_parts.append(f"node_value_key='{node.node_data.key}'")
+                label_part = node.node_data.key                                             # todo: refactor out this logic (since it is repeated multiple times and we are reusing a local variable)
+                if self.config.render.label_show_var_name:
+                    label_part = f"node_value_key='{label_part}'"
+                label_parts.append(label_part)
         if label_parts:  # Combine all parts
-            return [f'label="{"\l".join(label_parts)}\l"']
+            if len(label_parts)==1:
+                return [f'label="{label_parts[0]}"']
+            else:
+                return [f'label="{"\\l".join(label_parts)}\\l"']
         return []
 
     def format_node_definition(self, node_id: str, attrs: List[str]) -> str:
         attrs_str = f' [{", ".join(attrs)}]' if attrs else ''
         return f'  "{node_id}"{attrs_str}'
+
+    @cache_on_self
+    def mgraph_index(self):
+        return MGraph__Index.from_graph(self.graph)

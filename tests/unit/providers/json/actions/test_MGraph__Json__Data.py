@@ -1,9 +1,8 @@
 import types
 from unittest                                                       import TestCase
-
-from osbot_utils.utils.Objects                                      import __, full_type_name
-
-from osbot_utils.helpers.Obj_Id                                     import is_obj_id
+from osbot_utils.testing.__                                         import __
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import is_obj_id
+from osbot_utils.utils.Objects                                      import full_type_name
 from mgraph_db.providers.json.actions.MGraph__Json__Data            import MGraph__Json__Data
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Graph    import Domain__MGraph__Json__Graph
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Node     import Domain__MGraph__Json__Node
@@ -12,7 +11,6 @@ from mgraph_db.providers.json.models.Model__MGraph__Json__Node      import Model
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Graph   import Schema__MGraph__Json__Graph
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node    import Schema__MGraph__Json__Node
 from mgraph_db.providers.json.MGraph__Json                          import MGraph__Json
-from osbot_utils.utils.Dev                                          import pprint
 
 
 class test_MGraph__Json__Data(TestCase):

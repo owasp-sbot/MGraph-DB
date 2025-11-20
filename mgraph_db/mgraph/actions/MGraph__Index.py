@@ -1,15 +1,15 @@
-from typing                                               import Type, Set, Any, Dict, Optional
-from mgraph_db.mgraph.actions.MGraph__Index__Values       import MGraph__Index__Values
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value import Schema__MGraph__Node__Value
-from osbot_utils.helpers.Safe_Id                          import Safe_Id
-from osbot_utils.utils.Dev                                import pprint
-from mgraph_db.mgraph.domain.Domain__MGraph__Graph        import Domain__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node        import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge        import Schema__MGraph__Edge
-from mgraph_db.mgraph.schemas.Schema__MGraph__Index__Data import Schema__MGraph__Index__Data
-from osbot_utils.helpers.Obj_Id                           import Obj_Id
-from osbot_utils.type_safe.Type_Safe                      import Type_Safe
-from osbot_utils.utils.Json                               import json_file_create, json_load_file
+from typing                                                         import Type, Set, Any, Dict, Optional
+from mgraph_db.mgraph.actions.MGraph__Index__Values                 import MGraph__Index__Values
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.utils.Dev                                          import pprint
+from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.Schema__MGraph__Index__Data           import Schema__MGraph__Index__Data
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from osbot_utils.utils.Json                                         import json_file_create, json_load_file
 
 class MGraph__Index(Type_Safe):
     index_data  : Schema__MGraph__Index__Data
@@ -34,7 +34,7 @@ class MGraph__Index(Type_Safe):
             self.index_data.nodes_by_type[node_type] = set()
         self.index_data.nodes_by_type[node_type].add(node_id)
 
-        if node.node_type is Schema__MGraph__Node__Value:                           # if the data is a value
+        if node.node_type and issubclass(node.node_type, Schema__MGraph__Node__Value):                           # if the data is a value
             self.values_index.add_value_node(node)                        # add it to the index
 
 
@@ -255,12 +255,18 @@ class MGraph__Index(Type_Safe):
     ##### getters for data
     # todo refactor this to names like edges__from__node , nodes_from_node
 
+    def get_edge_predicate(self, edge_id: Obj_Id):
+        return self.index_data.edges_predicates.get(edge_id)
+
     def get_nodes_connected_to_value(self, value     : Any ,
-                                           edge_type : Optional[Type[Schema__MGraph__Edge]] = None
+                                           edge_type : Type[Schema__MGraph__Edge       ] = None ,
+                                           node_type : Type[Schema__MGraph__Node__Value] = None
                                       ) -> Set[Obj_Id]:                                             # Get nodes connected to a value node through optional edge type
         value_type = type(value)
-        node_id    = self.values_index.get_node_id_by_value(value_type=value_type, value=value)     # Find value node
-        if not node_id:                                                                             # No matching value found
+        if node_type is None:
+            node_type = Schema__MGraph__Node__Value
+        node_id    = self.values_index.get_node_id_by_value(value_type=value_type, value=value, node_type=node_type)     # Find value node
+        if not node_id:                                                                                                 # No matching value found
             return set()
 
         connected_nodes = set()                                                                     # Find nodes connected to this value node through edges
@@ -282,10 +288,6 @@ class MGraph__Index(Type_Safe):
 
     def get_node_connected_to_node__outgoing(self, node_id: Obj_Id, edge_type: str) -> Optional[Obj_Id]:
         connected_edges = self.index_data.nodes_to_outgoing_edges_by_type.get(node_id, {}).get(edge_type, set())
-
-
-        #elif direction == 'incoming':
-        #    connected_edges = self.index_data.nodes_to_incoming_edges_by_type.get(node_id, {}).get(edge_type, set())
 
         if connected_edges:
             edge_id = next(iter(connected_edges))                                                   # Get the first edge ID from the set

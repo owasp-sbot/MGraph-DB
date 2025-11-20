@@ -1,11 +1,12 @@
-from unittest                                                          import TestCase
-
 import pytest
-from osbot_utils.helpers.Timestamp_Now                                 import Timestamp_Now
-from osbot_utils.utils.Objects                                         import __, full_type_name
-from mgraph_db.providers.file_system.models.Model__File_System__Item   import Model__File_System__Item
-from mgraph_db.providers.file_system.schemas.Schema__File_System__Item import Schema__File_System__Item
-from osbot_utils.utils.Misc                                            import random_string, timestamp_utc_now
+from unittest                                                                    import TestCase
+from osbot_utils.testing.__                                                      import __
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                 import is_obj_id
+from osbot_utils.type_safe.primitives.domains.identifiers.safe_int.Timestamp_Now import Timestamp_Now
+from osbot_utils.utils.Objects                                                   import full_type_name
+from mgraph_db.providers.file_system.models.Model__File_System__Item             import Model__File_System__Item
+from mgraph_db.providers.file_system.schemas.Schema__File_System__Item           import Schema__File_System__Item
+from osbot_utils.utils.Misc                                                      import random_string, timestamp_utc_now
 
 
 class test_Model__File_System__Item(TestCase):

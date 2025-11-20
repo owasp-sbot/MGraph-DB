@@ -26,7 +26,7 @@ class MGraph__Export__Dot(MGraph__Export__Base):
 
     def __init__(self, graph, config: Optional[MGraph__Export__Dot__Config] = None):
         super().__init__(graph=graph)
-        self.config = config or MGraph__Export__Dot__Config()           #todo: refactor this to a setup method (since ctor's should really not be doing much                                                               # Initialize component classes
+        self.config           = config or MGraph__Export__Dot__Config()           #todo: refactor this to a setup method (since ctor's should really not be doing much                                                               # Initialize component classes
         self.node_renderer    = MGraph__Export__Dot__Node__Renderer   (config=self.config, graph=self.graph)
         self.edge_renderer    = MGraph__Export__Dot__Edge__Renderer   (config=self.config, graph=self.graph)
         self.style_manager    = MGraph__Export__Dot__Style__Manager   (config=self.config, graph=self.graph)
@@ -105,7 +105,10 @@ class MGraph__Export__Dot(MGraph__Export__Base):
             self.config.type.value_fonts[value_type] = MGraph__Export__Dot__Config__Font()
         return self.config.type.value_fonts[value_type]
 
-    def print_dot_code           (self): self.config.render.print_dot_code = True ; return self
+    def print_dot_code                 (self): return self.set_render__print_dot_code()
+
+    def set_render__print_dot_code     (self): self.config.render.print_dot_code      = True ; return self
+    def set_render__label_show_var_name(self): self.config.render.label_show_var_name = True ; return self
 
     def set_edge__color          (self, color    : str  ): self.config.edge.color      = color       ; return self
     def set_edge__font__size     (self, size     : int  ): self.config.edge.font.size  = size        ; return self
@@ -209,7 +212,6 @@ class MGraph__Export__Dot(MGraph__Export__Base):
     def show_node__id                (self): self.config.display.node_id             = True      ; return self
     def show_node__value             (self): self.config.display.node_value          = True      ; return self
 
-    def show_node__value__str        (self): self.config.display.node_value_str      = True; return self
     def show_node__value__key        (self): self.config.display.node_value_key      = True      ; return self
     def show_node__value__type       (self): self.config.display.node_value_type     = True      ; return self
     def show_node__type              (self): self.config.display.node_type           = True      ; return self

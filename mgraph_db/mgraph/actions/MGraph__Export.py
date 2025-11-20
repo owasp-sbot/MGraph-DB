@@ -1,13 +1,14 @@
-from typing                                                     import Dict, Any, Optional, Callable
-from xml.dom                                                    import minidom
-from xml.etree                                                  import ElementTree
-from xml.etree.ElementTree                                      import Element, SubElement
-from mgraph_db.mgraph.actions.exporters.dot.MGraph__Export__Dot import MGraph__Export__Dot
-from osbot_utils.decorators.methods.cache_on_self               import cache_on_self
-from osbot_utils.utils.Files                                    import temp_file, file_create
-from mgraph_db.mgraph.actions.MGraph__Data                      import MGraph__Data
-from mgraph_db.mgraph.domain.Domain__MGraph__Graph              import Domain__MGraph__Graph
-from osbot_utils.type_safe.Type_Safe                            import Type_Safe
+from typing                                                                 import Dict, Any, Optional, Callable
+from xml.dom                                                                import minidom
+from xml.etree                                                              import ElementTree
+from xml.etree.ElementTree                                                  import Element, SubElement
+from mgraph_db.mgraph.actions.exporters.dot.MGraph__Export__Dot             import MGraph__Export__Dot
+from mgraph_db.mgraph.actions.exporters.tree.MGraph__Export__Tree_Values    import MGraph__Export__Tree_Values
+from osbot_utils.decorators.methods.cache_on_self                           import cache_on_self
+from osbot_utils.utils.Files                                                import temp_file, file_create
+from mgraph_db.mgraph.actions.MGraph__Data                                  import MGraph__Data
+from mgraph_db.mgraph.domain.Domain__MGraph__Graph                          import Domain__MGraph__Graph
+from osbot_utils.type_safe.Type_Safe                                        import Type_Safe
 
 
 class MGraph__Export(Type_Safe):
@@ -17,8 +18,12 @@ class MGraph__Export(Type_Safe):
         return MGraph__Data(graph=self.graph)
 
     @cache_on_self
-    def export_dot(self):
+    def export_dot(self) -> MGraph__Export__Dot:
         return MGraph__Export__Dot(graph=self.graph)
+
+    @cache_on_self
+    def export_tree_values(self, **kwargs) -> MGraph__Export__Tree_Values:
+        return MGraph__Export__Tree_Values(graph=self.graph, **kwargs)
 
     def to__mgraph_json(self):                                                                  # Export full graph data
         return self.graph.model.data.json()
@@ -68,14 +73,9 @@ class MGraph__Export(Type_Safe):
         return self.format_xml(root, indent='  ')
 
     def to__dot(self, show_value=False, show_edge_ids=True) -> str:                       # Export as DOT graph
-        # dot_exporter = MGraph__Export__Dot(graph  = self.graph                        ,
-        #                                   config = MGraph__Export__Dot__Config(
-        #                                             show_value    = show_value   ,
-        #                                             show_edge_ids = show_edge_ids))
         return self.export_dot().process_graph()
-        #return dot_exporter.format_output()
 
-    def to__dot_types(self):
+    def to__dot_types(self):                        # todo: a) see if we still need this, and if we do, fix this method since to_types_view doesn't exist any more
         return self.export_dot().to_types_view()
 
     def to__dot_schema(self):

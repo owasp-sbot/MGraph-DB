@@ -1,10 +1,11 @@
-from unittest                                                         import TestCase
-from osbot_utils.helpers.Safe_Id                                      import Safe_Id
-from osbot_utils.utils.Objects                                        import __
-from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node        import Schema__Mermaid__Node
-from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Shape import Schema__Mermaid__Node__Shape
-from mgraph_db.providers.mermaid.MGraph__Mermaid                      import MGraph__Mermaid
-from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Node         import Domain__Mermaid__Node
+from unittest                                                           import TestCase
+from osbot_utils.testing.__                                             import __
+from osbot_utils.type_safe.Type_Safe                                    import Type_Safe
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id       import Safe_Id
+from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node          import Schema__Mermaid__Node
+from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Shape   import Schema__Mermaid__Node__Shape
+from mgraph_db.providers.mermaid.MGraph__Mermaid                        import MGraph__Mermaid
+from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Node           import Domain__Mermaid__Node
 
 
 class test_Mermaid_Node(TestCase):
@@ -23,7 +24,7 @@ class test_Mermaid_Node(TestCase):
             assert type(_) is Domain__Mermaid__Node
             assert _.obj() == __(node=__(data=__(key         = node_key                     ,
                                                  label       = node_key                     ,
-                                                 node_data =__(node_shape      = 'default',
+                                                 node_data =__(node_shape        = Schema__Mermaid__Node__Shape.default,
                                                                 show_label       = True     ,
                                                                 wrap_with_quotes = True     ,
                                                                 markdown         = False    ),
@@ -90,10 +91,54 @@ class test_Mermaid_Node(TestCase):
         assert self.mermaid_node.wrap_with_quotes(False).node_data.wrap_with_quotes == False
         assert self.mermaid_node.wrap_with_quotes(True ).node_data.wrap_with_quotes == True
 
+    def test__regression__from_json__Enum_tuple_support(self):
+        from enum import Enum
 
-    def test__config__wrap_with_quotes(self):
+        class An_Enum(tuple, Enum):
+            AB = ('a', 'b')
+            CD = ('c', 'd')
+
+        class An_Class(Type_Safe):
+            an_enum : An_Enum
+
+        assert An_Class().obj()  == __()                # is this a bug?
+        assert An_Class().obj()  == __(an_enum = None)
+        assert An_Class().json() == {'an_enum': None}
+        assert An_Class(an_enum='AB'      ).an_enum == An_Enum.AB
+        assert An_Class(an_enum=An_Enum.AB).an_enum == An_Enum.AB
+        assert An_Class(an_enum=An_Enum.AB).an_enum == ('a', 'b')
+        assert An_Class(an_enum='AB'      ).an_enum == ('a', 'b')
+        assert An_Class(an_enum=An_Enum.AB).an_enum != An_Enum.CD
+
+        assert An_Class.from_json(An_Class().json()).json() == {'an_enum': None}
+        error_message = "unhashable type: 'list'"
+        # with pytest.raises(TypeError, match=error_message):
+        #     An_Class.from_json(An_Class(an_enum='AB').json())            # BUG, this should have worked
+
+        #an_class = An_Class(an_enum=An_Enum.CD)
+        # with pytest.raises(TypeError, match=error_message):
+        #     An_Class.from_json(an_class.json())                         # BUG, this should have worked
+        #with pytest.raises(TypeError, match=error_message):
+        #assert an_class.json() == {'an_enum': ['c', 'd']}               # shouldn't this be 'CD'?
+        # error_message_2 = ("assert {'an_enum': ['c', 'd']} == {'an_enum': <An_Enum.CD: ('c', 'd')>}\n  \n  "
+        #                    "Differing items:\n  {'an_enum': ['c', 'd']} != "
+        #                    "{'an_enum': <An_Enum.CD: ('c', 'd')>}\n  \n  "
+        #                    "Full diff:\n    {\n  -     'an_enum': <An_Enum.CD: ('c', 'd')>,\n  +    "
+        #                    " 'an_enum': [\n  +         'c',\n  +         'd',\n  +     ],\n    }")
+        # with pytest.raises(AssertionError, match=re.escape(error_message_2)):
+        #     assert an_class.json() == {'an_enum': An_Enum.CD}               #
+        assert An_Class.from_json({'an_enum': 'CD'}      ).an_enum == ('c', 'd')                # FIXED
+        assert An_Class.from_json({'an_enum': An_Enum.CD}).an_enum == ('c', 'd')                # FIXED
+
+        An_Class.from_json(An_Class(an_enum='AB').json())                                       # FIXED
+        an_class = An_Class(an_enum=An_Enum.CD)                                                 # FIXED
+        assert an_class.json() == {'an_enum': 'CD'}                                             # FIXED
+        assert An_Class.from_json(An_Class(an_enum='AB').json()).json() == {'an_enum': 'AB'}    # FIXED
+
+
+    def test_regression__config__wrap_with_quotes(self):
         data_obj  = self.mermaid_node_data
-        data_obj.key   = 'id'
+        data_obj.key   = Safe_Id('id')
         data_obj.label = 'id'
         node_obj  = self.mermaid_node.wrap_with_quotes()
         assert type(data_obj ) is Schema__Mermaid__Node
@@ -104,32 +149,37 @@ class test_Mermaid_Node(TestCase):
 
         assert data_obj.obj() == __(key         = 'id',
                                     label       = 'id',
-                                    node_data = __(node_shape       = 'default',
+                                    node_data = __(node_shape         = Schema__Mermaid__Node__Shape.default,
                                                      show_label       = True,
                                                      wrap_with_quotes = True,
                                                      markdown         = False),
                                    node_id      = self.mermaid_node_id        ,
                                    node_type    = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node.Schema__Mermaid__Node')
-        assert Schema__Mermaid__Node.from_json(data_obj.json()).json() == data_obj.json()
+
+
+        # error_message = "unhashable type: 'list'"
+        # with pytest.raises(TypeError, match=error_message):
+        #     assert Schema__Mermaid__Node.from_json(data_obj.json()).json() == data_obj.json()  # BUG in OSBot_Utils
+        assert Schema__Mermaid__Node.from_json(data_obj.json()).json() == data_obj.json()       # FIXED
 
         with MGraph__Mermaid() as _:
-            _.edit().new_node(key='id')
+            _.edit().new_node(key=Safe_Id('id'))
             assert _.code() == 'graph LR\n    id["id"]\n'
 
         #return
         with MGraph__Mermaid() as _:
-            _.edit().new_node(key='id').wrap_with_quotes(False)
+            _.edit().new_node(key=Safe_Id('id')).wrap_with_quotes(False)
             assert _.code() == 'graph LR\n    id[id]\n'
 
         mermaid = MGraph__Mermaid()
-        new_node = mermaid.edit().new_node(key='id')
+        new_node = mermaid.edit().new_node(key=Safe_Id('id'))
         new_node.wrap_with_quotes(False)
 
         assert type(new_node) == Domain__Mermaid__Node
         assert mermaid.code() == 'graph LR\n    id[id]\n'
 
     def test_new_node(self):
-        key_value = 'this-is-an-key'
+        key_value = Safe_Id('this-is-an-key')
         with MGraph__Mermaid() as _:
             assert _.edit().new_node(key=key_value).key == key_value
             assert _.render().code() == f'graph LR\n    {key_value}["{key_value}"]\n'

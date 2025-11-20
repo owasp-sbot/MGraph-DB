@@ -1,15 +1,15 @@
-from typing                                                 import Type
-from mgraph_db.mgraph.domain.Domain__MGraph__Node           import Domain__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value   import Schema__MGraph__Node__Value
-from mgraph_db.mgraph.actions.MGraph__Data                  import MGraph__Data
-from mgraph_db.mgraph.actions.MGraph__Index                 import MGraph__Index
-from mgraph_db.mgraph.domain.Domain__MGraph__Edge           import Domain__MGraph__Edge
-from mgraph_db.mgraph.domain.Domain__MGraph__Graph          import Domain__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge          import Schema__MGraph__Edge
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node          import Schema__MGraph__Node
-from osbot_utils.decorators.methods.cache_on_self           import cache_on_self
-from osbot_utils.helpers.Obj_Id                             import Obj_Id
-from osbot_utils.type_safe.Type_Safe                        import Type_Safe
+from typing                                                         import Type
+from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
+from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
+from mgraph_db.mgraph.actions.MGraph__Index                         import MGraph__Index
+from mgraph_db.mgraph.domain.Domain__MGraph__Edge                   import Domain__MGraph__Edge
+from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
+from osbot_utils.decorators.methods.cache_on_self                   import cache_on_self
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 
 
 class MGraph__Edit(Type_Safe):
@@ -45,21 +45,44 @@ class MGraph__Edit(Type_Safe):
         self.index().add_edge(edge_schema)
         return edge_domain
 
-    def get_or_create_edge(self, edge_type    : Type[Schema__MGraph__Edge],                         # Get existing edge or create new one
-                                 from_node_id : Obj_Id                    ,
-                                 to_node_id   : Obj_Id
+
+    def get_or_create_edge(self, from_node_id : Obj_Id                                 ,
+                                 to_node_id   : Obj_Id                                 ,
+                                 edge_type    : Type[Schema__MGraph__Edge] = None,               # Get existing edge or create new one
+                                 predicate    : str = None                                           # Optional predicate to match
                             ) -> Domain__MGraph__Edge:
 
+
+        if edge_type is None:                                                                                           # If edge_type is None, use the default Schema__MGraph__Edge
+            edge_type = Schema__MGraph__Edge
+
+        edge_type_name = edge_type.__name__
+
         with self.index() as index:
-            existing_edges = index.nodes_to_outgoing_edges_by_type().get(from_node_id, {}).get(edge_type.__name__, set())
 
-            for edge_id in existing_edges:                                                          # Check if edge already exists
+            existing_edges = index.nodes_to_outgoing_edges_by_type().get(from_node_id, {}).get(edge_type_name, set())   # Get all outgoing edges of the specified type from the source node
+
+
+            if predicate is not None:                                                                                   # First, try to find an exact match (same edge_type, endpoints, and predicate)
+                for edge_id in existing_edges:
+                    if index.edges_to_nodes().get(edge_id)[1] == to_node_id:                                            # Check if the edge has the same predicate
+                        edge = self.data().edge(edge_id)
+                        if edge:
+                            if edge.edge.data.edge_label:
+                                if edge.edge.data.edge_label.predicate == predicate:
+                                    return edge
+
+
+            for edge_id in existing_edges:                                                                              # If no match with predicate or predicate is None, check just for edge_type and endpoints
                 if index.edges_to_nodes().get(edge_id)[1] == to_node_id:
-                    return self.data().edge(edge_id)
+                    # If predicate was specified, but we're here, it means no edge had the matching predicate
+                    # If predicate was not specified, we return the first edge with matching endpoints and type
+                    if predicate is None:
+                        return self.data().edge(edge_id)
 
-            return self.new_edge(edge_type    = edge_type    ,                                     # Create new edge if none exists
-                                 from_node_id = from_node_id,
-                                 to_node_id   = to_node_id  )
+            return self.new_edge(edge_type    = edge_type    ,                                                          # Create new edge if none exists with matching criteria
+                                 from_node_id = from_node_id ,
+                                 to_node_id   = to_node_id   )
 
     def new_node(self, **kwargs):
         with self.index() as index:
@@ -72,11 +95,15 @@ class MGraph__Edit(Type_Safe):
         self.index().add_edge(edge.edge.data)                           # Add to index
         return edge
 
-    def new_value(self, value, key=None):                               # get or create value (since the values have to be unique)
-        node_id = self.index().values_index.get_node_id_by_value(value_type=type(value), value=str(value), key=key)  # First try to find existing value node
+    def new_value(self, value,
+                        key                                          = None,
+                        node_type: Type[Schema__MGraph__Node__Value] = None):                               # get or create value (since the values have to be unique)
+        node_id = self.index().values_index.get_node_id_by_value(value_type=type(value), value=str(value), key=key, node_type=node_type)  # First try to find existing value node
         if node_id:
             return self.data().node(node_id)
-        return self.new_node(node_type=Schema__MGraph__Node__Value, value_type=type(value), value=str(value), key=key)
+        if node_type is None:
+            node_type= Schema__MGraph__Node__Value
+        return self.new_node(node_type=node_type, value_type=type(value), value=str(value), key=key)
 
     def delete_node(self, node_id: Obj_Id) -> bool:                      # Remove a node and its connected edges
         node = self.data().node(node_id)

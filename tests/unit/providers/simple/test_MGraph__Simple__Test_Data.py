@@ -52,14 +52,15 @@ class test_MGraph__Simple__Test_Data(TestCase):
             nodes_ids = _.nodes_ids()
             edges_ids = _.edges_ids()
         with self.test_data.export() as _:
+            _.export_dot().config.render.label_show_var_name = True
             _.export_dot().show_node__value().show_edge__id()
 
             expected_dot = f"""digraph {{
-  "{nodes_ids[0]}" [label="node_value='A'\l"]
-  "{nodes_ids[1]}" [label="node_value='B'\l"]
-  "{nodes_ids[2]}" [label="node_value='C'\l"]
-  "{nodes_ids[0]}" -> "{nodes_ids[1]}" [label="  edge_id = '{edges_ids[0]}\'\l"]
-  "{nodes_ids[0]}" -> "{nodes_ids[2]}" [label="  edge_id = '{edges_ids[1]}\'\l"]
+  "{nodes_ids[0]}" [label="node_value='A'"]
+  "{nodes_ids[1]}" [label="node_value='B'"]
+  "{nodes_ids[2]}" [label="node_value='C'"]
+  "{nodes_ids[0]}" -> "{nodes_ids[1]}" [label="  edge_id = '{edges_ids[0]}\'"]
+  "{nodes_ids[0]}" -> "{nodes_ids[2]}" [label="  edge_id = '{edges_ids[1]}\'"]
 }}"""
             assert _.to__dot() == expected_dot
 

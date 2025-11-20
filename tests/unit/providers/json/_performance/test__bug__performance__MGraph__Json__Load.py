@@ -9,7 +9,7 @@ from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Property      
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Property__Data    import Schema__MGraph__Json__Node__Property__Data
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value             import Schema__MGraph__Json__Node__Value
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value__Data       import Schema__MGraph__Json__Node__Value__Data
-from osbot_utils.context_managers.capture_duration                                  import capture_duration
+from osbot_utils.helpers.duration.decorators.capture_duration                       import capture_duration
 
 class test__regression__performance__MGraph__Json__Load(TestCase):
 

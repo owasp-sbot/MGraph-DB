@@ -1,6 +1,7 @@
+from osbot_utils.type_safe.type_safe_core.shared.Type_Safe__Cache import type_safe_cache
+
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                       import Schema__MGraph__Edge
-from osbot_utils.helpers.Obj_Id                                          import Obj_Id
-from osbot_utils.type_safe.shared.Type_Safe__Cache                       import type_safe_cache
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
 
 class Schema__MGraph__Json__Edge(Schema__MGraph__Edge):
 

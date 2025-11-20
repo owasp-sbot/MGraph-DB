@@ -1,11 +1,10 @@
-from unittest                                              import TestCase
-from mgraph_db.query.models.Model__MGraph__Query__Views    import Model__MGraph__Query__Views
-from mgraph_db.query.schemas.Schema__MGraph__Query__Views  import Schema__MGraph__Query__Views
-from osbot_utils.type_safe.Type_Safe                       import Type_Safe
-from osbot_utils.utils.Objects                             import base_types, __
-from mgraph_db.query.models.Model__MGraph__Query__View     import Model__MGraph__Query__View
-from osbot_utils.helpers.Obj_Id                            import Obj_Id
-
+from unittest                                                       import TestCase
+from mgraph_db.query.models.Model__MGraph__Query__Views             import Model__MGraph__Query__Views
+from mgraph_db.query.schemas.Schema__MGraph__Query__Views           import Schema__MGraph__Query__Views
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from osbot_utils.utils.Objects                                      import base_types
+from mgraph_db.query.models.Model__MGraph__Query__View              import Model__MGraph__Query__View
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 class test_Model__MGraph__Query__Views(TestCase):
 
     def setUp(self):

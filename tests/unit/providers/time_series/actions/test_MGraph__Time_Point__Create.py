@@ -7,13 +7,13 @@ from mgraph_db.providers.time_series.MGraph__Time_Series                        
 from mgraph_db.providers.time_series.actions.MGraph__Time_Point__Builder                    import MGraph__Time_Point__Builder
 from mgraph_db.providers.time_series.actions.MGraph__Time_Point__Create                     import MGraph__Time_Point__Create
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Point__Created__Objects   import Schema__MGraph__Time_Point__Created__Objects
-from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Series__Edges import \
+from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Series__Edges             import \
     Schema__MGraph__Time_Series__Edge__Year, Schema__MGraph__Time_Series__Edge__Second, \
     Schema__MGraph__Time_Series__Edge__Month, Schema__MGraph__Time_Series__Edge__Day, \
     Schema__MGraph__Time_Series__Edge__Hour, Schema__MGraph__Time_Series__Edge__Minute, \
     Schema__MGraph__Time_Series__Edge__UTC_Offset, Schema__MGraph__Time_Series__Edge__Source_Id, \
     Schema__MGraph__Time_Series__Edge__Timestamp
-from osbot_utils.helpers.Obj_Id                                                             import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                            import Obj_Id
 from osbot_utils.utils.Env                                                                  import load_dotenv
 
 

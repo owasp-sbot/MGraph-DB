@@ -1,8 +1,8 @@
 import uuid
 import pytest
 from unittest                                                                       import TestCase
-from osbot_utils.helpers.Obj_Id                                                     import Obj_Id, is_obj_id
-from osbot_utils.utils.Objects                                                      import __
+from osbot_utils.testing.__                                                         import __
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                    import is_obj_id, Obj_Id
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Edge                     import Domain__MGraph__Json__Edge
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Graph                    import Domain__MGraph__Json__Graph
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Node                     import Domain__MGraph__Json__Node

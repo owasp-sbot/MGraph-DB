@@ -1,8 +1,8 @@
-from typing                                         import Dict, Type, Set
-from mgraph_db.mgraph.MGraph                        import MGraph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Diff__Values import Schema__MGraph__Diff__Values
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge  import Schema__MGraph__Edge
-from osbot_utils.type_safe.Type_Safe                import Type_Safe
+from typing                                                 import Dict, Type, Set
+from mgraph_db.mgraph.MGraph                                import MGraph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Diff__Values  import Schema__MGraph__Diff__Values
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge          import Schema__MGraph__Edge
+from osbot_utils.type_safe.Type_Safe                        import Type_Safe
 
 class MGraph__Diff__Values(Type_Safe):
     graph1 : MGraph

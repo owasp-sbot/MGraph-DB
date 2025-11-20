@@ -1,18 +1,10 @@
-from unittest                                                           import TestCase
-
-from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value__Data import \
-    Schema__MGraph__Json__Node__Value__Data
-from osbot_utils.utils.Objects import __, full_type_name
-
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data import Schema__MGraph__Node__Data
-from osbot_utils.utils.Dev import pprint
-
-from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Graph       import Schema__MGraph__Json__Graph
-from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value import Schema__MGraph__Json__Node__Value
-from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Types       import Schema__MGraph__Json__Types
-from osbot_utils.testing.Duration                                       import Duration
-from osbot_utils.utils.Json                                            import json_dump, json_load
-
+from unittest                                                                   import TestCase
+from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value__Data   import Schema__MGraph__Json__Node__Value__Data
+from osbot_utils.utils.Objects                                                  import full_type_name
+from osbot_utils.testing.__                                                     import __
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data                        import Schema__MGraph__Node__Data
+from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Graph               import Schema__MGraph__Json__Graph
+from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value         import Schema__MGraph__Json__Node__Value
 
 class test_Schema__MGraph__Json__Graph__Bug(TestCase):
 
@@ -20,7 +12,6 @@ class test_Schema__MGraph__Json__Graph__Bug(TestCase):
         value_node      = Schema__MGraph__Json__Node__Value(node_data=dict(value="test_value", value_type=str))
         value_node_json = value_node.json()
         node_id         = value_node.node_id
-        #assert Schema__MGraph__Json__Node__Value.from_json(value_node_json).json() == value_node_json
 
         graph                           = Schema__MGraph__Json__Graph()
         graph.nodes[value_node.node_id] = value_node
@@ -34,4 +25,4 @@ class test_Schema__MGraph__Json__Graph__Bug(TestCase):
         assert graph_round_trip.nodes[value_node.node_id].obj()            == __(node_data=__(value='test_value', value_type='builtins.str'),   # BUG should not be empty
                                                                                  node_id=node_id,
                                                                                  node_type=full_type_name(Schema__MGraph__Json__Node__Value)) # node_type is correct Schema__MGraph__Json__Node__Value
-        #pprint(graph_round_trip.json())
+

@@ -1,4 +1,5 @@
 from unittest                                                            import TestCase
+from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__List    import Type_Safe__List
 from mgraph_db.providers.mermaid.MGraph__Mermaid                         import MGraph__Mermaid
 from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Edge            import Domain__Mermaid__Edge
 from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Graph           import Domain__Mermaid__Graph
@@ -6,14 +7,15 @@ from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Node            import 
 from mgraph_db.providers.mermaid.models.Model__Mermaid__Edge             import Model__Mermaid__Edge
 from mgraph_db.providers.mermaid.models.Model__Mermaid__Graph            import Model__Mermaid__Graph
 from mgraph_db.providers.mermaid.models.Model__Mermaid__Node             import Model__Mermaid__Node
-from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types import Schema__Mermaid__Types
+from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types          import Schema__Mermaid__Types
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph          import Schema__Mermaid__Graph
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node           import Schema__Mermaid__Node
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge           import Schema__Mermaid__Edge
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Data     import Schema__Mermaid__Node__Data
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge__Config   import Schema__Mermaid__Edge__Config
 from mgraph_db.providers.mermaid.utils.Mermaid__Random_Graph             import Mermaid__Random_Graph, create_test_mermaid_graph, create_empty_mermaid_graph
-from osbot_utils.helpers.Safe_Id                                         import Safe_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id        import Safe_Id
+
 
 class test_Test_Data_Mermaid(TestCase):
 
@@ -27,7 +29,7 @@ class test_Test_Data_Mermaid(TestCase):
         assert type(self.test_data.graph__model)            is Model__Mermaid__Graph
         assert len(self.test_data.graph_data.nodes)         == 0
         assert len(self.test_data.graph_data.edges)         == 0
-        assert type(self.test_data.graph_data.mermaid_code) is list
+        assert type(self.test_data.graph_data.mermaid_code) is Type_Safe__List
         assert len(self.test_data.graph_data .mermaid_code)  == 0
 
     def test_create_mermaid_node(self):                                                # Test Mermaid node creation

@@ -1,6 +1,6 @@
-from typing                          import Dict, Optional, Set, Type
-from osbot_utils.helpers.Obj_Id      import Obj_Id
-from osbot_utils.type_safe.Type_Safe import Type_Safe
+from typing                                                         import Dict, Set, Type
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 
 class Schema__MGraph__Value__Index__Data(Type_Safe):
     hash_to_node   : Dict[str, Obj_Id   ]              # value_hash -> node_id that holds that value

@@ -4,7 +4,7 @@ from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Dict          
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__List           import Schema__MGraph__Json__Node__List
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Property       import Schema__MGraph__Json__Node__Property
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value          import Schema__MGraph__Json__Node__Value
-from osbot_utils.utils.Objects                                                   import __
+from osbot_utils.testing.__                                                      import __
 
 class test_Schema__MGraph__Json__Node(unittest.TestCase):
     def test__init__(self):                                                                         # Test base JSON node initialization

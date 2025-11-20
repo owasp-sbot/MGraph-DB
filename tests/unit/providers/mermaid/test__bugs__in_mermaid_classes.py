@@ -1,10 +1,10 @@
-from unittest                                                            import TestCase
-from mgraph_db.mgraph.schemas.Schema__MGraph__Types             import Schema__MGraph__Types
-from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Node                    import Domain__Mermaid__Node
-from mgraph_db.providers.mermaid.models.Model__Mermaid__Graph            import Model__Mermaid__Graph
-from mgraph_db.providers.mermaid.models.Model__Mermaid__Node             import Model__Mermaid__Node
-from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types import Schema__Mermaid__Types
-from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph          import Schema__Mermaid__Graph
+from unittest                                                       import TestCase
+from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
+from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Node       import Domain__Mermaid__Node
+from mgraph_db.providers.mermaid.models.Model__Mermaid__Graph       import Model__Mermaid__Graph
+from mgraph_db.providers.mermaid.models.Model__Mermaid__Node        import Model__Mermaid__Node
+from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types     import Schema__Mermaid__Types
+from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph     import Schema__Mermaid__Graph
 
 
 class test__bug__in_mermaid_classes(TestCase):

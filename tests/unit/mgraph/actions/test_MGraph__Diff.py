@@ -9,7 +9,9 @@ from mgraph_db.mgraph.actions.MGraph__Diff                      import MGraph__D
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data        import Schema__MGraph__Node__Data
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value       import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data import Schema__MGraph__Node__Value__Data
-from osbot_utils.utils.Objects                                  import __, type_full_name, obj
+from osbot_utils.testing.__                                     import __
+from osbot_utils.utils.Objects                                  import type_full_name
+
 
 
 class test_MGraph__Diff(TestCase):

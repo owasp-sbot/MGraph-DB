@@ -58,7 +58,7 @@ class MGraph__View__Diff__Values(Type_Safe):
         with self.mgraph.screenshot() as _:
             with _.export().export_dot() as dot:
 
-                dot.show_node__value__str()                                                   # Show node values
+                dot.show_node__value()                                                   # Show node values
 
                 dot.set_graph__layout_engine__dot()
                 dot.set_graph__rank_dir__lr()                                         # Top to bottom layout

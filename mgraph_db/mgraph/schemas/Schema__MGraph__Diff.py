@@ -1,6 +1,6 @@
-from typing                          import Dict, Set, Any, Type
-from osbot_utils.helpers.Obj_Id      import Obj_Id
-from osbot_utils.type_safe.Type_Safe import Type_Safe
+from typing                                                      import Dict, Set, Any, Type
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id import Obj_Id
+from osbot_utils.type_safe.Type_Safe                             import Type_Safe
 
 class Schema__MGraph__Change__Data(Type_Safe):                      # For node data changes
     from_value : Dict[str, Any]

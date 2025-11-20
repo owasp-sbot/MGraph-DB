@@ -4,8 +4,8 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                      import S
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge          import Schema__Mermaid__Edge
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge__Config  import Schema__Mermaid__Edge__Config
 from mgraph_db.providers.mermaid.models.Model__Mermaid__Edge            import Model__Mermaid__Edge
-from osbot_utils.helpers.Obj_Id                                         import Obj_Id
-from osbot_utils.type_safe.Type_Safe import Type_Safe
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
+from osbot_utils.type_safe.Type_Safe                                    import Type_Safe
 
 
 class test_Model__Mermaid__Edge(TestCase):

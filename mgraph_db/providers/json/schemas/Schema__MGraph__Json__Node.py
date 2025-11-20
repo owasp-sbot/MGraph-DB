@@ -1,6 +1,6 @@
-from osbot_utils.helpers.Obj_Id                    import Obj_Id
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node import Schema__MGraph__Node
-from osbot_utils.type_safe.shared.Type_Safe__Cache import type_safe_cache
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.type_safe_core.shared.Type_Safe__Cache   import type_safe_cache
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 
 
 class Schema__MGraph__Json__Node(Schema__MGraph__Node):

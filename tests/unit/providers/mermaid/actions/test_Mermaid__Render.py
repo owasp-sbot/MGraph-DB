@@ -1,10 +1,10 @@
 from unittest                                                               import TestCase
-from osbot_utils.helpers.Safe_Id                                            import Safe_Id
 from osbot_utils.testing.Temp_File                                          import Temp_File
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id           import Safe_Id
 from osbot_utils.utils.Files                                                import file_exists
 from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Edge               import Domain__Mermaid__Edge
 from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Node               import Domain__Mermaid__Node
-from osbot_utils.utils.Objects                                              import __
+from osbot_utils.testing.__                                                 import __
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Diagram_Direction import Schema__Mermaid__Diagram__Direction
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Diagram__Type     import Schema__Mermaid__Diagram__Type
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Shape       import Schema__Mermaid__Node__Shape
@@ -38,31 +38,29 @@ class test_Mermaid__Render(TestCase):
                                             C -->|Two| E[iPhone]
                                             C -->|Three| F[fa:fa-car Car]
                                             """)
-
-
         with self.mermaid_edit as _:
             _.render_config().add_nodes         = False
             _.render_config().line_before_edges = False
             _.set_direction(Schema__Mermaid__Diagram__Direction.TD)
             _.set_diagram_type(Schema__Mermaid__Diagram__Type.flowchart)
-            _.new_node(key='A', label='Christmas'    ).wrap_with_quotes(False).shape_default    ()
-            _.new_node(key='B', label='Go shopping'  ).wrap_with_quotes(False).shape_round_edges()
-            _.new_node(key='C', label='Let me think' ).wrap_with_quotes(False).shape_rhombus    ()
-            _.new_node(key='D', label='Laptop'       ).wrap_with_quotes(False)
-            _.new_node(key='E', label='iPhone'       ).wrap_with_quotes(False)
-            _.new_node(key='F', label='fa:fa-car Car').wrap_with_quotes(False)
+            _.new_node(key=Safe_Id('A'), label='Christmas'    ).wrap_with_quotes(False).shape_default    ()
+            _.new_node(key=Safe_Id('B'), label='Go shopping'  ).wrap_with_quotes(False).shape_round_edges()
+            _.new_node(key=Safe_Id('C'), label='Let me think' ).wrap_with_quotes(False).shape_rhombus    ()
+            _.new_node(key=Safe_Id('D'), label='Laptop'       ).wrap_with_quotes(False)
+            _.new_node(key=Safe_Id('E'), label='iPhone'       ).wrap_with_quotes(False)
+            _.new_node(key=Safe_Id('F'), label='fa:fa-car Car').wrap_with_quotes(False)
             _.add_edge('A', 'B', label='Get money').output_node_from().output_node_to().edge_mode__lr_using_pipe()
             _.add_edge('B', 'C'                   ).output_node_to()
             _.add_edge('C', 'D', label='One'      ).output_node_to().edge_mode__lr_using_pipe()
             _.add_edge('C', 'E', label='Two'      ).output_node_to().edge_mode__lr_using_pipe()
             _.add_edge('C', 'F', label='Three'    ).output_node_to().edge_mode__lr_using_pipe()
 
-
         with self.mermaid_render as _:
             file_path = _.save()
 
             assert file_exists(file_path) is True
             assert expected_code          == _.code()
+
 
             with Stdout() as stdout:
                 _.print_code()
@@ -82,7 +80,7 @@ class test_Mermaid__Render(TestCase):
             #                     'graph LR\n')
 
             self.mermaid_render.code()
-            _.new_node(key='markdown', label='This **is** _Markdown_').markdown()
+            _.new_node(key=Safe_Id('markdown'), label='This **is** _Markdown_').markdown()
 
             self.mermaid_render.code_create(recreate=True)
 
@@ -96,7 +94,7 @@ class test_Mermaid__Render(TestCase):
 
     def test_print_code(self):
         with self.mermaid_edit as _:
-            _.add_edge(from_node_key='from_node', to_node_key='to_node')
+            _.add_edge(from_node_key=Safe_Id('from_node'), to_node_key=Safe_Id('to_node'))
         with self.mermaid_render as _:
             with Stdout() as stdout:
                 _.print_code()
@@ -135,7 +133,7 @@ class test_Mermaid__Render(TestCase):
 
     def test__render_node__node_shape(self):
         render_node = self.mermaid_render.render_node
-        with self.mermaid_edit.new_node(key='id') as _:
+        with self.mermaid_edit.new_node(key=Safe_Id('id')) as _:
             assert render_node(_                                                ) == '    id["id"]'
             assert render_node(_.shape(''                                      )) == '    id["id"]'
             assert render_node(_.shape('aaaaa'                                 )) == '    id["id"]'
@@ -150,9 +148,9 @@ class test_Mermaid__Render(TestCase):
         with Temp_File() as temp_file:
             assert temp_file.delete()
             with self.mermaid_edit as _:
-                _.add_node(key='abc')
-                _.add_node(key='xyz')
-                _.add_edge('abc', 'xyz')
+                _.add_node(key=Safe_Id('abc'))
+                _.add_node(key=Safe_Id('xyz'))
+                _.add_edge(Safe_Id('abc'), Safe_Id('xyz'))
             with self.mermaid_render as _:
                 assert temp_file.exists() is False
                 _.save(target_file=temp_file.path())
@@ -164,7 +162,7 @@ class test_Mermaid__Render(TestCase):
 
     def test__config__edge__output_node_from(self):
         with self.mermaid_edit as _:
-            new_edge = _.add_edge('id', 'id2').output_node_from()
+            new_edge = _.add_edge(Safe_Id('id'), Safe_Id('id2')).output_node_from()
 
         with self.mermaid_render as _:
             assert _.code()                             == 'graph LR\n    id["id"]\n    id2["id2"]\n\n    id["id"] --> id2'

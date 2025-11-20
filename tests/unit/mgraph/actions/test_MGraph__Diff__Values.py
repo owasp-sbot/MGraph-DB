@@ -4,7 +4,8 @@ from mgraph_db.mgraph.actions.MGraph__Diff__Values                  import MGrap
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data     import Schema__MGraph__Node__Value__Data
-from osbot_utils.utils.Objects                                      import __
+from osbot_utils.testing.__                                         import __
+
 
 class test_MGraph__Diff__Values(TestCase):
 
@@ -27,7 +28,7 @@ class test_MGraph__Diff__Values(TestCase):
         values = self.differ.get_values_by_type(self.graph_a, str)
         assert len(values)              == 1
         assert list(values.values())[0] == "test"
-        assert values                   == {'0a8021b872': 'test'}
+        assert values                   == {'a987e948e2': 'test'}
 
     def test_compare_identical_graphs(self):                                          # Test comparing identical graphs
         diff = self.differ.compare([str])                                            # Compare with no values
@@ -47,10 +48,10 @@ class test_MGraph__Diff__Values(TestCase):
             node_b = edit_b.add_node(Schema__MGraph__Node__Value(node_data=value_data_b))
 
         diff = self.differ.compare([str])
-        assert diff.json() == { 'added_values'  : {'builtins.str': ['value_a']},
-                                'removed_values': {'builtins.str': ['value_b']}}
+        assert diff.json() == { 'added_values'  : {'builtins.str': {'value_a'}},
+                                'removed_values': {'builtins.str': {'value_b'}}}
 
-        assert diff.added_values[str]   == {"value_a"}                              # Check values were properly categorized
+        assert diff.added_values  [str] == {"value_a"}                              # Check values were properly categorized
         assert diff.removed_values[str] == {"value_b"}
 
     def test_multiple_value_types(self):                                           # Test comparing multiple value types
@@ -68,9 +69,10 @@ class test_MGraph__Diff__Values(TestCase):
             edit_b.add_node(Schema__MGraph__Node__Value(node_data=int_data_b))
 
         diff = self.differ.compare([str, int])
-
-        assert diff.json() == { 'added_values'  : { 'builtins.str': ['str_a']},
-                                'removed_values': { 'builtins.str': ['str_b']}}
+        assert diff.obj()  == __( added_values =__(builtins_str={'str_a'}),
+                                  removed_values=__(builtins_str={'str_b'}))
+        assert diff.json() == { 'added_values'  : { 'builtins.str': {'str_a'}},
+                                'removed_values': { 'builtins.str': {'str_b'}}}
 
         assert str in diff.added_values
         assert str in diff.removed_values

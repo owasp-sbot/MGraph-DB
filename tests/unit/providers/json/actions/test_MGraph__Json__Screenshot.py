@@ -4,7 +4,7 @@ from mgraph_db.providers.json.MGraph__Json                          import MGrap
 from mgraph_db.providers.json.actions.MGraph__Json__Export          import MGraph__Json__Export
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Graph    import Domain__MGraph__Json__Graph
 from osbot_utils.utils.Files                                        import file_delete, file_exists
-from osbot_utils.utils.Env                                          import not_in_github_action, load_dotenv
+from osbot_utils.utils.Env                                          import load_dotenv, get_env
 from mgraph_db.providers.json.actions.MGraph__Json__Screenshot      import MGraph__Json__Screenshot
 
 
@@ -13,6 +13,8 @@ class test_MGraph__Json__Screenshot(TestCase):
     @classmethod
     def setUpClass(cls):
         load_dotenv()
+        if not get_env("URL__MGRAPH_DB_SERVERLESS"):
+            pytest.skip("Can't test the screenshots if env URL__MGRAPH_DB_SERVERLESS is not set")
         cls.test_data = {"aa": "bb", "cc": ["dd", "ee"], "an_list": [1, 2, 3, 4]}
         cls.target_file     = './json-screenshot.png'
         cls.delete_on_exit  = True

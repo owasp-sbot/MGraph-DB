@@ -1,7 +1,8 @@
 from unittest                                                           import TestCase
-from mgraph_db.providers.mermaid.MGraph__Mermaid                         import MGraph__Mermaid
+from mgraph_db.providers.mermaid.MGraph__Mermaid                        import MGraph__Mermaid
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Diagram__Type import Schema__Mermaid__Diagram__Type
 from mgraph_db.providers.mermaid.utils.Mermaid_Examples__FlowChart      import Mermain_Examples__FlowChart
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id       import Safe_Id
 from osbot_utils.utils.Str                                              import str_dedent
 
 
@@ -64,7 +65,7 @@ class test_Mermaid_Examples__FlowChart(TestCase):
             _.render_config().line_before_edges = False
             _.render_config().add_nodes         = False
             _.set_direction('TD')
-            _.add_edge('Start', 'Stop')
+            _.add_edge(Safe_Id('Start'), Safe_Id('Stop'))
 
 
     def test_example_6__direction__from_left_to_right(self):
@@ -73,7 +74,7 @@ class test_Mermaid_Examples__FlowChart(TestCase):
             _.render_config().line_before_edges = False
             _.render_config().add_nodes         = False
             _.set_direction('LR')
-            _.add_edge('Start', 'Stop')
+            _.add_edge(Safe_Id('Start'), Safe_Id('Stop'))
 
     def test_example_7__node_shapes_a_node_with_round_edges(self):
         with self.mermaid_edit as _:

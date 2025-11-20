@@ -2,7 +2,7 @@ from mgraph_db.mgraph.domain.Domain__MGraph__Edge                      import Do
 from mgraph_db.providers.mermaid.models.Model__Mermaid__Edge           import Model__Mermaid__Edge
 from mgraph_db.providers.mermaid.models.Model__Mermaid__Graph          import Model__Mermaid__Graph
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge__Config import Schema__Mermaid__Edge__Config
-from osbot_utils.type_safe.methods.type_safe_property                  import set_as_property
+from osbot_utils.type_safe.type_safe_core.methods.type_safe_property   import set_as_property
 
 
 class Domain__Mermaid__Edge(Domain__MGraph__Edge):

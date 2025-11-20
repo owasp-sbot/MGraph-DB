@@ -1,14 +1,18 @@
-from typing                                                 import Set, Dict, Any, Type, Optional, Callable, List
-from mgraph_db.mgraph.domain.Domain__MGraph__Node           import Domain__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge          import Schema__MGraph__Edge
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node          import Schema__MGraph__Node
-from mgraph_db.query.models.Model__MGraph__Query__View      import Model__MGraph__Query__View
-from mgraph_db.query.models.Model__MGraph__Query__Views     import Model__MGraph__Query__Views
-from osbot_utils.helpers.Obj_Id                             import Obj_Id
-from mgraph_db.mgraph.actions.MGraph__Data                  import MGraph__Data
-from mgraph_db.mgraph.actions.MGraph__Index                 import MGraph__Index
-from osbot_utils.type_safe.Type_Safe                        import Type_Safe
-from osbot_utils.utils.Dev                                  import pprint
+from typing                                                         import Set, Dict, Any, Type, Optional, Callable, List
+from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
+from mgraph_db.query.actions.MGraph__Query__Add                     import MGraph__Query__Add
+from mgraph_db.query.actions.MGraph__Query__Navigate                import MGraph__Query__Navigate
+from mgraph_db.query.domain.Domain__MGraph__Query                   import Domain__MGraph__Query
+from mgraph_db.query.models.Model__MGraph__Query__View              import Model__MGraph__Query__View
+from mgraph_db.query.models.Model__MGraph__Query__Views             import Model__MGraph__Query__Views
+from osbot_utils.decorators.methods.cache_on_self                   import cache_on_self
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
+from mgraph_db.mgraph.actions.MGraph__Index                         import MGraph__Index
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from osbot_utils.utils.Dev                                          import pprint
 
 VIEW__OPERATION__INITIAL = 'initial'
 
@@ -25,6 +29,28 @@ class MGraph__Query(Type_Safe):
                          operation = 'initial'   ,
                          params    = {}          )
         return self
+
+    @cache_on_self
+    def query(self):
+        return Domain__MGraph__Query(mgraph_data  = self.mgraph_data,
+                                     mgraph_index = self.mgraph_index,
+                                     query_views  = self.query_views ,
+                                     root_nodes   = self.root_nodes  )
+
+    @cache_on_self
+    def navigate(self):
+        return MGraph__Query__Navigate(query=self.query())
+
+    @cache_on_self
+    def add(self):
+        return MGraph__Query__Add(query=self.query())
+
+    # todo: refactor all the methods below into specific classes
+    def export_view(self):
+        from mgraph_db.query.actions.MGraph__Query__Export__View import MGraph__Query__Export__View
+        export_view = MGraph__Query__Export__View(mgraph_query=self)
+        mgraph_view = export_view.export()
+        return mgraph_view
 
     def save_to_png(self, path, show_node__value:bool=True, show_source_graph=False):
         from mgraph_db.query.actions.MGraph__Query__Screenshot import MGraph__Query__Screenshot
@@ -275,44 +301,44 @@ class MGraph__Query(Type_Safe):
             self.add_outgoing_edges()
         return self
 
-    def add_outgoing_edges__with_field(self, field_name: str) -> 'MGraph__Query':           # Add outgoing edges, but only for nodes with a specific field name
-        current_nodes, current_edges = self.get_current_ids()                               # Get current state
-        new_nodes = set()                                                                   # Initialize new sets
-        new_edges = set()
-
-        matching_nodes = self.mgraph_index.get_nodes_by_field('name', field_name)          # Get nodes with matching field
-
-        for node_id in current_nodes:                                                       # For each current node
-            node = self.mgraph_data.node(node_id)
-            if node:
-                outgoing_edges = self.mgraph_index.get_node_outgoing_edges(node)           # Get its outgoing edges
-
-                for edge_id in outgoing_edges:                                             # For each edge
-                    edge = self.mgraph_data.edge(edge_id)
-                    if edge:
-                        target_node_id = edge.to_node_id()                                 # Get target node
-                        if target_node_id in matching_nodes:                               # If target has matching field
-                            new_edges.add(edge_id)                                         # Add the edge
-                            new_nodes.add(target_node_id)                                  # Add the target node
-
-                            # Add value node connections
-                            property_node = self.mgraph_data.node(target_node_id)
-                            if property_node:
-                                value_edges = self.mgraph_index.get_node_outgoing_edges(property_node)
-                                for value_edge_id in value_edges:
-                                    value_edge = self.mgraph_data.edge(value_edge_id)
-                                    if value_edge:
-                                        new_edges.add(value_edge_id)                       # Add the value edge
-                                        new_nodes.add(value_edge.to_node_id())
-
-        combined_nodes = current_nodes | new_nodes                                         # Combine sets
-        combined_edges = current_edges | new_edges
-
-        self.create_view(nodes_ids = combined_nodes,                                       # Create new view
-                        edges_ids = combined_edges,
-                        operation = 'add_outgoing_edges_with_field',
-                        params    = {'field_name': field_name})
-        return self
+    # def add_outgoing_edges__with_field(self, field_name: str) -> 'MGraph__Query':           # Add outgoing edges, but only for nodes with a specific field name
+    #     current_nodes, current_edges = self.get_current_ids()                               # Get current state
+    #     new_nodes = set()                                                                   # Initialize new sets
+    #     new_edges = set()
+    #
+    #     matching_nodes = self.mgraph_index.get_nodes_by_field('name', field_name)          # Get nodes with matching field
+    #
+    #     for node_id in current_nodes:                                                       # For each current node
+    #         node = self.mgraph_data.node(node_id)
+    #         if node:
+    #             outgoing_edges = self.mgraph_index.get_node_outgoing_edges(node)           # Get its outgoing edges
+    #
+    #             for edge_id in outgoing_edges:                                             # For each edge
+    #                 edge = self.mgraph_data.edge(edge_id)
+    #                 if edge:
+    #                     target_node_id = edge.to_node_id()                                 # Get target node
+    #                     if target_node_id in matching_nodes:                               # If target has matching field
+    #                         new_edges.add(edge_id)                                         # Add the edge
+    #                         new_nodes.add(target_node_id)                                  # Add the target node
+    #
+    #                         # Add value node connections
+    #                         property_node = self.mgraph_data.node(target_node_id)
+    #                         if property_node:
+    #                             value_edges = self.mgraph_index.get_node_outgoing_edges(property_node)
+    #                             for value_edge_id in value_edges:
+    #                                 value_edge = self.mgraph_data.edge(value_edge_id)
+    #                                 if value_edge:
+    #                                     new_edges.add(value_edge_id)                       # Add the value edge
+    #                                     new_nodes.add(value_edge.to_node_id())
+    #
+    #     combined_nodes = current_nodes | new_nodes                                         # Combine sets
+    #     combined_edges = current_edges | new_edges
+    #
+    #     self.create_view(nodes_ids = combined_nodes,                                       # Create new view
+    #                     edges_ids = combined_edges,
+    #                     operation = 'add_outgoing_edges_with_field',
+    #                     params    = {'field_name': field_name})
+    #     return self
 
     def add_node_id(self, node_id: Obj_Id) -> 'MGraph__Query':                                      # Add specific node to view
 

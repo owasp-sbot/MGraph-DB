@@ -1,4 +1,7 @@
+import pytest
+import re
 from unittest                                                                   import TestCase
+from mgraph_db.mgraph.domain.Domain__MGraph__Node                               import Domain__MGraph__Node
 from mgraph_db.mgraph.MGraph                                                    import MGraph
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                              import Domain__MGraph__Graph
 from mgraph_db.mgraph.models.Model__MGraph__Graph                               import Model__MGraph__Graph
@@ -55,10 +58,12 @@ class test_MGraph__Query__Add(TestCase):
         assert current_nodes    == {node.node_id}
         assert current_edges    == set()  # No edges added
 
-        invalid_result               = add_action.add_node_id('invalid_id')         # Test adding non-existent node
+        error_message = "in Obj_Id: value provided was not a valid Obj_Id: invalid_id"
+        with pytest.raises(ValueError, match=re.escape(error_message)):
+            add_action.add_node_id('invalid_id')                                            # Test adding non-existent node
         current_nodes, current_edges = self.query.get_current_ids()
 
-        assert invalid_result   == add_action  # Should return self
+
         assert current_nodes    == {node.node_id}                                     # No change to nodes
         assert current_edges    == set()
 
@@ -85,27 +90,38 @@ class test_MGraph__Query__Add(TestCase):
         assert current_nodes == {node_1.node_id, node_2.node_id, node_3.node_id}
 
         # Test adding mix of valid and invalid nodes
-        add_action.add_nodes_ids({node_1.node_id, 'invalid_id'})
+        error_message = "in Obj_Id: value provided was not a valid Obj_Id: invalid_id"
+        with pytest.raises(ValueError, match=re.escape(error_message)):
+            add_action.add_nodes_ids({node_1.node_id, 'invalid_id'})
+
         current_nodes, _ = self.query.get_current_ids()
         assert current_nodes == {node_1.node_id, node_2.node_id, node_3.node_id}
 
         # Test adding only invalid nodes
-        add_action.add_nodes_ids({'invalid_1', 'invalid_2'})
+        error_message = "in Obj_Id: value provided was not a valid Obj_Id: "            # we can't put invalid_1 in the error message to pick up because {'invalid_1', 'invalid_2'} is set
+        with pytest.raises(ValueError, match=re.escape(error_message)):
+            add_action.add_nodes_ids({'invalid_1', 'invalid_2'})
+
         current_nodes, _ = self.query.get_current_ids()
         assert current_nodes == {node_1.node_id, node_2.node_id, node_3.node_id}
 
     def test_add_node_with_value(self):                                                                 # Test adding node by value
         add_action = self.add_action
 
-        value_node                      = self.graph.new_node(node_type=Schema__MGraph__Node__Value)    # Create value node
-        value_node.node_data.value      = "test_value"
-        value_node.node_data.value_type = str
+        new_node_kwargs =  dict(node_type  = Schema__MGraph__Node__Value,
+                                value      = "test_value",
+                                value_type = str)
+        value_node      = self.graph.new_node(**new_node_kwargs)    # Create value node
+
         self.query.mgraph_index.values_index.add_value_node(value_node)                                 # Add value to index
+
 
         result = add_action.add_node_with_value("test_value")                                           # Test adding by value
 
-        assert result == add_action                                                                     # Verify result
+        assert type(value_node) is Domain__MGraph__Node
+        assert result           == add_action                                                                     # Verify result
         current_nodes, _ = self.query.get_current_ids()
+
         assert value_node.node_id in current_nodes
 
         add_action.add_node_with_value("non_existent_value")                                            # Test adding non-existent value
@@ -305,14 +321,14 @@ class test_MGraph__Query__Add(TestCase):
 
     def test_combined_add_operations(self):                                           # Test combining different add operations
         with self.mgraph.edit() as _:                                                  # Create test data
-            value_node = _.new_node(node_type=Schema__MGraph__Node__Value)
-            value_node.node_data.value = "test_value"
-            value_node.node_data.value_type = str
+            new_node_kwargs = dict(node_type  = Schema__MGraph__Node__Value,
+                                   value      = "test_value"               ,
+                                   value_type = str                        )
+
+            value_node = _.new_node(**new_node_kwargs)
 
             node_2 = _.new_node()
             edge = _.new_edge(from_node_id=value_node.node_id, to_node_id=node_2.node_id)
-
-            self.query.mgraph_index.values_index.add_value_node(value_node)            # Add to value index
 
         result = (self.add_action.add_node_with_value("test_value")                   # Combine different add operations
                                  .add_nodes_ids({node_2.node_id})

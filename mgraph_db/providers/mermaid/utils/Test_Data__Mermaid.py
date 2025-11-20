@@ -1,11 +1,10 @@
 from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Graph           import Domain__Mermaid__Graph
-from osbot_utils.helpers.Safe_Id                                         import Safe_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id        import Safe_Id
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node           import Schema__Mermaid__Node
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Data     import Schema__Mermaid__Node__Data
 from mgraph_db.providers.mermaid.models.Model__Mermaid__Graph            import Model__Mermaid__Graph
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph          import Schema__Mermaid__Graph
-from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types import Schema__Mermaid__Types
-from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph__Config  import Schema__Mermaid__Graph__Config
+from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types          import Schema__Mermaid__Types
 
 # todo: refactor this out, and use Mermaid__Random_Graph instead
 class Test_Data_Mermaid:

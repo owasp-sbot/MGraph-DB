@@ -1,7 +1,8 @@
 import unittest
 from mgraph_db.providers.json.models.Model__MGraph__Json__Node   import Model__MGraph__Json__Node
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node import Schema__MGraph__Json__Node
-from osbot_utils.utils.Objects                                   import __, type_full_name
+from osbot_utils.utils.Objects                                   import type_full_name
+from osbot_utils.testing.__                                      import __
 
 
 class test_Model__MGraph__Json__Node(unittest.TestCase):
