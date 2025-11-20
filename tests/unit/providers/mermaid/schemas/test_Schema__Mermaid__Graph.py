@@ -1,7 +1,6 @@
 import re
-from unittest                                                            import TestCase
-
 import pytest
+from unittest                                                            import TestCase
 from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__List    import Type_Safe__List
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types          import Schema__Mermaid__Types
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id

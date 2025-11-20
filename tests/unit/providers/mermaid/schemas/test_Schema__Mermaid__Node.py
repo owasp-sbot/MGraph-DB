@@ -1,8 +1,6 @@
 import re
-from unittest                                                        import TestCase
-
 import pytest
-
+from unittest                                                        import TestCase
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Data import Schema__Mermaid__Node__Data
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id    import Safe_Id
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node       import Schema__Mermaid__Node

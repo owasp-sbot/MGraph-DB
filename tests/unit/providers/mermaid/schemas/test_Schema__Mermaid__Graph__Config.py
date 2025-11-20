@@ -1,8 +1,6 @@
 import re
-from unittest                                                            import TestCase
-
 import pytest
-
+from unittest                                                            import TestCase
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types          import Schema__Mermaid__Types
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph__Config  import Schema__Mermaid__Graph__Config
 

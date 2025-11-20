@@ -1,8 +1,6 @@
+import pytest
 import re
 from unittest                                                                   import TestCase
-
-import pytest
-
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                               import Domain__MGraph__Node
 from mgraph_db.mgraph.MGraph                                                    import MGraph
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                              import Domain__MGraph__Graph

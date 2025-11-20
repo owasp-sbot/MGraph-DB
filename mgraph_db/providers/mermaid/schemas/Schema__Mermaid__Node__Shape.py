@@ -1,5 +1,5 @@
 from __future__ import annotations
-from enum import Enum
+from enum       import Enum
 
 
 class Schema__Mermaid__Node__Shape(tuple, Enum):

@@ -1,6 +1,4 @@
 from unittest                                                       import TestCase
-
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id import Obj_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label           import Schema__MGraph__Edge__Label
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value

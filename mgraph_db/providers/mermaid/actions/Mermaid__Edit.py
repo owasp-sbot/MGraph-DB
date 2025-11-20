@@ -1,5 +1,4 @@
-from osbot_utils.type_safe.type_safe_core.decorators.type_safe import type_safe
-
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe              import type_safe
 from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Node               import Domain__Mermaid__Node
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Render__Config    import Schema__Mermaid__Render__Config
 from osbot_utils.utils.Misc                                                 import random_text

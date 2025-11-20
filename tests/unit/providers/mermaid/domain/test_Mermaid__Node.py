@@ -1,9 +1,6 @@
-import re
 from unittest                                                           import TestCase
-
-import pytest
 from osbot_utils.testing.__                                             import __
-from osbot_utils.type_safe.Type_Safe import Type_Safe
+from osbot_utils.type_safe.Type_Safe                                    import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id       import Safe_Id
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node          import Schema__Mermaid__Node
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Shape   import Schema__Mermaid__Node__Shape
