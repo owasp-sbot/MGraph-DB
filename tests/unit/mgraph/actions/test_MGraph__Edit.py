@@ -1,12 +1,13 @@
-from unittest                                       import TestCase
-from osbot_utils.helpers.Obj_Id                     import is_obj_id
-from mgraph_db.mgraph.domain.Domain__MGraph__Node   import Domain__MGraph__Node
-from osbot_utils.utils.Objects                      import __
-from mgraph_db.mgraph.actions.MGraph__Edit          import MGraph__Edit
-from mgraph_db.mgraph.domain.Domain__MGraph__Graph  import Domain__MGraph__Graph
-from mgraph_db.mgraph.models.Model__MGraph__Graph   import Model__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Graph import Schema__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node  import Schema__MGraph__Node
+from unittest                                                    import TestCase
+from mgraph_db.mgraph.domain.Domain__MGraph__Node                import Domain__MGraph__Node
+from osbot_utils.testing.__                                      import __
+from mgraph_db.mgraph.actions.MGraph__Edit                       import MGraph__Edit
+from mgraph_db.mgraph.domain.Domain__MGraph__Graph               import Domain__MGraph__Graph
+from mgraph_db.mgraph.models.Model__MGraph__Graph                import Model__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph              import Schema__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node               import Schema__MGraph__Node
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id import is_obj_id
+
 
 class Simple_Node(Schema__MGraph__Node): pass  # Helper class for testing
 

@@ -3,7 +3,9 @@ from xml.etree.ElementTree                          import fromstring
 from mgraph_db.mgraph.MGraph                        import MGraph
 from mgraph_db.mgraph.actions.MGraph__Export        import MGraph__Export
 from mgraph_db.mgraph.utils.MGraph__Static__Graph   import MGraph__Static__Graph
-from osbot_utils.utils.Objects                      import obj, __
+from osbot_utils.testing.__                         import __
+from osbot_utils.testing.__helpers                  import obj
+
 
 class test_MGraph__Export(TestCase):
 

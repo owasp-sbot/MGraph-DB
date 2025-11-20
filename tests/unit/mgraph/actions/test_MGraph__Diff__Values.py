@@ -4,7 +4,8 @@ from mgraph_db.mgraph.actions.MGraph__Diff__Values                  import MGrap
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data     import Schema__MGraph__Node__Value__Data
-from osbot_utils.utils.Objects                                      import __
+from osbot_utils.testing.__                                         import __
+
 
 class test_MGraph__Diff__Values(TestCase):
 
