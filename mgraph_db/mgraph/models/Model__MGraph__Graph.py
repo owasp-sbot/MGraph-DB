@@ -119,7 +119,7 @@ class Model__MGraph__Graph(Type_Safe):
         return list(self.data.nodes.keys())
 
     @type_safe
-    def delete_node(self, node_id: Obj_Id) -> 'Model__MGraph__Graph':                              # Remove a node and all its connected edges
+    def delete_node(self, node_id: Obj_Id) -> bool:                              # Remove a node and all its connected edges
         if node_id not in self.data.nodes:
             return False
 
@@ -135,7 +135,7 @@ class Model__MGraph__Graph(Type_Safe):
         return True
 
     @type_safe
-    def delete_edge(self, edge_id: Obj_Id) -> 'Model__MGraph__Graph':                              # Remove an edge from the graph
+    def delete_edge(self, edge_id: Obj_Id) -> bool:                              # Remove an edge from the graph
         if edge_id not in self.data.edges:
             return False
 

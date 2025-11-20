@@ -1,3 +1,4 @@
+import re
 import pytest
 from unittest                                                                   import TestCase
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value__Data   import Schema__MGraph__Json__Node__Value__Data
@@ -48,7 +49,8 @@ class test_Model__MGraph__Json__Node__Value(TestCase):
         assert model_node.value      == True
         assert model_node.value_type == bool
 
-        with pytest.raises(ValueError, match="Can't set None, to a variable that is already set. Invalid type for attribute 'value'. Expected 'typing.Any' but got '<class 'NoneType'>'"):
+        error_message = "On Schema__MGraph__Json__Node__Value__Data, can't be set to None, to a variable that is already set. Invalid type for attribute 'value'. Expected 'typing.Any' but got '<class 'NoneType'>'"
+        with pytest.raises(ValueError, match=re.escape(error_message)):
             model_node.value        = None
 
     def test_primitive_check(self):                                                                 # Test primitive type detection

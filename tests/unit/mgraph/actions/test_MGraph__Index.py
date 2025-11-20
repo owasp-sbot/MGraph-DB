@@ -1,4 +1,6 @@
 from unittest                                                       import TestCase
+
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id import Obj_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label           import Schema__MGraph__Edge__Label
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
@@ -134,23 +136,23 @@ class test_MGraph_Index(TestCase):
             _.add_node(node_1)
             _.add_node(node_2)
             _.add_edge(edge_1)
-            nodes_by_type = list(_.index_data.nodes_by_type['Schema__MGraph__Node'])            # we need to get this value since nodes_by_type is a list and the order can change
+            nodes_by_type = _.index_data.nodes_by_type['Schema__MGraph__Node']            # we need to get this value since nodes_by_type is a list and the order can change
             assert node_1_id           in nodes_by_type
             assert node_2_id           in nodes_by_type
             assert _.index_data.json() == { 'edges_by_incoming_label'        : {},
                                             'edges_by_outgoing_label'        : {},
                                             'edges_by_predicate'             : {},
                                             'edges_predicates'               : {},
-                                            'edges_to_nodes'                 : { edge_1_id: [node_1_id, node_2_id]},
-                                            'edges_by_type'                  : {'Schema__MGraph__Edge': [edge_1_id]},
+                                            'edges_to_nodes'                 : { edge_1_id: (node_1_id, node_2_id)},
+                                            'edges_by_type'                  : {'Schema__MGraph__Edge': {edge_1_id}},
                                             'edges_types'                    : { edge_1_id: 'Schema__MGraph__Edge'},
                                             'nodes_by_type'                  : {'Schema__MGraph__Node': nodes_by_type },
-                                            'nodes_to_incoming_edges'        : { node_2_id: [edge_1_id],
-                                                                                 node_1_id: []},
-                                            'nodes_to_incoming_edges_by_type': { node_2_id: {'Schema__MGraph__Edge': [edge_1_id]}},
-                                            'nodes_to_outgoing_edges'        : { node_2_id: [],
-                                                                                 node_1_id: [edge_1_id]},
-                                            'nodes_to_outgoing_edges_by_type': { node_1_id: {'Schema__MGraph__Edge': [edge_1_id]}},
+                                            'nodes_to_incoming_edges'        : { node_2_id: {edge_1_id},
+                                                                                 node_1_id: set()},
+                                            'nodes_to_incoming_edges_by_type': { node_2_id: {'Schema__MGraph__Edge': {edge_1_id} }},
+                                            'nodes_to_outgoing_edges'        : { node_2_id: set(),
+                                                                                 node_1_id: {edge_1_id}},
+                                            'nodes_to_outgoing_edges_by_type': { node_1_id: {'Schema__MGraph__Edge': {edge_1_id}}},
                                             'nodes_types'                    : { node_1_id: 'Schema__MGraph__Node',
                                                                                  node_2_id: 'Schema__MGraph__Node'}}
 
@@ -184,24 +186,25 @@ class test_MGraph_Index(TestCase):
             assert _.edges_ids() == [edge_1_id           ]
 
         index         = MGraph__Index.from_graph(mgraph.graph)                                                # Create index from graph
-        nodes_by_type = list(index.index_data.nodes_by_type['Schema__MGraph__Node'])
+        nodes_by_type = index.index_data.nodes_by_type['Schema__MGraph__Node']
         assert node_1_id               in nodes_by_type
         assert node_2_id               in nodes_by_type
+
         assert index.index_data.json() ==  {  'edges_by_incoming_label'        : {},
                                               'edges_by_outgoing_label'        : {},
                                               'edges_by_predicate'             : {},
-                                              'edges_by_type'                  : { edge_1_type: [edge_1_id]          },
+                                              'edges_by_type'                  : { edge_1_type: { edge_1_id }        },
                                               'edges_predicates'               : {},
-                                              'edges_to_nodes'                 : { edge_1_id: [node_1_id, node_2_id] },
+                                              'edges_to_nodes'                 : { edge_1_id: (node_1_id, node_2_id) },
 
                                               'edges_types'                    : { edge_1_id: 'Schema__MGraph__Edge' },
                                               'nodes_by_type'                  : { node_1_type: nodes_by_type        },
-                                              'nodes_to_incoming_edges'        : { node_1_id: []                     ,
-                                                                                   node_2_id: [edge_1_id]            },
-                                              'nodes_to_incoming_edges_by_type': {node_2_id: {'Schema__MGraph__Edge': [edge_1_id]}},
-                                              'nodes_to_outgoing_edges'        : { node_1_id: [edge_1_id]            ,
-                                                                                   node_2_id: []                     },
-                                             'nodes_to_outgoing_edges_by_type' : { node_1_id: {'Schema__MGraph__Edge': [edge_1_id]}},
+                                              'nodes_to_incoming_edges'        : { node_1_id: set()                   ,
+                                                                                   node_2_id: { edge_1_id }          },
+                                              'nodes_to_incoming_edges_by_type': { node_2_id: {'Schema__MGraph__Edge': {edge_1_id}}},
+                                              'nodes_to_outgoing_edges'        : { node_1_id: {edge_1_id}            ,
+                                                                                   node_2_id: set()                  },
+                                             'nodes_to_outgoing_edges_by_type' : { node_1_id: {'Schema__MGraph__Edge': {edge_1_id}}},
                                              'nodes_types'                     : { node_1_id: 'Schema__MGraph__Node',
                                                                                    node_2_id: 'Schema__MGraph__Node'}}
 

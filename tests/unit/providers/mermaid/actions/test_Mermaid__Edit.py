@@ -80,7 +80,7 @@ class test__Mermaid__Edit(TestCase):
             assert type(node_data)     is Schema__Mermaid__Node__Data
             assert node.obj()          == __(node=__(data=__(key         = node_key            ,
                                                              label       = node_key    ,
-                                                             node_data =__(node_shape      = 'default',
+                                                             node_data =__(node_shape        = ['[', ']'],
                                                                             show_label       = True   ,
                                                                             wrap_with_quotes = True   ,
                                                                             markdown         = False  ),

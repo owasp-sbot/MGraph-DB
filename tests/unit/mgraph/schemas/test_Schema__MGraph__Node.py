@@ -1,3 +1,5 @@
+import re
+import pytest
 from unittest                                            import TestCase
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node       import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data import Schema__MGraph__Node__Data
@@ -14,8 +16,7 @@ class test_Schema__MGraph__Node(TestCase):
         assert self.node.node_data == self.node_data
 
     def test_type_safety_validation(self):                                                          # Tests type safety validations
-
-        with self.assertRaises(ValueError) as context:
+        error_message = "On Schema__MGraph__Node, invalid type for attribute 'node_data'. Expected '<class 'mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data'>' but got '<class 'str'>'"
+        with pytest.raises(ValueError, match=re.escape(error_message)):
             Schema__MGraph__Node(node_data   = "not-a-node-config"                         ,        # Should be Schema__MGraph__Node__Config
                                  node_type   = Schema__MGraph__Node                        )
-        assert 'Invalid type for attribute' in str(context.exception)

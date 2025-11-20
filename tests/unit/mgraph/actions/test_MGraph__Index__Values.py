@@ -44,7 +44,7 @@ class test_MGraph__Index__Values(TestCase):
             assert _.index_data.json() == { 'hash_to_node'  : { expected_hash : value_node_id    },
                                             'node_to_hash'  : { value_node_id : expected_hash    },
                                             'type_by_value' : { expected_hash : 'builtins.str'   },
-                                            'values_by_type': { 'builtins.str':  [expected_hash]}}
+                                            'values_by_type': { 'builtins.str':  {expected_hash}}}
 
             assert value_type           is str
             assert value_node.node_id   in _.index_data.node_to_hash
@@ -106,9 +106,9 @@ class test_MGraph__Index__Values(TestCase):
                                             'type_by_value' : { '62bb187439'    : 'builtins.bool' ,
                                                                 'f8bb59eae6'    : 'builtins.int'  ,
                                                                 '12b2368328'    : 'builtins.float'},
-                                            'values_by_type': { 'builtins.float': ['12b2368328'   ],
-                                                                'builtins.bool' : ['62bb187439'   ],
-                                                                'builtins.int'  : ['f8bb59eae6'   ]}}
+                                            'values_by_type': { 'builtins.float': {'12b2368328'   },
+                                                                'builtins.bool' : {'62bb187439'   },
+                                                                'builtins.int'  : {'f8bb59eae6'   }}}
 
     def test_add_value_node__special_characters(self):                           # Test special character handling
         value = "test::value::with::colons"
@@ -182,7 +182,7 @@ class test_MGraph__Index__Values(TestCase):
             assert _.index_data.json() == { 'hash_to_node'  : {'3f2e519923'   : value_node_id   },
                                             'node_to_hash'  : {value_node_id  : '3f2e519923'    },
                                             'type_by_value' : {'3f2e519923'   : 'builtins.str'  },
-                                            'values_by_type': { 'builtins.str': ['3f2e519923'  ]}}
+                                            'values_by_type': { 'builtins.str': {'3f2e519923'  }}}
 
             # Remove node
             _.remove_value_node(value_node)

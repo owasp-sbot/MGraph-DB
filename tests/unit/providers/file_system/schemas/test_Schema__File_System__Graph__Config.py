@@ -1,3 +1,4 @@
+import re
 import pytest
 from unittest                                                                   import TestCase
 from mgraph_db.providers.file_system.schemas.Schema__File_System__Graph__Config import Schema__File_System__Graph__Config
@@ -16,7 +17,8 @@ class test_Schema__File_System__Graph__Config(TestCase):
         assert self.graph_config.allow_circular_refs  == self.allow_circular_refs
 
     def test_type_safety_validation(self):                                                       # Tests type safety validations
-        with pytest.raises(ValueError, match="Invalid type for attribute 'allow_circular_refs'. Expected '<class 'bool'>' but got '<class 'str'>'"):
+        error_message = "On Schema__File_System__Graph__Config, invalid type for attribute 'allow_circular_refs'. Expected '<class 'bool'>' but got '<class 'str'>'"
+        with pytest.raises(ValueError, match=re.escape(error_message)):
             Schema__File_System__Graph__Config(allow_circular_refs = "not-a-bool")                                                  # Should be bool
 
 

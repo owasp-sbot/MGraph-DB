@@ -1,3 +1,5 @@
+import re
+import pytest
 from unittest                                                                    import TestCase
 from osbot_utils.type_safe.primitives.domains.identifiers.safe_int.Timestamp_Now import Timestamp_Now
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                               import Schema__MGraph__Edge
@@ -25,12 +27,12 @@ class test_Schema__File_System__Graph(TestCase):
         assert len(self.fs_graph.edges)       == 0
 
     def test_type_safety_validation(self):                                                      # Tests type safety validations
-        with self.assertRaises(ValueError) as context:
+        error_message = "On Schema__File_System__Graph, invalid type for attribute 'nodes'. Expected 'typing.Dict[osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id.Obj_Id, mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node]' but got '<class 'str'>'"
+        with pytest.raises(ValueError, match=re.escape(error_message)):
             Schema__File_System__Graph(nodes         = "not-a-dict",  # Should be Dict
                                        edges         = {},
                                        graph_config  = self.graph_data,
                                        graph_type    = Schema__File_System__Graph)
-        assert 'Invalid type for attribute' in str(context.exception)
 
     def test_add_folder(self):                                                                  # Tests adding a folder node
         folder_node = Schema__Folder__Node(folder_name = "test_folder",

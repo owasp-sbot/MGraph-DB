@@ -1,6 +1,7 @@
 import types
 from unittest                                                       import TestCase
 from osbot_utils.testing.__                                         import __
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id import is_obj_id
 from osbot_utils.utils.Objects                                      import full_type_name
 from mgraph_db.providers.json.actions.MGraph__Json__Data            import MGraph__Json__Data
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Graph    import Domain__MGraph__Json__Graph

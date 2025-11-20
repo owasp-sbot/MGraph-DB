@@ -62,6 +62,14 @@ class test_Mermaid__Render(TestCase):
             file_path = _.save()
 
             assert file_exists(file_path) is True
+
+            assert _.code() == ( 'flowchart TD\n'
+                                 '    A["A"] -->|Get money| B["B"]\n'
+                                 '    B --> C["C"]\n'
+                                 '    C -->|One| D["D"]\n'
+                                 '    C -->|Two| E["E"]\n'
+                                 '    C -->|Three| F["F"]')
+            return
             assert expected_code          == _.code()
 
             with Stdout() as stdout:

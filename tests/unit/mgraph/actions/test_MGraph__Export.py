@@ -130,7 +130,7 @@ class test_MGraph__Export(TestCase):
             assert graph.get('id')          == 'G'
             assert graph.get('edgedefault') == 'directed'
             assert len(nodes)               == len(self.linear_graph.node_ids)
-            assert node_ids                 == set(str(id) for id in self.linear_graph.node_ids)
+            assert sorted(node_ids)         == sorted(set(str(id) for id in self.linear_graph.node_ids))
             assert len(edges)               == len(self.linear_graph.edge_ids)
             for edge in edges:                                                                              # Verify edges
                 assert edge.get('id') in (str(id) for id in self.linear_graph.edge_ids)
@@ -174,7 +174,7 @@ class test_MGraph__Export(TestCase):
             nodes = nodes_elem.findall('{' + gexf_ns + '}node')
             assert len(nodes) == len(self.linear_graph.node_ids)
             node_ids = set(node.get('id') for node in nodes)
-            assert node_ids == set(str(id) for id in self.linear_graph.node_ids)
+            assert sorted(node_ids) == sorted(set(str(id) for id in self.linear_graph.node_ids))
 
             # Verify edges section
             edges_elem = graph.find('{' + gexf_ns + '}edges')

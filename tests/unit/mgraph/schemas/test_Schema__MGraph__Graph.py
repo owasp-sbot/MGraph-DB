@@ -1,3 +1,4 @@
+import re
 import pytest
 from unittest                                                       import TestCase
 from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
@@ -38,12 +39,12 @@ class test_Schema__MGraph__Graph(TestCase):
         assert self.graph.edges[self.edge.edge_id            ] == self.edge
 
     def test_type_safety_validation(self):    # Tests type safety validations
-        with self.assertRaises(ValueError) as context:
+        error_message = "On Schema__MGraph__Graph, invalid type for attribute 'nodes'. Expected 'typing.Dict[osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id.Obj_Id, mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node]' but got '<class 'str'>"
+        with pytest.raises(ValueError, match=re.escape(error_message)):
             Schema__MGraph__Graph(nodes        = "not-a-dict",
                                   edges        = {self.edge.edge_id: self.edge},
                                   graph_config = self.graph_data,
                                   graph_type   = Schema__MGraph__Graph)
-        assert 'Invalid type for attribute' in str(context.exception)
 
         expected_error = "Expected 'Schema__MGraph__Edge', but got 'str'"
         with pytest.raises(TypeError, match=expected_error):
