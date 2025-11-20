@@ -1,4 +1,7 @@
+import re
 from unittest                                                            import TestCase
+
+import pytest
 from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__List    import Type_Safe__List
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types          import Schema__Mermaid__Types
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
@@ -43,20 +46,25 @@ class test_Schema__Mermaid__Graph(TestCase):
         assert len(self.graph.mermaid_code)  == 2
 
     def test_type_safety_validation(self):                                          # Tests type safety validations
-        with self.assertRaises(ValueError) as context:
+        error_message_1 = ("On Schema__Mermaid__Graph, invalid type for attribute 'edges'. "
+                         "Expected 'typing.Dict[osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id.Obj_Id, "
+                         "mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge.Schema__Mermaid__Edge]' "
+                         "but got '<class 'str'>'")
+        with pytest.raises(ValueError, match=re.escape(error_message_1)):
             Schema__Mermaid__Graph(edges        = "not-a-dict"          ,
                                    nodes        = {}                    ,
                                    graph_data   = self.graph_data       ,
                                    graph_type   = Schema__Mermaid__Graph,
                                    mermaid_code = ["graph TD"]          )
-        assert "Invalid type for attribute" in str(context.exception)
 
-        with self.assertRaises(ValueError) as context:
+        error_message_2 = ("On Schema__Mermaid__Graph, invalid type for attribute 'mermaid_code'. "
+                           "Expected 'typing.List[str]' but got '<class 'str'>'")
+        with pytest.raises(ValueError, match=re.escape(error_message_2)):
+
             Schema__Mermaid__Graph(edges        = {}                    ,
                                    nodes        = {}                    ,
                                    graph_data   = self.graph_data       ,
                                    graph_type   = Schema__Mermaid__Graph,
                                    mermaid_code = "not-a-list"          )
-        assert "Invalid type for attribute" in str(context.exception)
 
 

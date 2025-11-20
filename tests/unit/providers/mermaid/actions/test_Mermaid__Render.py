@@ -38,8 +38,6 @@ class test_Mermaid__Render(TestCase):
                                             C -->|Two| E[iPhone]
                                             C -->|Three| F[fa:fa-car Car]
                                             """)
-
-
         with self.mermaid_edit as _:
             _.render_config().add_nodes         = False
             _.render_config().line_before_edges = False
@@ -57,20 +55,12 @@ class test_Mermaid__Render(TestCase):
             _.add_edge('C', 'E', label='Two'      ).output_node_to().edge_mode__lr_using_pipe()
             _.add_edge('C', 'F', label='Three'    ).output_node_to().edge_mode__lr_using_pipe()
 
-
         with self.mermaid_render as _:
             file_path = _.save()
 
             assert file_exists(file_path) is True
-
-            assert _.code() == ( 'flowchart TD\n'
-                                 '    A["A"] -->|Get money| B["B"]\n'
-                                 '    B --> C["C"]\n'
-                                 '    C -->|One| D["D"]\n'
-                                 '    C -->|Two| E["E"]\n'
-                                 '    C -->|Three| F["F"]')
-            return
             assert expected_code          == _.code()
+
 
             with Stdout() as stdout:
                 _.print_code()

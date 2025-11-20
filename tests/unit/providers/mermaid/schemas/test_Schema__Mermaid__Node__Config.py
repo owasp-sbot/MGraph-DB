@@ -24,7 +24,8 @@ class test_Schema__Mermaid__Node__Data(TestCase):
         assert self.node_data.wrap_with_quotes   is True
 
     def test_type_safety_validation(self):                                          # Tests type safety validations
-        expected_error_1 = "Invalid type for attribute 'markdown'. Expected '<class 'bool'>' but got '<class 'str'>'"
+        expected_error_1 = ("On Schema__Mermaid__Node__Data, invalid type for attribute 'markdown'. "
+                            "Expected '<class 'bool'>' but got '<class 'str'>'")
         with pytest.raises(ValueError, match=re.escape(expected_error_1)):
             Schema__Mermaid__Node__Data(markdown         = "not-a-bool"                      ,
                                         node_shape      = Schema__Mermaid__Node__Shape.circle,

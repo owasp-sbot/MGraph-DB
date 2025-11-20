@@ -1,3 +1,5 @@
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe import type_safe
+
 from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Node               import Domain__Mermaid__Node
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Render__Config    import Schema__Mermaid__Render__Config
 from osbot_utils.utils.Misc                                                 import random_text
@@ -18,6 +20,7 @@ class Mermaid__Edit(MGraph__Edit):
         self.render_config().directives.append(directive)
         return self
 
+    @type_safe
     def add_edge(self, from_node_key:Safe_Id, to_node_key:Safe_Id, label:str=None) -> Domain__Mermaid__Edge:
         nodes__by_key = self.data().nodes__by_key()
         from_node     = nodes__by_key.get(from_node_key)            # todo: add method to data to get these nodes

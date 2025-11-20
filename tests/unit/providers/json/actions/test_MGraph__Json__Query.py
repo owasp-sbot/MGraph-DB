@@ -6,6 +6,7 @@ from osbot_utils.testing.__helpers                              import obj
 from mgraph_db.providers.json.MGraph__Json                      import MGraph__Json
 from mgraph_db.providers.json.actions.MGraph__Json__Query       import MGraph__Json__Query
 
+# todo: fix these tests
 class test_MGraph__Json__Query(TestCase):
 
     @classmethod

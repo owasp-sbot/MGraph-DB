@@ -2,7 +2,7 @@ from __future__ import annotations
 from enum import Enum
 
 
-class Schema__Mermaid__Node__Shape(Enum):
+class Schema__Mermaid__Node__Shape(tuple, Enum):
     asymmetric          = ('>'  ,  ']'  )        # Asymmetric
     circle              = ('((' ,  '))' )        # Circle, used for endpoints or start/end points
     cylindrical         = ('[(' ,  ')]' )        # Cylindrical

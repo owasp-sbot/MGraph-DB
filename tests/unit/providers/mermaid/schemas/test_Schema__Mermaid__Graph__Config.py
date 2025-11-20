@@ -1,4 +1,8 @@
+import re
 from unittest                                                            import TestCase
+
+import pytest
+
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types          import Schema__Mermaid__Types
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph__Config  import Schema__Mermaid__Graph__Config
 
@@ -19,10 +23,10 @@ class test_Schema__Mermaid__Graph__Config(TestCase):
 
 
     def test_type_safety_validation(self):                                          # Tests type safety validations
-        with self.assertRaises(ValueError) as context:
+        error_message = "On Schema__Mermaid__Graph__Config, invalid type for attribute 'graph_title'. Expected '<class 'str'>' but got '<class 'int'>'"
+        with pytest.raises(ValueError, match=re.escape(error_message)):
             Schema__Mermaid__Graph__Config(allow_circle_edges   = True ,
                                            allow_duplicate_edges= False,
                                            graph_title          = 123  ) # Invalid type for title
 
-        assert "Invalid type for attribute" in str(context.exception)
 

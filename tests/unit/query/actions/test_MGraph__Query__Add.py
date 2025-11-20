@@ -1,4 +1,8 @@
+import re
 from unittest                                                                   import TestCase
+
+import pytest
+
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                               import Domain__MGraph__Node
 from mgraph_db.mgraph.MGraph                                                    import MGraph
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                              import Domain__MGraph__Graph
@@ -56,10 +60,12 @@ class test_MGraph__Query__Add(TestCase):
         assert current_nodes    == {node.node_id}
         assert current_edges    == set()  # No edges added
 
-        invalid_result               = add_action.add_node_id('invalid_id')         # Test adding non-existent node
+        error_message = "in Obj_Id: value provided was not a valid Obj_Id: invalid_id"
+        with pytest.raises(ValueError, match=re.escape(error_message)):
+            add_action.add_node_id('invalid_id')                                            # Test adding non-existent node
         current_nodes, current_edges = self.query.get_current_ids()
 
-        assert invalid_result   == add_action  # Should return self
+
         assert current_nodes    == {node.node_id}                                     # No change to nodes
         assert current_edges    == set()
 
@@ -86,12 +92,18 @@ class test_MGraph__Query__Add(TestCase):
         assert current_nodes == {node_1.node_id, node_2.node_id, node_3.node_id}
 
         # Test adding mix of valid and invalid nodes
-        add_action.add_nodes_ids({node_1.node_id, 'invalid_id'})
+        error_message = "in Obj_Id: value provided was not a valid Obj_Id: invalid_id"
+        with pytest.raises(ValueError, match=re.escape(error_message)):
+            add_action.add_nodes_ids({node_1.node_id, 'invalid_id'})
+
         current_nodes, _ = self.query.get_current_ids()
         assert current_nodes == {node_1.node_id, node_2.node_id, node_3.node_id}
 
         # Test adding only invalid nodes
-        add_action.add_nodes_ids({'invalid_1', 'invalid_2'})
+        error_message = "in Obj_Id: value provided was not a valid Obj_Id: "            # we can't put invalid_1 in the error message to pick up because {'invalid_1', 'invalid_2'} is set
+        with pytest.raises(ValueError, match=re.escape(error_message)):
+            add_action.add_nodes_ids({'invalid_1', 'invalid_2'})
+
         current_nodes, _ = self.query.get_current_ids()
         assert current_nodes == {node_1.node_id, node_2.node_id, node_3.node_id}
 
