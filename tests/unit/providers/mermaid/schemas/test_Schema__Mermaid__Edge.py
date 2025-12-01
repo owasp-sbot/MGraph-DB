@@ -3,6 +3,7 @@ import pytest
 from unittest                                                            import TestCase
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge           import Schema__Mermaid__Edge
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge__Config   import Schema__Mermaid__Edge__Config
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
 
 
@@ -13,8 +14,8 @@ class test_Schema__Mermaid__Edge(TestCase):
 
         self.edge = Schema__Mermaid__Edge(edge_config  = self.edge_config         ,
                                           edge_type    = Schema__Mermaid__Edge    ,
-                                          from_node_id = Obj_Id()                 ,
-                                          to_node_id   = Obj_Id()                 ,
+                                          from_node_id = Node_Id(Obj_Id())        ,
+                                          to_node_id   = Node_Id(Obj_Id())        ,
                                           label        = "Test Edge"              )
 
     def test_init(self):                                                            # Tests basic initialization and type checking
@@ -28,8 +29,8 @@ class test_Schema__Mermaid__Edge(TestCase):
         with pytest.raises(ValueError, match=re.escape(error_message)):
             Schema__Mermaid__Edge(edge_config  = self.edge_config      ,
                                   edge_type    = Schema__Mermaid__Edge ,
-                                  from_node_id = Obj_Id()              ,
-                                  to_node_id   = Obj_Id()              ,
+                                  from_node_id = Node_Id(Obj_Id())     ,
+                                  to_node_id   = Node_Id(Obj_Id())     ,
                                   label        = 123                   ) # Invalid type for label
 
 

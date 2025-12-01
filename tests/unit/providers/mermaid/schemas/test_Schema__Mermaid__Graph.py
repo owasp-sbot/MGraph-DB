@@ -1,6 +1,8 @@
 import re
 import pytest
 from unittest                                                            import TestCase
+
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
 from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__List    import Type_Safe__List
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Types          import Schema__Mermaid__Types
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
@@ -26,8 +28,8 @@ class test_Schema__Mermaid__Graph(TestCase):
                                                             label       = "Test Node"                     )
         self.edge          = Schema__Mermaid__Edge         (edge_config  = Schema__Mermaid__Edge__Config(),
                                                             edge_type    = Schema__Mermaid__Edge          ,
-                                                            from_node_id = Obj_Id()                       ,
-                                                            to_node_id   = Obj_Id()                       ,
+                                                            from_node_id = Node_Id(Obj_Id())              ,
+                                                            to_node_id   = Node_Id(Obj_Id())              ,
                                                             label        = "Test Edge"                    )
         self.graph          = Schema__Mermaid__Graph       (schema_types = self.schema_types              ,
                                                             edges        = {self.edge.edge_id: self.edge} ,

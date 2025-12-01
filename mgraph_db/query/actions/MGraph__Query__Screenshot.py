@@ -1,5 +1,4 @@
 import io
-from PIL                                                 import Image
 from mgraph_db.mgraph.MGraph                             import MGraph
 from mgraph_db.query.MGraph__Query                       import MGraph__Query
 from mgraph_db.query.actions.MGraph__Query__Export__View import MGraph__Query__Export__View
@@ -89,6 +88,7 @@ class MGraph__Query__Screenshot(Type_Safe):
 
 
     def merge_images_side_by_side(self, png_bytes1, png_bytes2, save_to_path):
+        from PIL                                                 import Image
         # Open images from bytes
         img1 = Image.open(io.BytesIO(png_bytes1))
         img2 = Image.open(io.BytesIO(png_bytes2))

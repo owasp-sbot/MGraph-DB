@@ -1,3 +1,4 @@
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
 from osbot_utils.type_safe.type_safe_core.decorators.type_safe          import type_safe
 from mgraph_db.providers.graph_rag.mgraph.MGraph__Graph_RAG__Entity     import MGraph__Graph_RAG__Entity
 from mgraph_db.providers.graph_rag.schemas.Schema__Graph_RAG__Entity    import Schema__Graph_RAG__Entity
@@ -24,13 +25,13 @@ class Graph_RAG__Create_MGraph(Type_Safe):
             self.add_entity(entity)
         return self
 
-    def add__text_id(self, source_id: Obj_Id):
+    def add__text_id(self, source_id: Node_Id):
         return self.builder().add_node(value=source_id, node_type=Schema__MGraph__RAG__Node__Text_Id)
 
-    def add__source_id(self, source_id: Obj_Id):
+    def add__source_id(self, source_id: Node_Id):
         return self.builder().add_node(value=source_id, node_type=Schema__MGraph__RAG__Node__Source_Id)
 
-    def link__text_id(self, text_id: Obj_Id):
+    def link__text_id(self, text_id: Node_Id):
         return self.builder().add_predicate("text-id", text_id, node_type=Schema__MGraph__RAG__Node__Text_Id)
 
     def link__concept   (self, target: str, link_type="concept" ):   return self.builder().add_predicate(link_type, target, node_type=Schema__MGraph__RAG__Node__Concept   )
@@ -44,7 +45,7 @@ class Graph_RAG__Create_MGraph(Type_Safe):
     def add__direct_relationships(self, entity: Schema__Graph_RAG__Entity):
         with self.builder() as _:
             if self.config__add_group_nodes:
-                _.add_predicate('direct', 'relationships', key=Obj_Id())
+                _.add_predicate('direct', 'relationships', key=Obj_Id())            # todo: review the use of Obj_Id and see if can use a better type (for example Predicate_Id)
             for direct_relationship in entity.direct_relationships:
                 target    = direct_relationship.entity
                 link_type = direct_relationship.relationship_type

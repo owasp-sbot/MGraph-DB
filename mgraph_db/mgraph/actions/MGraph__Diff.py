@@ -2,8 +2,10 @@ from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domai
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
 from mgraph_db.mgraph.domain.Domain__MGraph__Edge                   import Domain__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Diff                  import Schema__MGraph__Diff, Schema__MGraph__Node__Changes, Schema__MGraph__Change__Data, Schema__MGraph__Change__Type, Schema__MGraph__Edge__Changes, Schema__MGraph__Change__Node
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
+
 
 class MGraph__Diff(Type_Safe):
     graph_a: Domain__MGraph__Graph
@@ -48,7 +50,7 @@ class MGraph__Diff(Type_Safe):
             edges_count_diff = len(edges_b) - len(edges_a)
         )
 
-    def compare_node_data(self, node_id: Obj_Id) -> Schema__MGraph__Node__Changes:
+    def compare_node_data(self, node_id: Node_Id) -> Schema__MGraph__Node__Changes:
         """Compare data for a specific node between the two graphs"""
         node_a = self.graph_a.node(node_id)
         node_b = self.graph_b.node(node_id)
@@ -90,7 +92,7 @@ class MGraph__Diff(Type_Safe):
 
         return changes
 
-    def compare_edge_data(self, edge_id: Obj_Id) -> Schema__MGraph__Edge__Changes:
+    def compare_edge_data(self, edge_id: Edge_Id) -> Schema__MGraph__Edge__Changes:
         """Compare data for a specific edge between the two graphs"""
         edge_a = self.graph_a.edge(edge_id)
         edge_b = self.graph_b.edge(edge_id)

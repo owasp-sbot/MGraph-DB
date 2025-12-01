@@ -4,6 +4,7 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                      import S
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge          import Schema__Mermaid__Edge
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge__Config  import Schema__Mermaid__Edge__Config
 from mgraph_db.providers.mermaid.models.Model__Mermaid__Edge            import Model__Mermaid__Edge
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id       import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                    import Type_Safe
 
@@ -11,8 +12,8 @@ from osbot_utils.type_safe.Type_Safe                                    import T
 class test_Model__Mermaid__Edge(TestCase):
 
     def setUp(self):                                                                        # Initialize test data
-        self.from_node_id = Obj_Id()
-        self.to_node_id   = Obj_Id()
+        self.from_node_id = Node_Id(Obj_Id())
+        self.to_node_id   = Node_Id(Obj_Id())
         self.edge_config  = Schema__Mermaid__Edge__Config(                                        )
         self.edge         = Schema__Mermaid__Edge        (edge_config    = self.edge_config       ,
                                                           edge_type      = Schema__Mermaid__Edge  ,

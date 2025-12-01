@@ -7,8 +7,9 @@ from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domai
 from mgraph_db.mgraph.models.Model__MGraph__Graph                   import Model__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 
 
 class Domain__MGraph__Graph(Type_Safe):
@@ -17,16 +18,17 @@ class Domain__MGraph__Graph(Type_Safe):
     graph_type   : Type['Domain__MGraph__Graph']
 
 
-    def delete_edge(self, edge_id: Obj_Id) -> bool:
+    def delete_edge(self, edge_id: Edge_Id) -> bool:
         return self.model.delete_edge(edge_id)
 
-    def delete_node(self, node_id: Obj_Id) -> bool:
+    def delete_node(self, node_id: Node_Id) -> bool:
         return self.model.delete_node(node_id)
 
-    def edge(self, edge_id: Obj_Id) -> Domain__MGraph__Edge:
+    def edge(self, edge_id: Edge_Id) -> Domain__MGraph__Edge:
         edge = self.model.edge(edge_id)
         if edge:
             return self.mgraph_edge(edge=edge)
+        return None
 
     def edges(self) -> List[Domain__MGraph__Edge]:
         return [self.mgraph_edge(edge=edge) for edge in self.model.edges()]
@@ -68,7 +70,7 @@ class Domain__MGraph__Graph(Type_Safe):
         return self.mgraph_node(node=node)
 
     # todo: check this logic to if we need to create new objects every time this is called
-    def node(self, node_id: Obj_Id) -> Domain__MGraph__Node:
+    def node(self, node_id: Node_Id) -> Domain__MGraph__Node:
         node = self.model.node(node_id)
         if node:
             return self.mgraph_node(node=node)

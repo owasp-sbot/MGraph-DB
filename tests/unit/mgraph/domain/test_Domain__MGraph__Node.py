@@ -1,4 +1,5 @@
 from unittest                                                       import TestCase
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
 from mgraph_db.mgraph.models.Model__MGraph__Node                    import Model__MGraph__Node
 from mgraph_db.mgraph.models.Model__MGraph__Graph                   import Model__MGraph__Graph
@@ -6,7 +7,7 @@ from mgraph_db.mgraph.models.Model__MGraph__Edge                    import Model
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data            import Schema__MGraph__Node__Data
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 
 
 class test_Domain__MGraph__Node(TestCase):
@@ -22,10 +23,10 @@ class test_Domain__MGraph__Node(TestCase):
         self.graph.add_node(self.node.node.data)
 
     def test_init(self):                                                                             # Tests basic initialization
-        assert type(self.node)        is Domain__MGraph__Node
-        assert self.node.node         is self.model_node
-        assert self.node.graph        is self.graph
-        assert type(self.node.node_id) is Obj_Id
+        assert type(self.node)         is Domain__MGraph__Node
+        assert self.node.node          is self.model_node
+        assert self.node.graph         is self.graph
+        assert type(self.node.node_id) is Node_Id
 
     def test_add_node(self):                                                                         # Tests node addition functionality
         new_node_data    = Schema__MGraph__Node__Data()
@@ -129,6 +130,6 @@ class test_Domain__MGraph__Node(TestCase):
         assert connected_node.data is other_schema_node
 
         # Test with unconnected edge
-        edge.from_node_id = Obj_Id()
-        edge.to_node_id   = Obj_Id()
+        edge.from_node_id = Node_Id(Obj_Id())
+        edge.to_node_id   = Node_Id(Obj_Id())
         assert self.node.model__node_from_edge(model_edge) is None

@@ -33,18 +33,21 @@ class test_MGraph__Index__Values(TestCase):
                                                                  value_type = value_type)
         hash_str              = f"schema__mgraph__node__value::{value_type.__module__}.{value_type.__name__}::{value}"
         value_node_id         = value_node.node_id
+        value_node_id_str     = str(value_node_id)                                          # Convert to primitive string for JSON comparison
+
         with self.value_index as _:
 
             _.add_value_node(value_node)
 
             expected_hash        = _.calculate_hash(str, value, node_type=type(value_node))
+            expected_hash_str    = str(expected_hash)                                       # Convert to primitive string for JSON comparison
             expected_hash_type   = _.index_data.type_by_value[expected_hash]
             assert expected_hash == str_md5(hash_str)[:SIZE__VALUE_HASH]
             assert expected_hash == "3f2e519923"
-            assert _.index_data.json() == { 'hash_to_node'  : { expected_hash : value_node_id    },
-                                            'node_to_hash'  : { value_node_id : expected_hash    },
-                                            'type_by_value' : { expected_hash : 'builtins.str'   },
-                                            'values_by_type': { 'builtins.str':  {expected_hash}}}
+            assert _.index_data.json() == { 'hash_to_node'  : { expected_hash_str : value_node_id_str  },
+                                            'node_to_hash'  : { value_node_id_str : expected_hash_str  },
+                                            'type_by_value' : { expected_hash_str : 'builtins.str'     },
+                                            'values_by_type': { 'builtins.str'    : {expected_hash_str}}}
 
             assert value_type           is str
             assert value_node.node_id   in _.index_data.node_to_hash
@@ -62,20 +65,26 @@ class test_MGraph__Index__Values(TestCase):
             return node
 
         with self.value_index as _:
-            int_value      = 42
-            float_value    = 3.14
-            bool_value     = True
-            int_node       = create_value_node(int_value  )
-            float_node     = create_value_node(float_value)
-            bool_node      = create_value_node(bool_value )
-            int_node_id    = int_node.node_id
-            float_node_id  = float_node.node_id
-            bool_node_id   = bool_node.node_id
-            node_type      = Schema__MGraph__Node__Value
-            node_type_name = node_type.__name__
-            int_hash_str   = lower(f"{node_type_name}::{int.__module__}.{int.__name__}::{int_value}"       )
-            float_hash_str = lower(f"{node_type_name}::{float.__module__}.{float.__name__}::{float_value}" )
-            bool_hash_str  = lower(f"{node_type_name}::{bool.__module__}.{bool.__name__}::{bool_value}"    )
+            int_value         = 42
+            float_value       = 3.14
+            bool_value        = True
+            int_node          = create_value_node(int_value  )
+            float_node        = create_value_node(float_value)
+            bool_node         = create_value_node(bool_value )
+            int_node_id       = int_node.node_id
+            float_node_id     = float_node.node_id
+            bool_node_id      = bool_node.node_id
+
+            # Convert to primitive strings for JSON comparison
+            int_node_id_str   = str(int_node_id)
+            float_node_id_str = str(float_node_id)
+            bool_node_id_str  = str(bool_node_id)
+
+            node_type         = Schema__MGraph__Node__Value
+            node_type_name    = node_type.__name__
+            int_hash_str      = lower(f"{node_type_name}::{int.__module__}.{int.__name__}::{int_value}"       )
+            float_hash_str    = lower(f"{node_type_name}::{float.__module__}.{float.__name__}::{float_value}" )
+            bool_hash_str     = lower(f"{node_type_name}::{bool.__module__}.{bool.__name__}::{bool_value}"    )
 
             _.add_value_node(int_node  )
             _.add_value_node(float_node)
@@ -97,18 +106,18 @@ class test_MGraph__Index__Values(TestCase):
             assert '12b2368328'     == str_md5(float_hash_str)[:SIZE__VALUE_HASH]
             assert '62bb187439'     == str_md5(bool_hash_str )[:SIZE__VALUE_HASH]
 
-            assert _.index_data.json() == { 'hash_to_node' : { '62bb187439'     : bool_node_id    ,
-                                                               'f8bb59eae6'     : int_node_id     ,
-                                                               '12b2368328'     : float_node_id   },
-                                            'node_to_hash'  : { bool_node_id    : '62bb187439'    ,
-                                                                float_node_id   : '12b2368328'    ,
-                                                                int_node_id     : 'f8bb59eae6'    },
-                                            'type_by_value' : { '62bb187439'    : 'builtins.bool' ,
-                                                                'f8bb59eae6'    : 'builtins.int'  ,
-                                                                '12b2368328'    : 'builtins.float'},
-                                            'values_by_type': { 'builtins.float': {'12b2368328'   },
-                                                                'builtins.bool' : {'62bb187439'   },
-                                                                'builtins.int'  : {'f8bb59eae6'   }}}
+            assert _.index_data.json() == { 'hash_to_node' : { '62bb187439'       : bool_node_id_str  ,
+                                                               'f8bb59eae6'       : int_node_id_str   ,
+                                                               '12b2368328'       : float_node_id_str },
+                                            'node_to_hash'  : { bool_node_id_str  : '62bb187439'      ,
+                                                                float_node_id_str : '12b2368328'      ,
+                                                                int_node_id_str   : 'f8bb59eae6'      },
+                                            'type_by_value' : { '62bb187439'      : 'builtins.bool'   ,
+                                                                'f8bb59eae6'      : 'builtins.int'    ,
+                                                                '12b2368328'      : 'builtins.float'  },
+                                            'values_by_type': { 'builtins.float'  : {'12b2368328'     },
+                                                                'builtins.bool'   : {'62bb187439'     },
+                                                                'builtins.int'    : {'f8bb59eae6'     }}}
 
     def test_add_value_node__special_characters(self):                           # Test special character handling
         value = "test::value::with::colons"
@@ -167,6 +176,7 @@ class test_MGraph__Index__Values(TestCase):
         value_node           = Schema__MGraph__Node__Value()
         value_node.node_data = Schema__MGraph__Node__Value__Data(value= "test_value", value_type = str)
         value_node_id        = value_node.node_id
+        value_node_id_str    = str(value_node_id)                                   # Convert to primitive string for JSON comparison
         self.mgraph.edit().add_node(value_node)
 
         with self.value_index as _:
@@ -179,10 +189,10 @@ class test_MGraph__Index__Values(TestCase):
             assert hash_value in _.index_data.values_by_type[str]
             assert hash_value in _.index_data.type_by_value
 
-            assert _.index_data.json() == { 'hash_to_node'  : {'3f2e519923'   : value_node_id   },
-                                            'node_to_hash'  : {value_node_id  : '3f2e519923'    },
-                                            'type_by_value' : {'3f2e519923'   : 'builtins.str'  },
-                                            'values_by_type': { 'builtins.str': {'3f2e519923'  }}}
+            assert _.index_data.json() == { 'hash_to_node'  : {'3f2e519923'     : value_node_id_str },
+                                            'node_to_hash'  : {value_node_id_str: '3f2e519923'      },
+                                            'type_by_value' : {'3f2e519923'     : 'builtins.str'    },
+                                            'values_by_type': { 'builtins.str'  : {'3f2e519923'    }}}
 
             # Remove node
             _.remove_value_node(value_node)

@@ -2,6 +2,8 @@ from unittest                                                       import TestC
 from mgraph_db.query.models.Model__MGraph__Query__Views             import Model__MGraph__Query__Views
 from mgraph_db.query.schemas.Schema__MGraph__Query__Views           import Schema__MGraph__Query__Views
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from osbot_utils.utils.Objects                                      import base_types
 from mgraph_db.query.models.Model__MGraph__Query__View              import Model__MGraph__Query__View
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
@@ -12,8 +14,8 @@ class test_Model__MGraph__Query__Views(TestCase):
                                                         first_view_id   = None           ,
                                                         current_view_id = None           )
         self.query_views = Model__MGraph__Query__Views( data            = self.views_data)
-        self.nodes_ids   = {Obj_Id(), Obj_Id()}
-        self.edges_ids   = {Obj_Id(), Obj_Id()}
+        self.nodes_ids  = { Node_Id(Obj_Id()), Node_Id(Obj_Id())}
+        self.edges_ids  = { Edge_Id(Obj_Id()), Edge_Id(Obj_Id())}
 
     def test_init(self):                                                                            # Test basic initialization
         assert type(self.query_views)                is Model__MGraph__Query__Views

@@ -78,9 +78,9 @@ class test_MGraph__Diff(TestCase):
                                    'edges_removed'      : [],
                                    'nodes_added'        : [],
                                    'nodes_count_diff'   : 0,
-                                   'nodes_modified'     : {node_a.node_id: {'data'    : None                                     ,
-                                                                            'type'    : {'from_value': 'test_MGraph__Diff.NodeA' ,
-                                                                                         'to_value'  : 'test_MGraph__Diff.NodeB'}}},
+                                   'nodes_modified'     : { str(node_a.node_id): {'data'    : None                                     ,
+                                                                                  'type'    : {'from_value': 'test_MGraph__Diff.NodeA' ,
+                                                                                               'to_value'  : 'test_MGraph__Diff.NodeB'}}},
                                  'nodes_removed': []}
 
     def test_compare_edges(self):
@@ -186,9 +186,9 @@ class test_MGraph__Diff(TestCase):
                                  'edges_removed'    : [],
                                  'nodes_added'      : [],
                                  'nodes_count_diff' : 0,
-                                 'nodes_modified'   : {node_a_id: { 'data': { 'from_value': { 'value'     : 'original_value'},
-                                                                              'to_value'  : { 'value'     : 'new_value'     }},
-                                                                    'type': None}},
+                                 'nodes_modified'   : { str(node_a_id): { 'data': { 'from_value': { 'value'     : 'original_value'},
+                                                                                    'to_value'  : { 'value'     : 'new_value'     }},
+                                                                          'type': None}},
                                  'nodes_removed': []}
 
         changes = diff.compare_node_data(node_a.node_id)
@@ -221,10 +221,8 @@ class test_MGraph__Diff(TestCase):
         assert edge_a.edge_id in stats.edges_modified
         assert changes.type is None  # No type change
         assert changes.from_node is None  # No from_node change
-        assert changes.to_node.obj() == __(
-            from_value = node_a2.node_id,
-            to_value = node_b3.node_id
-        )
+        assert changes.to_node.obj() == __(from_value = node_a2.node_id,
+                                           to_value   = node_b3.node_id)
 
     def test_edge_type_changes(self):
         class EdgeTypeA(Schema__MGraph__Edge): pass
@@ -290,16 +288,16 @@ class test_MGraph__Diff(TestCase):
 
         assert stats.json() == { 'edges_added'     : [edge_b3.edge_id],
                                  'edges_count_diff': 0,
-                                 'edges_modified'  : {edge_a1.edge_id:  { 'from_node': None,
-                                                                          'to_node'  : None,
-                                                                          'type'     : { 'from_value': type_full_name(Schema__MGraph__Edge),
-                                                                                         'to_value'  : 'test_MGraph__Diff.CustomEdge'      }}},
+                                 'edges_modified'  : {str(edge_a1.edge_id):  { 'from_node': None,
+                                                                               'to_node'  : None,
+                                                                               'type'     : { 'from_value': type_full_name(Schema__MGraph__Edge),
+                                                                                              'to_value'  : 'test_MGraph__Diff.CustomEdge'      }}},
                                  'edges_removed'   : [edge_a2.edge_id],
                                  'nodes_added'     : [node_b4.node_id],
                                  'nodes_count_diff': 0,
-                                 'nodes_modified'  : { node_a2.node_id: { 'data': None,
-                                                                          'type': { 'from_value': 'test_MGraph__Diff.CustomNode',
-                                                                                    'to_value'  : type_full_name(Schema__MGraph__Node)}}},
+                                 'nodes_modified'  : { str(node_a2.node_id): { 'data': None,
+                                                                               'type': { 'from_value': 'test_MGraph__Diff.CustomNode',
+                                                                                         'to_value'  : type_full_name(Schema__MGraph__Node)}}},
                                  'nodes_removed'   : [node_a3.node_id] }
 
     def test_empty_and_null_cases(self):

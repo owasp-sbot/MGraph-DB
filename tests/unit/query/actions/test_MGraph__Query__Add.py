@@ -58,7 +58,7 @@ class test_MGraph__Query__Add(TestCase):
         assert current_nodes    == {node.node_id}
         assert current_edges    == set()  # No edges added
 
-        error_message = "in Obj_Id: value provided was not a valid Obj_Id: invalid_id"
+        error_message = "Parameter 'node_id' expected type <class 'osbot_utils.type_safe.primitives.domains.identifiers.Node_Id.Node_Id'>, but got <class 'str'>"
         with pytest.raises(ValueError, match=re.escape(error_message)):
             add_action.add_node_id('invalid_id')                                            # Test adding non-existent node
         current_nodes, current_edges = self.query.get_current_ids()
@@ -90,7 +90,7 @@ class test_MGraph__Query__Add(TestCase):
         assert current_nodes == {node_1.node_id, node_2.node_id, node_3.node_id}
 
         # Test adding mix of valid and invalid nodes
-        error_message = "in Obj_Id: value provided was not a valid Obj_Id: invalid_id"
+        error_message = "Parameter 'node_id' expected type <class 'osbot_utils.type_safe.primitives.domains.identifiers.Node_Id.Node_Id'>, but got <class 'str'>"
         with pytest.raises(ValueError, match=re.escape(error_message)):
             add_action.add_nodes_ids({node_1.node_id, 'invalid_id'})
 
@@ -98,7 +98,7 @@ class test_MGraph__Query__Add(TestCase):
         assert current_nodes == {node_1.node_id, node_2.node_id, node_3.node_id}
 
         # Test adding only invalid nodes
-        error_message = "in Obj_Id: value provided was not a valid Obj_Id: "            # we can't put invalid_1 in the error message to pick up because {'invalid_1', 'invalid_2'} is set
+        error_message = "Parameter 'node_id' expected type <class 'osbot_utils.type_safe.primitives.domains.identifiers.Node_Id.Node_Id'>, but got <class 'str'>"
         with pytest.raises(ValueError, match=re.escape(error_message)):
             add_action.add_nodes_ids({'invalid_1', 'invalid_2'})
 
