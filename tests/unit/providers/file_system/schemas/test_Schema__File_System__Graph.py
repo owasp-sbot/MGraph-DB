@@ -1,9 +1,8 @@
 import re
 import pytest
 from unittest                                                                    import TestCase
-
-from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id import Edge_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id                import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id                import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.safe_int.Timestamp_Now import Timestamp_Now
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                               import Schema__MGraph__Edge
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                 import Obj_Id

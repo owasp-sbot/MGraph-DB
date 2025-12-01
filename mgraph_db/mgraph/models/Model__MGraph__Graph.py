@@ -1,7 +1,5 @@
 from typing                                                             import List
-
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id import Obj_Id
-
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id       import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id       import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Graph_Id      import Graph_Id
