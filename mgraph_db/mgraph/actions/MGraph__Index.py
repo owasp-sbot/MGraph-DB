@@ -3,8 +3,8 @@ from mgraph_db.mgraph.actions.MGraph__Index__Values                 import MGrap
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.schemas.identifiers.Edge_Path                 import Edge_Path
 from mgraph_db.mgraph.schemas.identifiers.Node_Path                 import Node_Path
-from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id import Edge_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
 from osbot_utils.utils.Dev                                          import pprint
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
@@ -240,6 +240,11 @@ class MGraph__Index(Type_Safe):
         index_data = self.index_data.json()                                         # get json (serialised) representation of the index object
         return json_file_create(index_data, target_file)                            # save it to the target file
 
+
+    # ============================================================================
+    # Stats
+    # ============================================================================
+
     def stats(self) -> Dict[str, Any]:                                              # Returns statistical summary of index data
         edge_counts = {                                                             # Calculate total edges per node
             node_id: {
@@ -251,28 +256,43 @@ class MGraph__Index(Type_Safe):
         }
         avg_incoming_edges = sum(n['incoming'] for n in edge_counts.values()) / len(edge_counts) if edge_counts else 0
         avg_outgoing_edges = sum(n['outgoing'] for n in edge_counts.values()) / len(edge_counts) if edge_counts else 0
-        stats_data = {                                                              # Initialize stats dictionary
+
+        stats_data = {
             'index_data': {
-                'edge_to_nodes'          : len(self.index_data.edges_to_nodes)          ,
-                'edges_by_type'          : {k: len(v) for k,v in
-                                          self.index_data.edges_by_type.items()}        ,
-                'edges_by_path'          : {str(k): len(v) for k,v in                    # New: path stats
-                                          self.index_data.edges_by_path.items()}        ,
-                'nodes_by_type'          : {k: len(v) for k,v in
-                                          self.index_data.nodes_by_type.items()}        ,
-                'nodes_by_path'          : {str(k): len(v) for k,v in                    # New: path stats
-                                          self.index_data.nodes_by_path.items()}        ,
-                'node_edge_connections'   : {
-                    'total_nodes'        : len(edge_counts)                            ,
-                    'avg_incoming_edges' : round(avg_incoming_edges),
-                    'avg_outgoing_edges' : round(avg_outgoing_edges),
-                    'max_incoming_edges' : max((n['incoming'] for n in edge_counts.values()), default=0),
-                    'max_outgoing_edges' : max((n['outgoing'] for n in edge_counts.values()), default=0)
+                'edge_to_nodes'         : len(self.index_data.edges_to_nodes)                          ,
+                'edges_by_type'         : {k: len(v) for k, v in
+                                           self.index_data.edges_by_type.items()}                      ,
+                'edges_by_path'         : {str(k): len(v) for k, v in
+                                           self.index_data.edges_by_path.items()}                      ,
+                'nodes_by_type'         : {k: len(v) for k, v in
+                                           self.index_data.nodes_by_type.items()}                      ,
+                'nodes_by_path'         : {str(k): len(v) for k, v in
+                                           self.index_data.nodes_by_path.items()}                      ,
+                'node_edge_connections' : {
+                    'total_nodes'       : len(edge_counts)                                             ,
+                    'avg_incoming_edges': round(avg_incoming_edges)                                    ,
+                    'avg_outgoing_edges': round(avg_outgoing_edges)                                    ,
+                    'max_incoming_edges': max((n['incoming'] for n in edge_counts.values()), default=0),
+                    'max_outgoing_edges': max((n['outgoing'] for n in edge_counts.values()), default=0)
                 }
+            },
+            'summary': {                                                                                # REST-friendly summary
+                'total_nodes'      : sum(len(v) for v in self.index_data.nodes_by_type.values())       ,
+                'total_edges'      : len(self.index_data.edges_to_nodes)                               ,
+                'total_predicates' : len(self.index_data.edges_by_predicate)                           ,
+                'unique_node_paths': len(self.index_data.nodes_by_path)                                ,
+                'unique_edge_paths': len(self.index_data.edges_by_path)                                ,
+                'nodes_with_paths' : sum(len(v) for v in self.index_data.nodes_by_path.values())       ,
+                'edges_with_paths' : sum(len(v) for v in self.index_data.edges_by_path.values())       ,
+            },
+            'paths': {                                                                                  # Dedicated path section
+                'node_paths': {str(k): len(v) for k, v in self.index_data.nodes_by_path.items()}       ,
+                'edge_paths': {str(k): len(v) for k, v in self.index_data.edges_by_path.items()}       ,
             }
         }
 
         return stats_data
+
 
     # ---- Existing getters for data ----
 
@@ -335,41 +355,79 @@ class MGraph__Index(Type_Safe):
     def get_edges_by_type(self, edge_type: Type[Schema__MGraph__Edge]) -> Set[Edge_Id]:
         return self.index_data.edges_by_type.get(edge_type.__name__, set())
 
-    # ---- Edge label helpers ----
 
-    def get_edges_by_predicate(self, predicate : Safe_Id) -> Set[Edge_Id]:
+    # ============================================================================
+    # Edge label helpers
+    # ============================================================================
+
+    def get_edges_by_predicate(self, predicate: Safe_Id) -> Set[Edge_Id]:        # Get edges by predicate
         return self.index_data.edges_by_predicate.get(predicate, set())
 
-    def get_edges_by_incoming_label(self, label : Safe_Id) -> Set[Edge_Id]:
+    def get_edges_by_incoming_label(self, label: Safe_Id) -> Set[Edge_Id]:       # Get edges by incoming label
         return self.index_data.edges_by_incoming_label.get(label, set())
 
-    def get_edges_by_outgoing_label(self, label : Safe_Id) -> Set[Edge_Id]:
+    def get_edges_by_outgoing_label(self, label: Safe_Id) -> Set[Edge_Id]:       # Get edges by outgoing label
         return self.index_data.edges_by_outgoing_label.get(label, set())
 
-    def get_node_outgoing_edges_by_predicate(self, node_id  : Node_Id  ,
+    def get_node_outgoing_edges_by_predicate(self, node_id  : Node_Id ,
                                                    predicate: Safe_Id
-                                              ) -> Set[Edge_Id]:
+                                              ) -> Set[Edge_Id]:                 # Get outgoing edges by predicate
         outgoing_edges  = self.get_node_id_outgoing_edges(node_id)
         predicate_edges = self.get_edges_by_predicate(predicate)
-        return outgoing_edges.intersection(predicate_edges)
+        return outgoing_edges & predicate_edges
 
-    def get_node_incoming_edges_by_predicate(self, node_id  : Node_Id  ,
+    def get_node_incoming_edges_by_predicate(self, node_id  : Node_Id ,
                                                    predicate: Safe_Id
-                                              ) -> Set[Edge_Id]:
+                                              ) -> Set[Edge_Id]:                 # Get incoming edges by predicate
         incoming_edges  = self.get_node_id_incoming_edges(node_id)
         predicate_edges = self.get_edges_by_predicate(predicate)
-        return incoming_edges.intersection(predicate_edges)
+        return incoming_edges & predicate_edges
 
-    def get_nodes_by_predicate(self, from_node_id: Node_Id  ,
+    def get_nodes_by_predicate(self, from_node_id: Node_Id ,
                                      predicate   : Safe_Id
-                                ) -> Set[Node_Id]:
+                                ) -> Set[Node_Id]:                               # Get target nodes via predicate
         edge_ids = self.get_node_outgoing_edges_by_predicate(from_node_id, predicate)
-        result = set()
+        result   = set()
         for edge_id in edge_ids:
             _, to_node_id = self.index_data.edges_to_nodes.get(edge_id, (None, None))
             if to_node_id:
                 result.add(to_node_id)
         return result
+
+    # ============================================================================
+    # Path Query Methods
+    # ============================================================================
+
+    def get_all_node_paths(self) -> Set[Node_Path]:                              # Get all unique node paths in graph
+        return set(self.index_data.nodes_by_path.keys())
+
+    def get_all_edge_paths(self) -> Set[Edge_Path]:                              # Get all unique edge paths in graph
+        return set(self.index_data.edges_by_path.keys())
+
+    def get_node_path(self, node_id: Node_Id) -> Optional[Node_Path]:            # Get path for a specific node
+        for path, node_ids in self.index_data.nodes_by_path.items():
+            if node_id in node_ids:
+                return path
+        return None
+
+    def get_edge_path(self, edge_id: Edge_Id) -> Optional[Edge_Path]:            # Get path for a specific edge
+        for path, edge_ids in self.index_data.edges_by_path.items():
+            if edge_id in edge_ids:
+                return path
+        return None
+
+    def count_nodes_by_path(self, node_path: Node_Path) -> int:                  # Count nodes at a path
+        return len(self.index_data.nodes_by_path.get(node_path, set()))
+
+    def count_edges_by_path(self, edge_path: Edge_Path) -> int:                  # Count edges at a path
+        return len(self.index_data.edges_by_path.get(edge_path, set()))
+
+    def has_node_path(self, node_path: Node_Path) -> bool:                       # Check if node path exists
+        return node_path in self.index_data.nodes_by_path
+
+    def has_edge_path(self, edge_path: Edge_Path) -> bool:                       # Check if edge path exists
+        return edge_path in self.index_data.edges_by_path
+
 
     # ---- Raw data accessors ----
 
@@ -382,6 +440,12 @@ class MGraph__Index(Type_Safe):
     def nodes_to_incoming_edges_by_type(self): return self.index_data.nodes_to_incoming_edges_by_type
     def nodes_to_outgoing_edges        (self): return self.index_data.nodes_to_outgoing_edges
     def nodes_to_outgoing_edges_by_type(self): return  self.index_data.nodes_to_outgoing_edges_by_type
+
+    def edges_predicates               (self) -> Dict[Edge_Id, Safe_Id]      : return self.index_data.edges_predicates
+    def edges_by_predicate_all         (self) -> Dict[Safe_Id, Set[Edge_Id]] : return self.index_data.edges_by_predicate       # Raw accessor (avoid conflict with query method)
+    def edges_by_incoming_label        (self) -> Dict[Safe_Id, Set[Edge_Id]] : return self.index_data.edges_by_incoming_label
+    def edges_by_outgoing_label        (self) -> Dict[Safe_Id, Set[Edge_Id]] : return self.index_data.edges_by_outgoing_label
+
 
     def edges_ids__from__node_id(self, node_id) -> list:
         with self.index_data as _:
@@ -398,6 +462,8 @@ class MGraph__Index(Type_Safe):
                 (from_node_id, to_node_id) = _.edges_to_nodes[edge_id]
                 nodes_ids.append(to_node_id)
             return nodes_ids
+
+
 
     # ---- Factory methods ----
 

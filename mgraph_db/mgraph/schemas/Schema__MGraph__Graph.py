@@ -15,7 +15,7 @@ class Schema__MGraph__Graph(Type_Safe):
     graph_data   : Schema__MGraph__Graph__Data
     graph_id     : Graph_Id
     graph_path   : Graph_Path                        = None         # Optional path identifier for string-based classification
-    graph_type   : Type['Schema__MGraph__Graph']
+    graph_type   : Type['Schema__MGraph__Graph']     #= None
     nodes        : Dict[Node_Id, Schema__MGraph__Node]
     schema_types : Schema__MGraph__Types
 

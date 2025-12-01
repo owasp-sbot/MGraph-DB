@@ -1,7 +1,6 @@
 from unittest                                                       import TestCase
-
-from osbot_utils.testing.__ import __
-
+from mgraph_db.mgraph.MGraph                                        import MGraph
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
 from mgraph_db.mgraph.schemas.identifiers.Edge_Path                 import Edge_Path
 from mgraph_db.mgraph.schemas.identifiers.Node_Path                 import Node_Path
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
@@ -532,3 +531,152 @@ class test_MGraph__Edit(TestCase):
 
             int_node_2 = _.new_value(42)                                                            # Same value reuses node
             assert int_node.node_id == int_node_2.node_id
+
+
+    # =============================================================================
+    # rebuild_index Tests
+    # =============================================================================
+
+    def test_rebuild_index__returns_fresh_index(self):                           # Test rebuild returns new index
+        with self.graph_edit as _:
+            node = _.new_node()
+
+            index_1 = _.index()
+            index_2 = _.rebuild_index()
+
+            assert type(index_2) is MGraph__Index
+            assert index_1       is not index_2                                  # Different objects
+
+    def test_rebuild_index__reflects_current_state(self):                        # Test rebuild reflects graph state
+        with self.graph_edit as _:
+            node_1 = _.new_node(node_path=Node_Path("initial"))
+
+            initial_index = _.index()
+            assert node_1.node_id in initial_index.get_nodes_by_path(Node_Path("initial"))
+
+            node_2 = _.new_node(node_path=Node_Path("added"))
+
+            rebuilt_index = _.rebuild_index()
+
+            assert node_1.node_id in rebuilt_index.get_nodes_by_path(Node_Path("initial"))
+            assert node_2.node_id in rebuilt_index.get_nodes_by_path(Node_Path("added"))
+
+    def test_rebuild_index__clears_cache(self):                                  # Test that cache is properly cleared
+        with self.graph_edit as _:
+            _ .new_node()
+            index_before = _.index()
+
+            _.rebuild_index()
+
+            index_after = _.index()
+
+            assert index_before != index_after
+            assert index_before is not index_after                               # Cache was cleared
+
+    # =============================================================================
+    # get_or_create_edge with Predicate Tests
+    # =============================================================================
+
+    def test_get_or_create_edge__with_predicate__creates_new(self):              # Test creating edge with predicate
+        with self.graph_edit as _:
+            node_1 = _.new_node()
+            node_2 = _.new_node()
+
+            edge = _.get_or_create_edge(from_node_id = node_1.node_id   ,
+                                        to_node_id   = node_2.node_id   ,
+                                        predicate    = 'test_predicate' )
+
+            assert type(edge) is Domain__MGraph__Edge
+
+    def test_get_or_create_edge__with_predicate__returns_existing(self):         # Test returning existing edge with matching predicate
+        with self.graph_edit as _:
+            from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label import Schema__MGraph__Edge__Label
+
+            node_1 = _.new_node()
+            node_2 = _.new_node()
+
+            edge_label = Schema__MGraph__Edge__Label(predicate=Safe_Id('my_pred'))
+            edge_1     = _.new_edge(from_node_id = node_1.node_id ,
+                                    to_node_id   = node_2.node_id )
+
+            edge_1.edge.data.edge_label = edge_label
+
+            _.index().add_edge_label(edge_1.edge.data)
+
+            edge_2 = _.get_or_create_edge(from_node_id = node_1.node_id ,
+                                          to_node_id   = node_2.node_id ,
+                                          predicate    = 'my_pred'      )
+
+            assert edge_1.edge_id == edge_2.edge_id
+
+    # =============================================================================
+    # Integration Tests
+    # =============================================================================
+
+    def test_full_workflow_with_paths_and_predicates(self):                      # Test complete workflow
+        mgraph = MGraph()
+
+        with mgraph.edit() as edit:
+            root     = edit.new_node(node_path=Node_Path("root"))
+            child_1  = edit.new_node(node_path=Node_Path("root.children"))
+            child_2  = edit.new_node(node_path=Node_Path("root.children"))
+            leaf     = edit.new_node(node_path=Node_Path("root.children.leaf"))
+
+            from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label import Schema__MGraph__Edge__Label
+
+            label_has_child = Schema__MGraph__Edge__Label(predicate=Safe_Id('has_child'))
+
+            edge_1 = edit.new_edge(from_node_id = root.node_id   ,
+                                   to_node_id   = child_1.node_id,
+                                   edge_path    = Edge_Path("root.edges"))
+            edge_1.edge.data.edge_label = label_has_child
+            edit.index().add_edge_label(edge_1.edge.data)
+
+            edge_2 = edit.new_edge(from_node_id = root.node_id   ,
+                                   to_node_id   = child_2.node_id,
+                                   edge_path    = Edge_Path("root.edges"))
+            edge_2.edge.data.edge_label = label_has_child
+            edit.index().add_edge_label(edge_2.edge.data)
+
+            edit.connect_nodes(from_node=child_1, to_node=leaf)
+
+        with mgraph.index() as index:
+            all_node_paths = index.get_all_node_paths()
+            assert len(all_node_paths) == 3                                      # root, root.children, root.children.leaf
+
+            children = index.get_nodes_by_path(Node_Path("root.children"))
+            assert len(children) == 2                                            # Two children at same path
+
+            root_children = index.get_nodes_by_predicate(root.node_id, Safe_Id('has_child'))
+            assert len(root_children) == 2                                       # Two children via predicate
+
+            stats = index.stats()
+            assert stats['summary']['total_nodes']       == 4
+            assert stats['summary']['unique_node_paths'] == 3
+            assert stats['summary']['total_predicates']  == 1
+
+    def test_rebuild_after_modifications(self):                                  # Test rebuild reflects changes
+        mgraph = MGraph()
+
+        with mgraph.edit() as edit:
+            node = edit.new_node(node_path=Node_Path("original"))
+
+            index_1 = edit.index()
+            assert node.node_id in index_1.get_nodes_by_path(Node_Path("original"))
+
+            edit.set_node_path(node.node_id, Node_Path("modified"))
+
+            index_2 = edit.rebuild_index()
+
+            assert node.node_id     in index_2.get_nodes_by_path(Node_Path("modified"))
+            assert node.node_id not in index_2.get_nodes_by_path(Node_Path("original"))
+
+    def test_mgraph_index__accessor(self):                                       # Test MGraph.index() works
+        mgraph = MGraph()
+
+        with mgraph.edit() as edit:
+            node = edit.new_node(node_path=Node_Path("test"))
+
+        with mgraph.index() as index:
+            assert type(index) is MGraph__Index
+            assert node.node_id in index.get_nodes_by_path(Node_Path("test"))

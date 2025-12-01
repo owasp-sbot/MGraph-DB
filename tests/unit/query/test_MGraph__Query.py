@@ -1,22 +1,23 @@
 import pytest
-from unittest                                                       import TestCase
-from osbot_utils.testing.__                                         import __
-from mgraph_db.mgraph.MGraph                                        import MGraph
-from mgraph_db.mgraph.domain.Domain__MGraph__Edge                   import Domain__MGraph__Edge
-from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
-from mgraph_db.providers.simple.schemas.Schema__Simple__Node        import Schema__Simple__Node
-from mgraph_db.mgraph.actions.MGraph__Index                         import MGraph__Index
-from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
-from mgraph_db.providers.simple.MGraph__Simple__Test_Data           import MGraph__Simple__Test_Data
-from mgraph_db.query.MGraph__Query                                  import MGraph__Query
-from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id import Edge_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
-from osbot_utils.utils.Env                                          import load_dotenv
-from osbot_utils.utils.Objects                                      import base_types
-from osbot_utils.type_safe.Type_Safe                                import Type_Safe
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from unittest                                                        import TestCase
+from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Set import Type_Safe__Set
+from osbot_utils.testing.__                                          import __
+from mgraph_db.mgraph.MGraph                                         import MGraph
+from mgraph_db.mgraph.domain.Domain__MGraph__Edge                    import Domain__MGraph__Edge
+from mgraph_db.mgraph.domain.Domain__MGraph__Node                    import Domain__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                   import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value            import Schema__MGraph__Node__Value
+from mgraph_db.providers.simple.schemas.Schema__Simple__Node         import Schema__Simple__Node
+from mgraph_db.mgraph.actions.MGraph__Index                          import MGraph__Index
+from mgraph_db.mgraph.actions.MGraph__Data                           import MGraph__Data
+from mgraph_db.providers.simple.MGraph__Simple__Test_Data            import MGraph__Simple__Test_Data
+from mgraph_db.query.MGraph__Query                                   import MGraph__Query
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id    import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id    import Node_Id
+from osbot_utils.utils.Env                                           import load_dotenv
+from osbot_utils.utils.Objects                                       import base_types
+from osbot_utils.type_safe.Type_Safe                                 import Type_Safe
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id     import Obj_Id
 
 class Test_Edge(Schema__MGraph__Edge): pass                                                 # Create test edge type
 
@@ -350,3 +351,153 @@ class test_MGraph__Query__Methods(TestCase):
             assert current_view.query_operation() == 'with_value'
             assert current_view.query_params()['value_type'] == str.__name__
             assert current_view.query_params()['value'] == "non_existent"
+
+    # =============================================================================
+    # Improved  Coverage Tests
+    # =============================================================================
+
+    def test_reset(self):                                                        # Test reset clears views
+        with self.query as _:
+            _.by_type(Schema__Simple__Node)
+            assert _.current_view().query_operation() == 'by_type'
+
+            _.reset()
+
+            assert _.current_view().query_operation() == 'initial'
+
+    def test_index__accessor(self):                                              # Test index() returns the index
+        with self.query as _:
+            index = _.index()
+
+            assert type(index) is MGraph__Index
+            assert index       is self.mgraph_index
+
+    def test_count__empty(self):                                                 # Test count with empty view
+        with self.query as _:
+            assert _.count() == 0                                                # Initial view is empty
+
+    def test_count__with_nodes(self):                                            # Test count with nodes
+        with self.query as _:
+            _.by_type(Schema__Simple__Node)
+
+            assert _.count() == 3
+
+    def test_value__returns_first_value(self):                                   # Test value() returns first node's value
+        with self.query as _:
+            _.by_type(Schema__Simple__Node)
+
+            value = _.value()
+
+            assert value in ['A', 'B', 'C']                                      # One of the test values
+
+    def test_value__empty_returns_none(self):                                    # Test value() with no nodes
+        with self.query as _:
+            assert _.value() is None
+
+    def test_stats(self):                                                        # Test stats returns expected structure
+        with self.query as _:
+            stats = _.stats()
+
+            assert 'source_graph' in stats
+            assert 'current_view' in stats
+            assert 'nodes'        in stats['source_graph']
+            assert 'edges'        in stats['source_graph']
+
+    def test_nodes_ids(self):                                                    # Test nodes_ids accessor
+        with self.query as _:
+            _.by_type(Schema__Simple__Node)
+
+            nodes = _.nodes_ids()
+
+            assert type(nodes) is Type_Safe__Set
+            assert len(nodes)  == 3
+
+    def test_edges_ids(self):                                                    # Test edges_ids accessor
+        with self.query as _:
+            _.by_type(Schema__Simple__Node)
+
+            edges = _.edges_ids()
+
+            assert type(edges) is Type_Safe__Set
+
+    def test_add_node_id(self):                                                  # Test adding single node to view
+        with self.mgraph.edit() as edit:
+            node = edit.new_node()
+            node_id = node.node_id
+
+        with self.query as _:
+            _.re_index()
+            _.add_node_id(node_id)
+
+            assert node_id in _.nodes_ids()
+
+    def test_add_node_id__invalid(self):                                         # Test adding invalid node
+        with self.query as _:
+            fake_id = Node_Id()
+            _.add_node_id(fake_id)
+
+            assert fake_id not in _.nodes_ids()                                  # Should not be added
+
+    def test_add_nodes_ids(self):                                                # Test adding multiple nodes to view
+        with self.mgraph.edit() as edit:
+            node_1 = edit.new_node()
+            node_2 = edit.new_node()
+            ids = {node_1.node_id, node_2.node_id}
+
+        with self.query as _:
+            _.re_index()
+            _.add_nodes_ids(ids)
+
+            assert node_1.node_id in _.nodes_ids()
+            assert node_2.node_id in _.nodes_ids()
+
+    def test_add_nodes_ids__mixed_valid_invalid(self):                           # Test with mix of valid and invalid
+        with self.mgraph.edit() as edit:
+            node = edit.new_node()
+            valid_id = node.node_id
+            invalid_id = Node_Id()
+
+        with self.query as _:
+            _.re_index()
+            _.add_nodes_ids({valid_id, invalid_id})
+
+            assert valid_id   in _.nodes_ids()
+            assert invalid_id not in _.nodes_ids()
+
+    def test_in_initial_view(self):                                              # Test initial view check
+        with self.query as _:
+            assert _.in_initial_view() is True
+
+            _.by_type(Schema__Simple__Node)
+
+            assert _.in_initial_view() is False
+
+    def test_navigate__accessor(self):                                           # Test navigate() accessor
+        with self.query as _:
+            navigate = _.navigate()
+
+            assert navigate is not None
+            assert navigate is _.navigate()                                      # Cached
+
+    def test_add__accessor(self):                                                # Test add() accessor
+        with self.query as _:
+            add = _.add()
+
+            assert add is not None
+            assert add is _.add()                                                # Cached
+
+    def test_query__accessor(self):                                              # Test query() accessor
+        with self.query as _:
+            query = _.query()
+
+            assert query is not None
+            assert query is _.query()                                            # Cached
+
+    def test_re_index(self):                                                     # Test re_index rebuilds from graph
+        with self.mgraph.edit() as edit:
+            new_node = edit.new_node()
+
+        with self.query as _:
+            _.re_index()
+
+            assert type(_.mgraph_index) is MGraph__Index

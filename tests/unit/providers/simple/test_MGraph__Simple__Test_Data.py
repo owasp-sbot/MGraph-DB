@@ -97,17 +97,33 @@ graph TD
 
     def test__index__stats(self):
         with self.test_data.index() as _:
-            assert _.stats() == {'index_data': { 'edge_to_nodes'        : 2                                           ,
-                                                 'edges_by_path'        : {}                                          ,
-                                                 'edges_by_type'        : { 'Schema__MGraph__Edge'  : 2              },
-
-                                                 'node_edge_connections': { 'avg_incoming_edges'    : 1               ,
-                                                                            'avg_outgoing_edges'    : 1               ,
-                                                                            'max_incoming_edges'    : 1               ,
-                                                                            'max_outgoing_edges'    : 2               ,
-                                                                            'total_nodes'           : 3              },
-                                                 'nodes_by_path'         : {}                                         ,
-                                                 'nodes_by_type'         : { 'Schema__Simple__Node': 3               }}}
+            assert _.stats() == {'index_data': {'edge_to_nodes': 2,
+                                                'edges_by_path': {},
+                                                'edges_by_type': {'Schema__MGraph__Edge': 2},
+                                                'node_edge_connections': {'avg_incoming_edges': 1,
+                                                                          'avg_outgoing_edges': 1,
+                                                                          'max_incoming_edges': 1,
+                                                                          'max_outgoing_edges': 2,
+                                                                          'total_nodes': 3},
+                                                'nodes_by_path': {},
+                                                'nodes_by_type': {'Schema__Simple__Node': 3}},
+                                 'paths': {'edge_paths': {}, 'node_paths': {}},
+                                 'summary': {'edges_with_paths': 0,
+                                             'nodes_with_paths': 0,
+                                             'total_edges': 2,
+                                             'total_nodes': 3,
+                                             'total_predicates': 0,
+                                             'unique_edge_paths': 0,
+                                             'unique_node_paths': 0}} != {'index_data': {'edge_to_nodes': 2,
+                                                'edges_by_path': {},
+                                                'edges_by_type': {'Schema__MGraph__Edge': 2},
+                                                'node_edge_connections': {'avg_incoming_edges': 1,
+                                                                          'avg_outgoing_edges': 1,
+                                                                          'max_incoming_edges': 1,
+                                                                          'max_outgoing_edges': 2,
+                                                                          'total_nodes': 3},
+                                                'nodes_by_path': {},
+                                                'nodes_by_type': {'Schema__Simple__Node': 3}}}
 
 
 

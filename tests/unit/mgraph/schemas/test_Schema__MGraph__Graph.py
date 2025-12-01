@@ -1,6 +1,8 @@
 import re
 import pytest
 from unittest                                                       import TestCase
+from mgraph_db.mgraph.MGraph                                        import MGraph
+from osbot_utils.testing.__                                         import __
 from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                 import Schema__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data           import Schema__MGraph__Graph__Data
@@ -99,3 +101,47 @@ class test_Schema__MGraph__Graph(TestCase):
 
             assert restored.graph_path      == _.graph_path
             assert str(restored.graph_path) == "test.graph.path"
+
+    def test_graph_default_value(self):
+        graph_id = 'c0787747'
+        node_id  = 'adf69958'
+        with Schema__MGraph__Graph(graph_id=graph_id) as _:
+            assert _.obj() == __(graph_path   = None,
+                                 edges        = __(),
+                                 graph_data   = __(),
+                                 graph_id     = graph_id,
+                                 graph_type   = 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph.Schema__MGraph__Graph',
+                                 nodes        = __(),
+                                 schema_types = __(edge_type='mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge',
+                                                   graph_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data',
+                                                   node_type='mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node',
+                                                   node_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data'))
+        with MGraph(graph_id=graph_id) as _:
+            _.edit().new_value("this is a new value", node_id=node_id)
+            assert _.obj() == __(graph         = __(domain_types = __(node_domain_type = 'mgraph_db.mgraph.domain.Domain__MGraph__Node.Domain__MGraph__Node' ,
+                                                                      edge_domain_type = 'mgraph_db.mgraph.domain.Domain__MGraph__Edge.Domain__MGraph__Edge') ,
+
+                                                    model        = __(data = __(graph_path   = None                                                ,
+                                                                                edges        = __()                                               ,
+                                                                                graph_data   = __()                                               ,
+                                                                                graph_id     = graph_id                                           ,
+                                                                                graph_type   = 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph.Schema__MGraph__Graph' ,
+                                                                                nodes        = __(adf69958 = __(node_data = __(value_type = 'builtins.str' ,
+                                                                                                                               value      = 'this is a new value' ,
+                                                                                                                               key        = ''                    ) ,
+                                                                                                                node_id   = 'adf69958'             ,
+                                                                                                                node_type = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value.Schema__MGraph__Node__Value' ,
+                                                                                                                node_path = None))                ,
+                                                                                schema_types = __(edge_type        = 'mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge'             ,
+                                                                                                  graph_data_type = 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data' ,
+                                                                                                  node_type       = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node'               ,
+                                                                                                  node_data_type  = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data')) ,
+
+                                                               model_types = __(node_model_type = 'mgraph_db.mgraph.models.Model__MGraph__Node.Model__MGraph__Node' ,
+                                                                                edge_model_type = 'mgraph_db.mgraph.models.Model__MGraph__Edge.Model__MGraph__Edge')) ,
+
+                                     graph_type      = 'mgraph_db.mgraph.domain.Domain__MGraph__Graph.Domain__MGraph__Graph') ,
+
+                            query_class     = 'mgraph_db.query.MGraph__Query.MGraph__Query'                          ,
+                            edit_class      = 'mgraph_db.mgraph.actions.MGraph__Edit.MGraph__Edit'                   ,
+                            screenshot_class= 'mgraph_db.mgraph.actions.MGraph__Screenshot.MGraph__Screenshot'       )

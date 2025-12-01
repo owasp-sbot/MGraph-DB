@@ -1,4 +1,5 @@
 from typing                                                         import Type
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe      import type_safe
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
@@ -85,6 +86,12 @@ class MGraph__Edit(Type_Safe):
                                  from_node_id = from_node_id ,
                                  to_node_id   = to_node_id   )
 
+    def rebuild_index(self) -> MGraph__Index:                                    # Force rebuild of index, clearing cache
+        cache_manager = self.index(__return__='cache_on_self')                   # Get the cache manager
+        cache_manager.reload_next = True
+        return self.index()                                                      # Recreate fresh index
+
+
     def new_node(self, node_path: Node_Path = None, **kwargs):          # Create new node with optional path
         with self.index() as index:
             if node_path:                                               # todo: see if we need to do this, since new_node ctor should pick it up
@@ -100,16 +107,24 @@ class MGraph__Edit(Type_Safe):
         self.index().add_edge(edge.edge.data)                           # Add to index
         return edge
 
-    def new_value(self, value,
-                        key                                          = None,
-                        node_type: Type[Schema__MGraph__Node__Value] = None,
-                        node_path: Node_Path                         = None):           # get or create value (since the values have to be unique)
+    @type_safe
+    def new_value(self,                                                 # get or create value (since the values have to be unique)
+                  value,
+                  key                                          = None,
+                  node_type: Type[Schema__MGraph__Node__Value] = None,
+                  node_path: Node_Path                         = None,
+                  **kwargs__new_node                                    # extra values that will be provided to the new_node method (if used). this can be used to provide a node_id value (to make the node_id value deterministic)
+             ) -> Domain__MGraph__Node:
         node_id = self.index().values_index.get_node_id_by_value(value_type=type(value), value=str(value), key=key, node_type=node_type)
         if node_id:
             return self.data().node(node_id)
         if node_type is None:
             node_type= Schema__MGraph__Node__Value
-        return self.new_node(node_type=node_type, value_type=type(value), value=str(value), key=key, node_path=node_path)
+        return self.new_node(node_type  = node_type,
+                             value_type = type(value),
+                             value      = str(value), key=key,
+                             node_path  = node_path,
+                             **kwargs__new_node)
 
     # ---- Path update methods ----
 
