@@ -1,6 +1,9 @@
 import re
 import pytest
 from unittest                                                                    import TestCase
+
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.safe_int.Timestamp_Now import Timestamp_Now
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                               import Schema__MGraph__Edge
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                 import Obj_Id
@@ -27,7 +30,7 @@ class test_Schema__File_System__Graph(TestCase):
         assert len(self.fs_graph.edges)       == 0
 
     def test_type_safety_validation(self):                                                      # Tests type safety validations
-        error_message = "On Schema__File_System__Graph, invalid type for attribute 'nodes'. Expected 'typing.Dict[osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id.Obj_Id, mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node]' but got '<class 'str'>'"
+        error_message = "On Schema__File_System__Graph, invalid type for attribute 'nodes'. Expected 'typing.Dict[osbot_utils.type_safe.primitives.domains.identifiers.Node_Id.Node_Id, mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node]' but got '<class 'str'>'"
         with pytest.raises(ValueError, match=re.escape(error_message)):
             Schema__File_System__Graph(nodes         = "not-a-dict",  # Should be Dict
                                        edges         = {},
@@ -41,7 +44,7 @@ class test_Schema__File_System__Graph(TestCase):
                                            node_type   = Schema__Folder__Node)
 
         # Add folder to graph
-        self.fs_graph.nodes[Obj_Id()] = folder_node
+        self.fs_graph.nodes[Node_Id(Obj_Id())] = folder_node
         assert len(self.fs_graph.nodes) == 1
         assert isinstance(list(self.fs_graph.nodes.values())[0], Schema__Folder__Node)
 
@@ -51,7 +54,7 @@ class test_Schema__File_System__Graph(TestCase):
                                            created_at  = Timestamp_Now()     ,
                                            modified_at = Timestamp_Now()     ,
                                            node_type   = Schema__Folder__Node)
-        root_id = Obj_Id()
+        root_id = Node_Id(Obj_Id())
         self.fs_graph.nodes[root_id] = root_folder
 
         # Create child folder
@@ -59,9 +62,9 @@ class test_Schema__File_System__Graph(TestCase):
                                             created_at  = Timestamp_Now()       ,
                                             modified_at = Timestamp_Now()       ,
                                             node_type   = Schema__Folder__Node  )
-        child_id = Obj_Id()
+        child_id = Node_Id(Obj_Id())
         self.fs_graph.nodes[child_id] = child_folder
-        edge_id                       = Obj_Id()                                           # Add edge between folders
+        edge_id                       = Edge_Id(Obj_Id())                                           # Add edge between folders
 
         self.fs_graph.edges[edge_id] = Schema__MGraph__Edge.from_json( {"from_node_id": root_id,
                                                                         "to_node_id"  : child_id })

@@ -6,7 +6,8 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                              
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Point__Create__Data     import Schema__MGraph__Time_Point__Create__Data
 from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Point__Created__Objects import Schema__MGraph__Time_Point__Created__Objects
 from osbot_utils.decorators.methods.cache_on_self                                         import cache_on_self
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                          import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id                         import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id                         import Node_Id
 from osbot_utils.type_safe.Type_Safe                                                      import Type_Safe
 
 
@@ -58,7 +59,7 @@ class MGraph__Time_Point__Create(Type_Safe):
                                      utc_offset     : int                                         ,
                                      create_data    : Schema__MGraph__Time_Point__Create__Data    ,
                                      time_point     : Domain__MGraph__Node
-                                ) -> Tuple[Obj_Id, Obj_Id]:
+                                ): #-> Tuple[Obj_Id, Obj_Id]:
 
         # Get or create timezone node using values system
         timezone__node, timezone__edge = self.values().get_or_create_value(value     = timezone                 ,
@@ -80,7 +81,7 @@ class MGraph__Time_Point__Create(Type_Safe):
     def add_value_component(self, value     : int                        ,                    # Add a value component to time point
                                   edge_type : Type[Schema__MGraph__Edge] ,
                                   from_node : Domain__MGraph__Node
-                           ) -> Tuple[Obj_Id, Obj_Id]:                                       # Returns value_node_id, edge_id
+                           ) -> Tuple[Node_Id, Edge_Id]:                                       # Returns value_node_id, edge_id
 
         value_node = self.values().get_or_create(value)                                  # Get or create value node
 

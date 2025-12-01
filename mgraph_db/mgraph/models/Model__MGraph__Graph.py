@@ -1,4 +1,10 @@
 from typing                                                             import List
+
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id import Obj_Id
+
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id       import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id       import Node_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Graph_Id      import Graph_Id
 from osbot_utils.type_safe.type_safe_core.decorators.type_safe          import type_safe
 from osbot_utils.type_safe.type_safe_core.methods.type_safe_property    import set_as_property
 from osbot_utils.type_safe.type_safe_core.shared.Type_Safe__Cache       import type_safe_cache
@@ -9,7 +15,6 @@ from mgraph_db.mgraph.models.Model__MGraph__Node                        import M
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                     import Schema__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                      import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                      import Schema__MGraph__Edge
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                    import Type_Safe
 
 
@@ -18,7 +23,7 @@ class Model__MGraph__Graph(Type_Safe):
     data       : Schema__MGraph__Graph
     model_types: Model__MGraph__Types
 
-    graph_id = set_as_property('data', 'graph_id', Obj_Id)
+    graph_id = set_as_property('data', 'graph_id', Graph_Id)
 
     @type_safe
     def add_node(self, node: Schema__MGraph__Node) -> Model__MGraph__Node:                            # Add a node to the graph
@@ -72,7 +77,7 @@ class Model__MGraph__Graph(Type_Safe):
 
         if issubclass(node_data_type, Schema__MGraph__Node__Value__Data):       # handle edge case which happens when we are creating a new value node
             if node_data__type_kwargs == {}:                                    # but have not provided any value
-                node_data__type_kwargs['key'] = Obj_Id()                        # which means we need to make sure this is an unique node (or it can't be indexed)
+                node_data__type_kwargs['key'] = Node_Id(Node_Id(Obj_Id()))      # which means we need to make sure this is an unique node (or it can't be indexed)
         node_data = node_data_type(**node_data__type_kwargs                )    # Create node data object           # todo: see if this is be test way (and location) to handle this
 
         node      = node_type     (node_data=node_data, **node_type__kwargs)    # Create a node with the node data
@@ -82,10 +87,11 @@ class Model__MGraph__Graph(Type_Safe):
     def edges(self):
         return [self.model_types.edge_model_type(data=data) for data in self.data.edges.values()]
 
-    def edge(self, edge_id: Obj_Id) -> Model__MGraph__Edge:
+    def edge(self, edge_id: Edge_Id) -> Model__MGraph__Edge:
         data = self.data.edges.get(edge_id)
         if data:
             return self.model_types.edge_model_type(data=data)
+        return None
 
     def edges_ids(self):
         return list(self.data.edges.keys())
@@ -93,7 +99,7 @@ class Model__MGraph__Graph(Type_Safe):
     def graph(self):
         return self.data
 
-    def node(self, node_id: Obj_Id) -> Model__MGraph__Node:
+    def node(self, node_id: Node_Id) -> Model__MGraph__Node:
         data = self.data.nodes.get(node_id)
         if data:
             return self.model_types.node_model_type(data=data)
@@ -119,7 +125,7 @@ class Model__MGraph__Graph(Type_Safe):
         return list(self.data.nodes.keys())
 
     @type_safe
-    def delete_node(self, node_id: Obj_Id) -> bool:                              # Remove a node and all its connected edges
+    def delete_node(self, node_id: Node_Id) -> bool:                              # Remove a node and all its connected edges
         if node_id not in self.data.nodes:
             return False
 
@@ -135,7 +141,7 @@ class Model__MGraph__Graph(Type_Safe):
         return True
 
     @type_safe
-    def delete_edge(self, edge_id: Obj_Id) -> bool:                              # Remove an edge from the graph
+    def delete_edge(self, edge_id: Edge_Id) -> bool:                              # Remove an edge from the graph
         if edge_id not in self.data.edges:
             return False
 

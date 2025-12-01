@@ -1,6 +1,6 @@
 from unittest                                                       import TestCase
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from mgraph_db.mgraph.domain.Domain__MGraph__Edge                   import Domain__MGraph__Edge
 from mgraph_db.mgraph.models.Model__MGraph__Edge                    import Model__MGraph__Edge
 from mgraph_db.mgraph.models.Model__MGraph__Graph                   import Model__MGraph__Graph
@@ -38,7 +38,7 @@ class test_Domain__MGraph__Edge(TestCase):
         assert type(self.edge)           is Domain__MGraph__Edge
         assert self.edge.edge            is self.model_edge
         assert self.edge.graph           is self.graph
-        assert type(self.edge.edge_id)   is Obj_Id
+        assert type(self.edge.edge_id)   is Edge_Id
 
     def test_node_operations(self):                                                         # Tests from_node and to_node methods
         from_node = self.edge.from_node()

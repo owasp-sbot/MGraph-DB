@@ -11,6 +11,8 @@ from mgraph_db.mgraph.actions.MGraph__Index                         import MGrap
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
 from mgraph_db.providers.simple.MGraph__Simple__Test_Data           import MGraph__Simple__Test_Data
 from mgraph_db.query.MGraph__Query                                  import MGraph__Query
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
 from osbot_utils.utils.Env                                          import load_dotenv
 from osbot_utils.utils.Objects                                      import base_types
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
@@ -40,9 +42,9 @@ class test_MGraph__Query__Methods(TestCase):
                                               root_nodes   = []                 )
             initial_view    = _.current_view()                                              # test .setup() method (which will create a default view)
             initial_view_id = initial_view.view_id()
-            assert _.query_views.json() == {'data': { 'current_view_id': initial_view_id,
-                                                      'first_view_id'  : initial_view_id,
-                                                      'views'          : { initial_view_id: initial_view.data.json() }}}
+            assert _.query_views.json() == {'data': { 'current_view_id': str(initial_view_id),
+                                                      'first_view_id'  : str(initial_view_id),
+                                                      'views'          : { str(initial_view_id): initial_view.data.json() }}}
 
 
 
@@ -65,8 +67,8 @@ class test_MGraph__Query__Methods(TestCase):
         assert current_edges == set()
 
     def test__get_current_ids__with_view(self):                             # Test _get_current_ids with view
-        test_nodes = {Obj_Id(), Obj_Id()}
-        test_edges = {Obj_Id(), Obj_Id()}
+        test_nodes = {Node_Id(Obj_Id()), Node_Id(Obj_Id())}
+        test_edges = {Edge_Id(Obj_Id()), Edge_Id(Obj_Id())}
 
         self.query.create_view(                                             # Create test view
             nodes_ids = test_nodes,
@@ -97,8 +99,8 @@ class test_MGraph__Query__Methods(TestCase):
         assert len(edges) == 1
 
     def test__create_view__first_view(self):                                # Test _create_view with no previous view
-        test_nodes = {Obj_Id(), Obj_Id()}
-        test_edges = {Obj_Id(), Obj_Id()}
+        test_nodes = {Node_Id(Obj_Id()), Node_Id(Obj_Id())}
+        test_edges = {Edge_Id(Obj_Id()), Edge_Id(Obj_Id())}
         initial_view = self.query.query_views.current_view()
         self.query.create_view(nodes_ids = test_nodes       ,               # Create first view
                                edges_ids = test_edges       ,

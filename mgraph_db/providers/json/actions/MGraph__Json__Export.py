@@ -1,4 +1,5 @@
 from typing                                                                     import Union, Dict, List, Optional, Any
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id               import Node_Id
 from osbot_utils.utils.Dev                                                      import pprint
 from mgraph_db.providers.json.actions.exporters.MGraph__Export__Json__Dot       import MGraph__Export__Json__Dot
 from mgraph_db.providers.json.actions.exporters.MGraph__Export__Json__Mermaid   import MGraph__Export__Json__Mermaid
@@ -10,19 +11,18 @@ from osbot_utils.utils.Json                                                     
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Graph                import Domain__MGraph__Json__Graph
 from mgraph_db.mgraph.actions.MGraph__Export                                    import MGraph__Export
 from mgraph_db.mgraph.actions.MGraph__Index                                     import MGraph__Index
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                import Obj_Id
 
 class MGraph__Json__Export(MGraph__Export):
     graph: Domain__MGraph__Json__Graph
 
-    def process_value_node(self, node_id: Obj_Id) -> Any:
+    def process_value_node(self, node_id: Node_Id) -> Any:
         domain_node = self.graph.node(node_id)
         model_node  = domain_node.node
         if isinstance(model_node, Model__MGraph__Json__Node__Value):
             return model_node.value
         return None
 
-    def process_dict_node(self, node_id: Obj_Id, index: MGraph__Index) -> Dict[str, Any]:
+    def process_dict_node(self, node_id: Node_Id, index: MGraph__Index) -> Dict[str, Any]:
         result = {}
         for edge_id in index.edges_ids__from__node_id(node_id):
             property_id = index.edges_to_nodes()[edge_id][1]
@@ -39,7 +39,7 @@ class MGraph__Json__Export(MGraph__Export):
                         result[property_name] = None
         return result
 
-    def process_list_node(self, node_id: Obj_Id, index: MGraph__Index) -> List[Any]:
+    def process_list_node(self, node_id: Node_Id, index: MGraph__Index) -> List[Any]:
         result = []
         for edge_id in index.edges_ids__from__node_id(node_id):
             item_id = index.edges_to_nodes()[edge_id][1]
@@ -47,7 +47,7 @@ class MGraph__Json__Export(MGraph__Export):
             result.append(item_value)
         return result
 
-    def process_node(self, node_id: Obj_Id, index: MGraph__Index) -> Any:
+    def process_node(self, node_id: Node_Id, index: MGraph__Index) -> Any:
         domain_node = self.graph.node(node_id)
         model_node  = domain_node.node
         if not domain_node:

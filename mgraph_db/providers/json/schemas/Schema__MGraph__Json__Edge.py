@@ -1,7 +1,8 @@
-from osbot_utils.type_safe.type_safe_core.shared.Type_Safe__Cache import type_safe_cache
-
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                       import Schema__MGraph__Edge
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from osbot_utils.type_safe.type_safe_core.shared.Type_Safe__Cache   import type_safe_cache
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 
 class Schema__MGraph__Json__Edge(Schema__MGraph__Edge):
 
@@ -11,9 +12,9 @@ class Schema__MGraph__Json__Edge(Schema__MGraph__Edge):
 
         edge_data    = kwargs.get('edge_data'   ) or self.__annotations__['edge_data'  ]()
         edge_type    = kwargs.get('edge_type'   ) or self.__class__
-        edge_id      = kwargs.get('edge_id'     ) or Obj_Id()
-        from_node_id = kwargs.get('from_node_id') or Obj_Id()
-        to_node_id   = kwargs.get('to_node_id'  ) or Obj_Id()
+        edge_id      = kwargs.get('edge_id'     ) or Edge_Id(Obj_Id())
+        from_node_id = kwargs.get('from_node_id') or Node_Id(Obj_Id())
+        to_node_id   = kwargs.get('to_node_id'  ) or Node_Id(Obj_Id())
 
 
         edge_dict = dict(edge_data    = edge_data   ,

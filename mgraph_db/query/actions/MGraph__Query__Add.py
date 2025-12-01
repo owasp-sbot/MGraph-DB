@@ -1,15 +1,18 @@
 from typing                                                         import Set, Optional, Dict, Any, Type
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe      import type_safe
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.query.domain.Domain__MGraph__Query                   import Domain__MGraph__Query
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 
 
 class MGraph__Query__Add(Type_Safe):
     query: Domain__MGraph__Query                                                    # Reference to domain query
 
-    def add_node_id(self, node_id: Obj_Id) -> 'MGraph__Query__Add':               # Add specific node to view
+    @type_safe
+    def add_node_id(self, node_id: Node_Id) -> 'MGraph__Query__Add':               # Add specific node to view
         if not self.query.mgraph_data.node(node_id):                              # Validate node exists
             return self
 
@@ -17,18 +20,8 @@ class MGraph__Query__Add(Type_Safe):
                              operation        = 'add_node_id',
                              params           = {'node_id': str(node_id)})
 
-    # def add_nodes_ids(self, nodes_ids: Set[Obj_Id]) -> 'MGraph__Query__Add':
-    #     valid_nodes = {node_id for node_id in nodes_ids
-    #                    if self.query.mgraph_data.node(node_id)}
-    #
-    #     if not valid_nodes:
-    #         return self
-    #     params = {'nodes_ids': [str(node_id) for node_id in valid_nodes]}
-    #     return self.new_view(additional_nodes = valid_nodes    ,
-    #                          operation        = 'add_nodes_ids',
-    #                          params           = params         )
 
-    def add_nodes_ids(self, nodes_ids: Set[Obj_Id]) -> 'MGraph__Query__Add':  # Add multiple nodes to view
+    def add_nodes_ids(self, nodes_ids: Set[Node_Id]) -> 'MGraph__Query__Add':  # Add multiple nodes to view
         current_nodes, current_edges = self.query.get_current_ids()  # Get current nodes and edges
 
         # Filter out any invalid node IDs
@@ -141,12 +134,12 @@ class MGraph__Query__Add(Type_Safe):
 
         return self
 
-    def find_value_node(self, value: any) -> Optional[Obj_Id]:
+    def find_value_node(self, value: any) -> Optional[Node_Id]:
         return self.query.mgraph_index.values_index.get_node_id_by_value(type(value),str(value))
 
     # todo: refactor out from this add class
-    def new_view(self, additional_nodes: Set[Obj_Id]   = None,
-                       additional_edges: Set[Obj_Id]   = None,
+    def new_view(self, additional_nodes: Set[Node_Id]   = None,
+                       additional_edges: Set[Edge_Id]   = None,
                        operation       : str           = None,
                        params          : Dict[str, Any]= None
                  ) -> 'MGraph__Query__Add':

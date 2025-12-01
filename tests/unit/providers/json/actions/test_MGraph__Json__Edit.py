@@ -2,6 +2,7 @@ from unittest                                                               impo
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__List      import Schema__MGraph__Json__Node__List
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Property  import Schema__MGraph__Json__Node__Property
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value     import Schema__MGraph__Json__Node__Value
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
 from osbot_utils.utils.Json                                                 import json__equals__list_and_set
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id            import Obj_Id
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Node             import Domain__MGraph__Json__Node
@@ -44,7 +45,7 @@ class test_MGraph__Json__Edit(TestCase):
             value_node            = _.add_value  ('12345', node_id=new_property_1.node_id            )      # add value to the property with no value
 
             assert type(root_property_node   ) is Domain__MGraph__Json__Node__Dict
-            assert type(root_property_node_id) is Obj_Id
+            assert type(root_property_node_id) is Node_Id
             assert type(new_property_1       ) is Domain__MGraph__Json__Node
             assert type(new_property_2       ) is Domain__MGraph__Json__Node
             assert type(value_node           ) is Domain__MGraph__Json__Node

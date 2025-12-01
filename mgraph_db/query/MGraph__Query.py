@@ -7,8 +7,10 @@ from mgraph_db.query.actions.MGraph__Query__Navigate                import MGrap
 from mgraph_db.query.domain.Domain__MGraph__Query                   import Domain__MGraph__Query
 from mgraph_db.query.models.Model__MGraph__Query__View              import Model__MGraph__Query__View
 from mgraph_db.query.models.Model__MGraph__Query__Views             import Model__MGraph__Query__Views
+from mgraph_db.query.schemas.View_Id                                import View_Id
 from osbot_utils.decorators.methods.cache_on_self                   import cache_on_self
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
 from mgraph_db.mgraph.actions.MGraph__Index                         import MGraph__Index
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
@@ -20,7 +22,7 @@ class MGraph__Query(Type_Safe):
     mgraph_data  : MGraph__Data
     mgraph_index : MGraph__Index
     query_views  : Model__MGraph__Query__Views
-    root_nodes   : Set[Obj_Id]
+    root_nodes   : Set[Node_Id]
 
     def setup(self):
         source_nodes, source_edges = self.get_source_ids()              # get all the current nodes and edges
@@ -69,18 +71,18 @@ class MGraph__Query(Type_Safe):
         self.setup()
         return self
 
-    def get_source_ids(self) -> tuple[Set[Obj_Id], Set[Obj_Id]]:
+    def get_source_ids(self) -> tuple[Set[Node_Id], Set[Edge_Id]]:
         return (set(self.mgraph_data.nodes_ids()),
                 set(self.mgraph_data.edges_ids()))
 
-    def get_current_ids(self) -> tuple[Set[Obj_Id], Set[Obj_Id]]:
+    def get_current_ids(self) -> tuple[Set[Node_Id], Set[Edge_Id]]:
         current_view = self.query_views.current_view()
         # if not current_view:
         #     return self.get_source_ids()
         return (current_view.nodes_ids(),
                 current_view.edges_ids())
 
-    def get_connecting_edges(self, node_ids: Set[Obj_Id]) -> Set[Obj_Id]:
+    def get_connecting_edges(self, node_ids: Set[Node_Id]) -> Set[Edge_Id]:
         edges = set()
         for node_id in node_ids:
             node           = self.mgraph_data.node(node_id)
@@ -90,8 +92,8 @@ class MGraph__Query(Type_Safe):
             edges.update(incoming_edges)
         return edges
 
-    def create_view(self, nodes_ids: Set[Obj_Id],
-                          edges_ids : Set[Obj_Id],
+    def create_view(self, nodes_ids : Set[Node_Id],
+                          edges_ids : Set[Edge_Id],
                           operation : str,
                           params    : Dict[str, Any]
                     )  -> Model__MGraph__Query__View:
@@ -126,7 +128,7 @@ class MGraph__Query(Type_Safe):
             return self.query_views.set_current_view(current_view.previous_view_id())
         return False
 
-    def go_forward(self, view_id: Optional[Obj_Id] = None) -> bool:
+    def go_forward(self, view_id: Optional[View_Id] = None) -> bool:         # todo: view_id should be of type View_Id
         current_view = self.query_views.current_view()
         if not current_view:
             return False
@@ -340,7 +342,7 @@ class MGraph__Query(Type_Safe):
     #                     params    = {'field_name': field_name})
     #     return self
 
-    def add_node_id(self, node_id: Obj_Id) -> 'MGraph__Query':                                      # Add specific node to view
+    def add_node_id(self, node_id: Node_Id) -> 'MGraph__Query':                                      # Add specific node to view
 
         current_nodes, current_edges = self.get_current_ids()                                       # Get current nodes and edges
 
@@ -357,7 +359,7 @@ class MGraph__Query(Type_Safe):
                          params    = {'node_id': str(node_id)})                                     # Create new view with added node
         return self
 
-    def add_nodes_ids(self, nodes_ids: Set[Obj_Id]) -> 'MGraph__Query':  # Add multiple nodes to view
+    def add_nodes_ids(self, nodes_ids: Set[Node_Id]) -> 'MGraph__Query':  # Add multiple nodes to view
         current_nodes, current_edges = self.get_current_ids()  # Get current nodes and edges
 
         # Filter out any invalid node IDs

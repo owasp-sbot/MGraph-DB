@@ -5,7 +5,7 @@ from mgraph_db.mgraph.domain.Domain__MGraph__Node                        import 
 from mgraph_db.mgraph.actions.exporters.MGraph__Export__Base             import Model__MGraph__Export__Context
 from mgraph_db.mgraph.actions.MGraph__Builder                            import MGraph__Builder
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                       import Domain__MGraph__Graph
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id        import Node_Id
 
 
 class test_MGraph__Export__Tree_Values(TestCase):
@@ -36,7 +36,7 @@ class test_MGraph__Export__Tree_Values(TestCase):
             assert type(_           ) is MGraph
             assert type(_.graph     ) is Domain__MGraph__Graph
             assert type(root_node   ) is Domain__MGraph__Node
-            assert type(root_node_id) is Obj_Id
+            assert type(root_node_id) is Node_Id
             assert _.data().stats() == {'edges_ids': 1, 'nodes_ids': 2}
             assert root_node.node_data.value == 'root_node'
 

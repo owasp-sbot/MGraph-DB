@@ -8,7 +8,7 @@ from mgraph_db.providers.simple.models.Model__Simple__Types         import Model
 from mgraph_db.providers.simple.schemas.Schema__Simple__Graph       import Schema__Simple__Graph
 from mgraph_db.providers.simple.schemas.Schema__Simple__Node        import Schema__Simple__Node
 from mgraph_db.providers.simple.schemas.Schema__Simple__Node__Data  import Schema__Simple__Node__Data
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.utils.Objects                                      import base_types, type_full_name
 from mgraph_db.mgraph.MGraph                                        import MGraph
@@ -49,8 +49,10 @@ class test_MGraph__Simple(TestCase):
             node     = edit.new_node()
             node_id  = node.node_id
             graph_id = edit.graph.graph_id()
+            graph_id_str = str(graph_id)
+            node_id_str  = str(node.node_id)
             assert node            is not None                                                                 # Verify node creation
-            assert type(node_id  ) is Obj_Id
+            assert type(node_id  ) is Node_Id
             assert type(node.node) is Model__Simple__Node
             assert type(node.node) is self.mgraph_simple.graph.model.model_types.node_model_type
             assert node.node_id    in self.mgraph_simple.graph.model.data.nodes                                 # Verify node is in graph
@@ -63,12 +65,12 @@ class test_MGraph__Simple(TestCase):
 
             assert node.json() == {'graph': {'data'                 : {'edges'       : {},
                                                                        'graph_data'  : {},
-                                                                       'graph_id'    : graph_id,
+                                                                       'graph_id'    : graph_id_str,
                                                                        'graph_type'  : type_full_name(Schema__Simple__Graph),
-                                                                       'nodes'       : { node_id: { 'node_data': {'name' : None ,
-                                                                                                                  'value': None},
-                                                                                                    'node_id'  : node_id,
-                                                                                                    'node_type' : type_full_name(Schema__Simple__Node    )}},
+                                                                       'nodes'       : { node_id_str: { 'node_data': {'name' : None ,
+                                                                                                                      'value': None},
+                                                                                                        'node_id'  : node_id_str,
+                                                                                                        'node_type' : type_full_name(Schema__Simple__Node    )}},
                                                                        'schema_types': {'edge_type'       : type_full_name(Schema__MGraph__Edge         ),
                                                                                         'graph_data_type' : type_full_name(Schema__MGraph__Graph__Data  ),
                                                                                         'node_data_type'  : type_full_name(Schema__Simple__Node__Data   ),
@@ -76,7 +78,7 @@ class test_MGraph__Simple(TestCase):
                                              'model_types'          : {'edge_model_type' : type_full_name(Model__MGraph__Edge          ),
                                                                        'node_model_type' : type_full_name(Model__Simple__Node          )}},
                                    'node': {'data': {'node_data': {'name': None, 'value': None}         ,
-                                                     'node_id'  : node_id                               ,
+                                                     'node_id'  : node_id_str                               ,
                                                      'node_type': type_full_name(Schema__Simple__Node)  }}}
 
 

@@ -3,8 +3,9 @@ from mgraph_db.query.models.Model__MGraph__Query__View              import Model
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
 from mgraph_db.mgraph.actions.MGraph__Index                         import MGraph__Index
 from mgraph_db.query.models.Model__MGraph__Query__Views             import Model__MGraph__Query__Views
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 
 
 class Domain__MGraph__Query(Type_Safe):
@@ -12,7 +13,7 @@ class Domain__MGraph__Query(Type_Safe):
     mgraph_data : MGraph__Data                  = None
     query_views : Model__MGraph__Query__Views                                        # Query view management
     query_type  : Type['Domain__MGraph__Query']                                      # Self type reference
-    root_nodes  : Set[Obj_Id]
+    root_nodes  : Set[Node_Id]
 
     def setup(self):
         if self.mgraph_data is None:
@@ -32,14 +33,14 @@ class Domain__MGraph__Query(Type_Safe):
     def current_view(self):                                                         # Get current query view
         return self.query_views.current_view()
 
-    def get_current_ids(self) -> tuple[set[Obj_Id], set[Obj_Id]]:                  # Get current nodes and edges
+    def get_current_ids(self) -> tuple[set[Node_Id], set[Edge_Id]]:                  # Get current nodes and edges
         current_view = self.current_view()
         if not current_view:
             return set(), set()
         return (current_view.nodes_ids(),
                 current_view.edges_ids())
 
-    def get_connecting_edges(self, node_ids: set[Obj_Id]) -> set[Obj_Id]:          # Get edges connecting nodes
+    def get_connecting_edges(self, node_ids: set[Node_Id]) -> set[Edge_Id]:          # Get edges connecting nodes
         edges = set()
         for node_id in node_ids:
             outgoing_edges = self.mgraph_index.get_node_id_outgoing_edges(node_id)
@@ -64,8 +65,8 @@ class Domain__MGraph__Query(Type_Safe):
     #                               previous_id  = previous_id)
     #     return self
 
-    def create_view(self, nodes_ids : Set[Obj_Id],
-                          edges_ids : Set[Obj_Id],
+    def create_view(self, nodes_ids : Set[Node_Id],
+                          edges_ids : Set[Edge_Id],
                           operation : str,
                           params    : Dict[str, Any]
                     )  -> Model__MGraph__Query__View:

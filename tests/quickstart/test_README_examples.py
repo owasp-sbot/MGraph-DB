@@ -1,5 +1,6 @@
-from unittest                                            import TestCase
-
+from unittest                                                     import TestCase
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
 
 
 class test_README_examples(TestCase):
@@ -28,9 +29,9 @@ class test_README_examples(TestCase):
             assert type(node_2) is Domain__MGraph__Node                                         # Verify second node has correct type
             assert type(edge_1) is Domain__MGraph__Edge                                         # Verify edge has correct type
 
-            assert type(node_1.node_id) is Obj_Id                                               # Verify first node ID has correct type
-            assert type(node_2.node_id) is Obj_Id                                               # Verify second node ID has correct type
-            assert type(edge_1.edge_id) is Obj_Id                                               # Verify edge ID has correct type
+            assert type(node_1.node_id) is Node_Id                                               # Verify first node ID has correct type
+            assert type(node_2.node_id) is Node_Id                                               # Verify second node ID has correct type
+            assert type(edge_1.edge_id) is Edge_Id                                               # Verify edge ID has correct type
 
 
         # Query the graph

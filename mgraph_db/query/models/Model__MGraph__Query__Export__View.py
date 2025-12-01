@@ -2,6 +2,7 @@ from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_I
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                 import Schema__MGraph__Graph
 from mgraph_db.query.schemas.Schema__MGraph__Query__Export__View    import Schema__MGraph__Query__Export__View
+from osbot_utils.type_safe.primitives.domains.identifiers.Graph_Id  import Graph_Id
 
 
 class Model__MGraph__Query__Export__View(Type_Safe):
@@ -14,12 +15,12 @@ class Model__MGraph__Query__Export__View(Type_Safe):
             type__schema_graph = type(_)
             graph_data   = type__graph_data.from_json(_.graph_data.json  ())
             schema_types = type__schema_types         .from_json(_.schema_types.json())
-            return type__schema_graph(edges        = {}           ,
-                                      graph_data   = graph_data   ,
-                                      graph_id     = Obj_Id()     ,
-                                      graph_type   = _.graph_type ,
-                                      nodes        = {}           ,
-                                      schema_types = schema_types )
+            return type__schema_graph(edges        = {}                 ,
+                                      graph_data   = graph_data         ,
+                                      graph_id     = Graph_Id(Obj_Id()) ,
+                                      graph_type   = _.graph_type       ,
+                                      nodes        = {}                 ,
+                                      schema_types = schema_types       )
 
     def clone_nodes(self, new_graph: Schema__MGraph__Graph) -> None:                                                    # Clones specified nodes to new graph using Type_Safe serialization
         for node_id in self.data.nodes_ids:

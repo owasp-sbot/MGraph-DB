@@ -1,25 +1,27 @@
 from typing                                                         import Set, Optional, Dict, Any
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from mgraph_db.query.schemas.Schema__MGraph__Query__View            import Schema__MGraph__Query__View
+from mgraph_db.query.schemas.View_Id                                import View_Id
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 
 
 class Model__MGraph__Query__View(Type_Safe):
     data: Schema__MGraph__Query__View
 
-    def view_id(self) -> Obj_Id:
+    def view_id(self) -> View_Id:
         return self.data.view_id
 
-    def nodes_ids(self) -> Set[Obj_Id]:
+    def nodes_ids(self) -> Set[Node_Id]:
         return self.data.view_data.nodes_ids
 
-    def edges_ids(self) -> Set[Obj_Id]:
+    def edges_ids(self) -> Set[Edge_Id]:
         return self.data.view_data.edges_ids
 
-    def previous_view_id(self) -> Optional[Obj_Id]:
+    def previous_view_id(self) -> Optional[View_Id]:
         return self.data.view_data.previous_view_id
 
-    def next_view_ids(self) -> Set[Obj_Id]:
+    def next_view_ids(self) -> Set[View_Id]:
         return self.data.view_data.next_view_ids
 
     def query_operation(self) -> str:

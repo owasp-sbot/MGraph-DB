@@ -13,6 +13,8 @@ from mgraph_db.providers.time_series.schemas.Schema__MGraph__Time_Series__Edges 
     Schema__MGraph__Time_Series__Edge__Hour, Schema__MGraph__Time_Series__Edge__Minute, \
     Schema__MGraph__Time_Series__Edge__UTC_Offset, Schema__MGraph__Time_Series__Edge__Source_Id, \
     Schema__MGraph__Time_Series__Edge__Timestamp
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                            import Obj_Id
 from osbot_utils.utils.Env                                                                  import load_dotenv
 
@@ -118,6 +120,8 @@ class test_MGraph__Time_Point__Create(TestCase):
         utc_edge_id     = created_objects.utc_offset__edge_id
         utc_edge        = self.mgraph.data().edge(utc_edge_id)
 
+        assert type(utc_node_id       ) is Node_Id
+        assert type(utc_edge_id       ) is Edge_Id
         assert type(utc_node          ) is Domain__MGraph__Node
         assert type(utc_node.node_data) is Schema__MGraph__Node__Value__Data
         assert utc_node.node_data.value == '0'

@@ -1,8 +1,12 @@
 from unittest                                                    import TestCase
+
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id import is_obj_id
 from mgraph_db.providers.mermaid.models.Model__Mermaid__Graph    import Model__Mermaid__Graph
 from osbot_utils.testing.__                                      import __
 from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Edge    import Domain__Mermaid__Edge
+from tests.unit.helpers.sqlite.models.test_Sqlite__Field__Type import NoneType
+
 
 class test_Mermaid__Edge(TestCase):
 
@@ -14,8 +18,8 @@ class test_Mermaid__Edge(TestCase):
 
         with self.mermaid_edge as _:
             assert type(_) is Domain__Mermaid__Edge
-            assert is_obj_id(_.from_node_id) is True
-            assert is_obj_id(_.to_node_id  ) is True
+            assert type(_.from_node_id) is NoneType
+            assert type(_.to_node_id  ) is NoneType
             assert _.graph                   == self.graph
             assert _.obj()                   == __(edge = __(data=__(label='',
                                                                      edge_config  = __(output_node_from = False,

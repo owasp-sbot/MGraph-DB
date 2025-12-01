@@ -1,8 +1,9 @@
 from typing                                                         import Type, Set, Any, Dict, Optional
 from mgraph_db.mgraph.actions.MGraph__Index__Values                 import MGraph__Index__Values
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.utils.Dev                                          import pprint
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
@@ -57,22 +58,28 @@ class MGraph__Index(Type_Safe):
 
         if to_node_id not in self.index_data.nodes_to_incoming_edges_by_type:                       # Update the new nodes_to_incoming_edges_by_type
             self.index_data.nodes_to_incoming_edges_by_type[to_node_id] = {}
+
         if edge_type not in self.index_data.nodes_to_incoming_edges_by_type[to_node_id]:
             self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type] = set()
-        self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type].add(edge_id)
 
+        self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type].add(edge_id)
 
         if from_node_id not in self.index_data.nodes_to_outgoing_edges_by_type:                     # Update the nodes_to_outgoing_edges_by_type index
             self.index_data.nodes_to_outgoing_edges_by_type[from_node_id] = {}
+
         if edge_type not in self.index_data.nodes_to_outgoing_edges_by_type[from_node_id]:
             self.index_data.nodes_to_outgoing_edges_by_type[from_node_id][edge_type] = set()
+
         self.index_data.nodes_to_outgoing_edges_by_type[from_node_id][edge_type].add(edge_id)
 
         if from_node_id not in self.index_data.nodes_to_outgoing_edges:                              # Add to node relationship indexes
             self.index_data.nodes_to_outgoing_edges[from_node_id] = set()
+
         self.index_data.nodes_to_outgoing_edges[from_node_id].add(edge_id)
+
         if to_node_id not in self.index_data.nodes_to_incoming_edges:
             self.index_data.nodes_to_incoming_edges[to_node_id] = set()
+
         self.index_data.nodes_to_incoming_edges[to_node_id].add(edge_id)
 
 
@@ -255,13 +262,13 @@ class MGraph__Index(Type_Safe):
     ##### getters for data
     # todo refactor this to names like edges__from__node , nodes_from_node
 
-    def get_edge_predicate(self, edge_id: Obj_Id):
+    def get_edge_predicate(self, edge_id: Edge_Id):
         return self.index_data.edges_predicates.get(edge_id)
 
     def get_nodes_connected_to_value(self, value     : Any ,
                                            edge_type : Type[Schema__MGraph__Edge       ] = None ,
                                            node_type : Type[Schema__MGraph__Node__Value] = None
-                                      ) -> Set[Obj_Id]:                                             # Get nodes connected to a value node through optional edge type
+                                      ) -> Set[Node_Id]:                                             # Get nodes connected to a value node through optional edge type
         value_type = type(value)
         if node_type is None:
             node_type = Schema__MGraph__Node__Value
@@ -286,7 +293,7 @@ class MGraph__Index(Type_Safe):
 
         return connected_nodes
 
-    def get_node_connected_to_node__outgoing(self, node_id: Obj_Id, edge_type: str) -> Optional[Obj_Id]:
+    def get_node_connected_to_node__outgoing(self, node_id: Node_Id, edge_type: str) -> Optional[Node_Id]:
         connected_edges = self.index_data.nodes_to_outgoing_edges_by_type.get(node_id, {}).get(edge_type, set())
 
         if connected_edges:
@@ -296,55 +303,55 @@ class MGraph__Index(Type_Safe):
 
         return None
 
-    def get_node_outgoing_edges(self, node: Schema__MGraph__Node) -> Set[Obj_Id]:           # Get all outgoing edges for a node
+    def get_node_outgoing_edges(self, node: Schema__MGraph__Node) -> Set[Edge_Id]:           # Get all outgoing edges for a node
         return self.index_data.nodes_to_outgoing_edges.get(node.node_id, set())
 
-    def get_node_id_outgoing_edges(self, node_id: Obj_Id) -> Set[Obj_Id]:           # Get all outgoing edges for a node
+    def get_node_id_outgoing_edges(self, node_id: Node_Id) -> Set[Edge_Id]:           # Get all outgoing edges for a node
         return self.index_data.nodes_to_outgoing_edges.get(node_id, set())
 
-    def get_node_id_incoming_edges(self, node_id: Obj_Id) -> Set[Obj_Id]:           # Get all incoming edges for a node
+    def get_node_id_incoming_edges(self, node_id: Node_Id) -> Set[Edge_Id]:           # Get all incoming edges for a node
         return self.index_data.nodes_to_incoming_edges.get(node_id, set())
 
-    def get_node_incoming_edges(self, node: Schema__MGraph__Node) -> Set[Obj_Id]:           # Get all incoming edges for a node
+    def get_node_incoming_edges(self, node: Schema__MGraph__Node) -> Set[Edge_Id]:           # Get all incoming edges for a node
         return self.index_data.nodes_to_incoming_edges.get(node.node_id, set())
 
-    def get_nodes_by_type(self, node_type: Type[Schema__MGraph__Node]) -> Set[Obj_Id]:      # Get all nodes of a specific type
+    def get_nodes_by_type(self, node_type: Type[Schema__MGraph__Node]) -> Set[Node_Id]:      # Get all nodes of a specific type
         return self.index_data.nodes_by_type.get(node_type.__name__, set())
 
-    def get_edges_by_type(self, edge_type: Type[Schema__MGraph__Edge]) -> Set[Obj_Id]:      # Get all edges of a specific type
+    def get_edges_by_type(self, edge_type: Type[Schema__MGraph__Edge]) -> Set[Edge_Id]:      # Get all edges of a specific type
         return self.index_data.edges_by_type.get(edge_type.__name__, set())
 
     #### helpers for edge's labels # todo: look at refactoring these getters into a helper class
-    def get_edges_by_predicate(self, predicate : Safe_Id) -> Set[Obj_Id]: # Get all edges with specific predicate
+    def get_edges_by_predicate(self, predicate : Safe_Id) -> Set[Edge_Id]: # Get all edges with specific predicate
         return self.index_data.edges_by_predicate.get(predicate, set())
 
 
-    def get_edges_by_incoming_label(self, label : Safe_Id) -> Set[Obj_Id]:# Get edges with specific incoming label
+    def get_edges_by_incoming_label(self, label : Safe_Id) -> Set[Edge_Id]:# Get edges with specific incoming label
         return self.index_data.edges_by_incoming_label.get(label, set())
 
-    def get_edges_by_outgoing_label(self, label : Safe_Id) -> Set[Obj_Id]: # Get edges with specific outgoing label
+    def get_edges_by_outgoing_label(self, label : Safe_Id) -> Set[Edge_Id]: # Get edges with specific outgoing label
         return self.index_data.edges_by_outgoing_label.get(label, set())
 
 
-    def get_node_outgoing_edges_by_predicate(self, node_id  : Obj_Id  ,     # Node to get edges from
+    def get_node_outgoing_edges_by_predicate(self, node_id  : Node_Id  ,     # Node to get edges from
                                                    predicate: Safe_Id       # Predicate to filter by
-                                              ) -> Set[Obj_Id]:
+                                              ) -> Set[Edge_Id]:
         outgoing_edges  = self.get_node_id_outgoing_edges(node_id)
         predicate_edges = self.get_edges_by_predicate(predicate)
         return outgoing_edges.intersection(predicate_edges)
 
 
-    def get_node_incoming_edges_by_predicate(self, node_id  : Obj_Id  ,     # Node to get edges to
+    def get_node_incoming_edges_by_predicate(self, node_id  : Node_Id  ,     # Node to get edges to
                                                    predicate: Safe_Id       # Predicate to filter by
-                                              ) -> Set[Obj_Id]:
+                                              ) -> Set[Edge_Id]:
         incoming_edges  = self.get_node_id_incoming_edges(node_id)
         predicate_edges = self.get_edges_by_predicate(predicate)
         return incoming_edges.intersection(predicate_edges)
 
 
-    def get_nodes_by_predicate(self, from_node_id: Obj_Id  ,                # Source node
+    def get_nodes_by_predicate(self, from_node_id: Node_Id  ,                # Source node
                                      predicate   : Safe_Id                  # Predicate to traverse
-                                ) -> Set[Obj_Id]:                           # Returns target nodes
+                                ) -> Set[Edge_Id]:                           # Returns target nodes
         edge_ids = self.get_node_outgoing_edges_by_predicate(from_node_id, predicate)
         result = set()
         for edge_id in edge_ids:

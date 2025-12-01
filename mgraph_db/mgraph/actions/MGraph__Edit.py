@@ -8,8 +8,9 @@ from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domai
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from osbot_utils.decorators.methods.cache_on_self                   import cache_on_self
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 
 
 class MGraph__Edit(Type_Safe):
@@ -46,8 +47,8 @@ class MGraph__Edit(Type_Safe):
         return edge_domain
 
 
-    def get_or_create_edge(self, from_node_id : Obj_Id                                 ,
-                                 to_node_id   : Obj_Id                                 ,
+    def get_or_create_edge(self, from_node_id : Node_Id                          ,
+                                 to_node_id   : Node_Id                          ,
                                  edge_type    : Type[Schema__MGraph__Edge] = None,               # Get existing edge or create new one
                                  predicate    : str = None                                           # Optional predicate to match
                             ) -> Domain__MGraph__Edge:
@@ -105,13 +106,13 @@ class MGraph__Edit(Type_Safe):
             node_type= Schema__MGraph__Node__Value
         return self.new_node(node_type=node_type, value_type=type(value), value=str(value), key=key)
 
-    def delete_node(self, node_id: Obj_Id) -> bool:                      # Remove a node and its connected edges
+    def delete_node(self, node_id: Node_Id) -> bool:                      # Remove a node and its connected edges
         node = self.data().node(node_id)
         if node:
             self.index().remove_node(node.node.data)                     # Remove from index first
         return self.graph.delete_node(node_id)
 
-    def delete_edge(self, edge_id: Obj_Id) -> bool:                      # Remove an edge
+    def delete_edge(self, edge_id: Edge_Id) -> bool:                      # Remove an edge
         edge = self.data().edge(edge_id)
         if edge:
             self.index().remove_edge(edge.edge.data)                     # Remove from index first

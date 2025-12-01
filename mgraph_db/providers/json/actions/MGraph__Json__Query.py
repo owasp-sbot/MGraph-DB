@@ -2,39 +2,10 @@ from typing                                                             import D
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Node         import Domain__MGraph__Json__Node
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Node__List   import Domain__MGraph__Json__Node__List
 from mgraph_db.query.MGraph__Query                                      import MGraph__Query
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
+
 
 class MGraph__Json__Query(MGraph__Query):
-
-    # def dict(self) -> Dict[str, Any]:
-    #     nodes_ids, _ = self.get_current_ids()
-    #     if not nodes_ids:
-    #         return {}
-    #
-    #     node = self.mgraph_data.node(next(iter(nodes_ids)))
-    #     if isinstance(node, Domain__MGraph__Json__Node__Dict):
-    #         return node.properties()
-    #     return {}
-    #
-    # def list(self) -> List[Any]:
-    #     nodes_ids, _ = self.get_current_ids()
-    #     if not nodes_ids:
-    #         return []
-    #
-    #     node = self.mgraph_data.node(next(iter(nodes_ids)))
-    #     if isinstance(node, Domain__MGraph__Json__Node__List):
-    #         return node.items()
-    #     return []
-    #
-    # def value(self) -> Optional[Any]:
-    #     nodes_ids, _ = self.get_current_ids()
-    #     if not nodes_ids:
-    #         return None
-    #
-    #     node = self.mgraph_data.node(next(iter(nodes_ids)))
-    #     if isinstance(node, Domain__MGraph__Json__Node__Value):
-    #         return node.value
-    #     return None
 
     def __getitem__(self, key: Union[str, int]) -> 'MGraph__Json__Query':           # todo: check this method workflow
         if isinstance(key, int):
@@ -107,7 +78,7 @@ class MGraph__Json__Query(MGraph__Query):
                         params={})
         return self
 
-    def with_new_view(self, nodes    : Set[Obj_Id   ],
+    def with_new_view(self, nodes    : Set[Node_Id   ],
                             operation: str           ,
                             params   : Dict[str, Any]
                       ) -> 'MGraph__Json__Query':
