@@ -7,6 +7,8 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data           import Schem
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data            import Schema__MGraph__Node__Data
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.identifiers.Graph_Path                import Graph_Path
+from osbot_utils.type_safe.primitives.domains.identifiers.Graph_Id  import Graph_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 
 
@@ -69,3 +71,31 @@ class test_Schema__MGraph__Graph(TestCase):
 
         assert len(graph.nodes) == 2
         assert len(graph.edges) == 2
+
+    def test_graph_with_path(self):                                                                 # Test graph creation with path
+        with Schema__MGraph__Graph( graph_id     = Graph_Id()                    ,
+                                    graph_type   = Schema__MGraph__Graph         ,
+                                    graph_data   = Schema__MGraph__Graph__Data() ,
+                                    schema_types = Schema__MGraph__Types()       ,
+                                    graph_path   = Graph_Path("service.my-graph")) as _:
+            assert _.graph_path      == Graph_Path("service.my-graph")
+            assert str(_.graph_path) == "service.my-graph"
+
+    def test_graph_without_path(self):                                                              # Test graph creation without path (backward compatibility)
+        with Schema__MGraph__Graph( graph_id     = Graph_Id()                    ,
+                                    graph_type   = Schema__MGraph__Graph         ,
+                                    graph_data   = Schema__MGraph__Graph__Data() ,
+                                    schema_types = Schema__MGraph__Types()       ) as _:
+            assert _.graph_path is None
+
+    def test_graph_serialization_roundtrip_with_path(self):                                         # Test that graph path survives serialization
+        with Schema__MGraph__Graph( graph_id     = Graph_Id()                    ,
+                                    graph_type   = Schema__MGraph__Graph         ,
+                                    graph_data   = Schema__MGraph__Graph__Data() ,
+                                    schema_types = Schema__MGraph__Types()       ,
+                                    graph_path   = Graph_Path("test.graph.path") ) as _:
+            json_data = _.json()
+            restored  = Schema__MGraph__Graph.from_json(json_data)
+
+            assert restored.graph_path      == _.graph_path
+            assert str(restored.graph_path) == "test.graph.path"

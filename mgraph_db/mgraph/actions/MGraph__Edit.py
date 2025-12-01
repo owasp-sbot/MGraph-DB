@@ -7,6 +7,8 @@ from mgraph_db.mgraph.domain.Domain__MGraph__Edge                   import Domai
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.identifiers.Edge_Path                 import Edge_Path
+from mgraph_db.mgraph.schemas.identifiers.Node_Path                 import Node_Path
 from osbot_utils.decorators.methods.cache_on_self                   import cache_on_self
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
@@ -47,26 +49,26 @@ class MGraph__Edit(Type_Safe):
         return edge_domain
 
 
-    def get_or_create_edge(self, from_node_id : Node_Id                          ,
-                                 to_node_id   : Node_Id                          ,
-                                 edge_type    : Type[Schema__MGraph__Edge] = None,               # Get existing edge or create new one
-                                 predicate    : str = None                                           # Optional predicate to match
+    def get_or_create_edge(self, from_node_id : Node_Id                                 ,
+                                 to_node_id   : Node_Id                                 ,
+                                 edge_type    : Type[Schema__MGraph__Edge] = None,
+                                 predicate    : str = None
                             ) -> Domain__MGraph__Edge:
 
 
-        if edge_type is None:                                                                                           # If edge_type is None, use the default Schema__MGraph__Edge
+        if edge_type is None:
             edge_type = Schema__MGraph__Edge
 
         edge_type_name = edge_type.__name__
 
         with self.index() as index:
 
-            existing_edges = index.nodes_to_outgoing_edges_by_type().get(from_node_id, {}).get(edge_type_name, set())   # Get all outgoing edges of the specified type from the source node
+            existing_edges = index.nodes_to_outgoing_edges_by_type().get(from_node_id, {}).get(edge_type_name, set())
 
 
-            if predicate is not None:                                                                                   # First, try to find an exact match (same edge_type, endpoints, and predicate)
+            if predicate is not None:
                 for edge_id in existing_edges:
-                    if index.edges_to_nodes().get(edge_id)[1] == to_node_id:                                            # Check if the edge has the same predicate
+                    if index.edges_to_nodes().get(edge_id)[1] == to_node_id:
                         edge = self.data().edge(edge_id)
                         if edge:
                             if edge.edge.data.edge_label:
@@ -74,45 +76,76 @@ class MGraph__Edit(Type_Safe):
                                     return edge
 
 
-            for edge_id in existing_edges:                                                                              # If no match with predicate or predicate is None, check just for edge_type and endpoints
+            for edge_id in existing_edges:
                 if index.edges_to_nodes().get(edge_id)[1] == to_node_id:
-                    # If predicate was specified, but we're here, it means no edge had the matching predicate
-                    # If predicate was not specified, we return the first edge with matching endpoints and type
                     if predicate is None:
                         return self.data().edge(edge_id)
 
-            return self.new_edge(edge_type    = edge_type    ,                                                          # Create new edge if none exists with matching criteria
+            return self.new_edge(edge_type    = edge_type    ,
                                  from_node_id = from_node_id ,
                                  to_node_id   = to_node_id   )
 
-    def new_node(self, **kwargs):
+    def new_node(self, node_path: Node_Path = None, **kwargs):          # Create new node with optional path
         with self.index() as index:
-            node = self.graph.new_node(**kwargs)                             # Create new node
-            index.add_node(node.node.data)                           # Add to index
+            if node_path:                                               # todo: see if we need to do this, since new_node ctor should pick it up
+                kwargs['node_path'] = node_path                         # Pass path to graph.new_node
+            node = self.graph.new_node(**kwargs)                        # Create new node
+            index.add_node(node.node.data)                              # Add to index
         return node
 
-    def new_edge(self, **kwargs) -> Domain__MGraph__Edge:                # Add a new edge between nodes
-        edge = self.graph.new_edge(**kwargs)                             # Create new edge
+    def new_edge(self, edge_path: Edge_Path = None, **kwargs) -> Domain__MGraph__Edge:  # Add a new edge with optional path
+        if edge_path:
+            kwargs['edge_path'] = edge_path                             # Pass path to graph.new_edge
+        edge = self.graph.new_edge(**kwargs)                            # Create new edge
         self.index().add_edge(edge.edge.data)                           # Add to index
         return edge
 
     def new_value(self, value,
                         key                                          = None,
-                        node_type: Type[Schema__MGraph__Node__Value] = None):                               # get or create value (since the values have to be unique)
-        node_id = self.index().values_index.get_node_id_by_value(value_type=type(value), value=str(value), key=key, node_type=node_type)  # First try to find existing value node
+                        node_type: Type[Schema__MGraph__Node__Value] = None,
+                        node_path: Node_Path                         = None):           # get or create value (since the values have to be unique)
+        node_id = self.index().values_index.get_node_id_by_value(value_type=type(value), value=str(value), key=key, node_type=node_type)
         if node_id:
             return self.data().node(node_id)
         if node_type is None:
             node_type= Schema__MGraph__Node__Value
-        return self.new_node(node_type=node_type, value_type=type(value), value=str(value), key=key)
+        return self.new_node(node_type=node_type, value_type=type(value), value=str(value), key=key, node_path=node_path)
 
-    def delete_node(self, node_id: Node_Id) -> bool:                      # Remove a node and its connected edges
+    # ---- Path update methods ----
+
+    def set_node_path(self, node_id: Node_Id, node_path: Node_Path) -> bool:    # Set or update a node's path
+        node = self.data().node(node_id)
+        if node:
+            old_path = node.node.data.node_path
+            if old_path:                                                # Remove from old path index
+                self.index()._remove_node_path(node.node.data)
+            node.node.data.node_path = node_path                        # Update the node's path
+            if node_path:                                               # Add to new path index
+                self.index()._index_node_path(node.node.data)
+            return True
+        return False
+
+    def set_edge_path(self, edge_id: Edge_Id, edge_path: Edge_Path) -> bool:    # Set or update an edge's path
+        edge = self.data().edge(edge_id)
+        if edge:
+            old_path = edge.edge.data.edge_path
+            if old_path:                                                # Remove from old path index
+                self.index()._remove_edge_path(edge.edge.data)
+            edge.edge.data.edge_path = edge_path                        # Update the edge's path
+            if edge_path:                                               # Add to new path index
+                self.index()._index_edge_path(edge.edge.data)
+            return True
+        return False
+
+    # ---- Deletion methods ----
+
+    def delete_node(self, node_id: Node_Id) -> bool:                     # Remove a node and its connected edges
         node = self.data().node(node_id)
         if node:
             self.index().remove_node(node.node.data)                     # Remove from index first
         return self.graph.delete_node(node_id)
 
-    def delete_edge(self, edge_id: Edge_Id) -> bool:                      # Remove an edge
+    def delete_edge(self, edge_id: Edge_Id) -> bool:                     # Remove an edge
         edge = self.data().edge(edge_id)
         if edge:
             self.index().remove_edge(edge.edge.data)                     # Remove from index first

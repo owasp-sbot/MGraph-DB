@@ -97,19 +97,16 @@ graph TD
 
     def test__index__stats(self):
         with self.test_data.index() as _:
-            assert _.stats() == {'index_data': { 'edge_to_nodes'        : 2                                          ,
+            assert _.stats() == {'index_data': { 'edge_to_nodes'        : 2                                           ,
+                                                 'edges_by_path'        : {}                                          ,
                                                  'edges_by_type'        : { 'Schema__MGraph__Edge'  : 2              },
-                                                 'node_edge_connections': { 'avg_incoming_edges'    : 1              ,
-                                                                            'avg_outgoing_edges'    : 1              ,
-                                                                            'max_incoming_edges'    : 1              ,
-                                                                            'max_outgoing_edges'    : 2              ,
+
+                                                 'node_edge_connections': { 'avg_incoming_edges'    : 1               ,
+                                                                            'avg_outgoing_edges'    : 1               ,
+                                                                            'max_incoming_edges'    : 1               ,
+                                                                            'max_outgoing_edges'    : 2               ,
                                                                             'total_nodes'           : 3              },
-                                                 # 'nodes_by_field'        : { 'name'                 : { 'Node 1': 1  ,
-                                                 #                                                        'Node 2': 1  ,
-                                                 #                                                        'Node 3': 1  },
-                                                 #                             'value'                : { 'A'     : 1  ,
-                                                 #                                                        'B'     : 1  ,
-                                                 #                                                        'C'     : 1  }},
+                                                 'nodes_by_path'         : {}                                         ,
                                                  'nodes_by_type'         : { 'Schema__Simple__Node': 3               }}}
 
 
