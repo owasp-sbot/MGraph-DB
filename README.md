@@ -1,6 +1,6 @@
 # MGraph-DB: A Memory-based GraphDB for Python, GenAI, Semantic Web and Serverless
 
-![Current Release](https://img.shields.io/badge/release-v1.4.2-blue)
+![Current Release](https://img.shields.io/badge/release-v1.4.3-blue)
 
 > **QUICKSTART GUIDE**: For working code examples, check out our test suite at:
 > ```
