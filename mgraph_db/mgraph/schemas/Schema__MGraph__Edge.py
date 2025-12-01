@@ -1,4 +1,5 @@
 from typing                                                         import Type
+from mgraph_db.mgraph.schemas.identifiers.Edge_Path                 import Edge_Path
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Data            import Schema__MGraph__Edge__Data
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label           import Schema__MGraph__Edge__Label
@@ -12,6 +13,8 @@ class Schema__MGraph__Edge(Type_Safe):
     edge_data     : Schema__MGraph__Edge__Data
     edge_type     : Type['Schema__MGraph__Edge']
     edge_label    : Schema__MGraph__Edge__Label = None
+    edge_path     : Edge_Path                   = None              # Optional path identifier for string-based classification
+
     from_node_id  : Node_Id                     = None
     to_node_id    : Node_Id                     = None
 

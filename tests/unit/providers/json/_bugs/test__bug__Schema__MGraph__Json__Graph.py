@@ -106,10 +106,12 @@ class test_Schema__MGraph__Json__Graph__Bug(TestCase):
         assert node.node_id == node_id
         assert node.json()  == { 'node_data': {},
                                  'node_id': 'a1234567',
+                                 'node_path': None,
                                  'node_type': 'mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node'}
         assert node.obj()   == __( node_data=__(),
                                    node_id='a1234567',
-                                   node_type='mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node') != __()
+                                   node_path= None,
+                                   node_type='mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node')
 
         roundtrip = Schema__MGraph__Node.from_json(node.json())
         assert roundtrip.json() == node.json()

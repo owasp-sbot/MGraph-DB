@@ -63,23 +63,26 @@ class test_MGraph__Simple(TestCase):
             assert type(self.mgraph_simple.graph.model.model_types) is Model__Simple__Types
             assert type(self.mgraph_simple.graph.model.data       ) is Schema__Simple__Graph
 
-            assert node.json() == {'graph': {'data'                 : {'edges'       : {},
-                                                                       'graph_data'  : {},
-                                                                       'graph_id'    : graph_id_str,
-                                                                       'graph_type'  : type_full_name(Schema__Simple__Graph),
+            assert node.json() == {'graph': {'data'                 : {'edges'       : {}                                                                   ,
+                                                                       'graph_data'  : {}                                                                   ,
+                                                                       'graph_id'    : graph_id_str                                                         ,
+                                                                       'graph_path'  : None                                                                 ,   # NEW: path field
+                                                                       'graph_type'  : type_full_name(Schema__Simple__Graph)                                ,
                                                                        'nodes'       : { node_id_str: { 'node_data': {'name' : None ,
-                                                                                                                      'value': None},
-                                                                                                        'node_id'  : node_id_str,
-                                                                                                        'node_type' : type_full_name(Schema__Simple__Node    )}},
-                                                                       'schema_types': {'edge_type'       : type_full_name(Schema__MGraph__Edge         ),
-                                                                                        'graph_data_type' : type_full_name(Schema__MGraph__Graph__Data  ),
-                                                                                        'node_data_type'  : type_full_name(Schema__Simple__Node__Data   ),
-                                                                                        'node_type'       : type_full_name(Schema__Simple__Node         )}},
-                                             'model_types'          : {'edge_model_type' : type_full_name(Model__MGraph__Edge          ),
-                                                                       'node_model_type' : type_full_name(Model__Simple__Node          )}},
-                                   'node': {'data': {'node_data': {'name': None, 'value': None}         ,
-                                                     'node_id'  : node_id_str                               ,
-                                                     'node_type': type_full_name(Schema__Simple__Node)  }}}
+                                                                                                                      'value': None}                        ,
+                                                                                                        'node_id'  : node_id_str                            ,
+                                                                                                        'node_path': None                                   ,   # NEW: path field
+                                                                                                        'node_type': type_full_name(Schema__Simple__Node)}} ,
+                                                                       'schema_types': {'edge_type'      : type_full_name(Schema__MGraph__Edge      )       ,
+                                                                                        'graph_data_type': type_full_name(Schema__MGraph__Graph__Data)      ,
+                                                                                        'node_data_type' : type_full_name(Schema__Simple__Node__Data )      ,
+                                                                                        'node_type'      : type_full_name(Schema__Simple__Node      )}}     ,
+                                             'model_types'          : {'edge_model_type': type_full_name(Model__MGraph__Edge )                              ,
+                                                                       'node_model_type': type_full_name(Model__Simple__Node )}}                            ,
+                                   'node': {'data': {'node_data': {'name': None, 'value': None}                                                             ,
+                                                     'node_id'  : node_id_str                                                                               ,
+                                                     'node_path': None                                                                                      ,   # NEW: path field
+                                                     'node_type': type_full_name(Schema__Simple__Node)}}}
 
 
     def test_edit_new_node_with_value(self):                                    # Test creating a node with specific value

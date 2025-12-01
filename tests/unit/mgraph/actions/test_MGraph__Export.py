@@ -40,28 +40,34 @@ class test_MGraph__Export(TestCase):
         node_ids = self.linear_graph.node_ids
         edge_ids = self.linear_graph.edge_ids
         with self.linear_graph.graph.export() as _:
-            assert _.to__json() == {'edges': { edge_ids[0]: { 'edge_data'  : {}                     ,
+            assert _.to__json() == {'edges': { edge_ids[0]: { 'edge_data'   : {}                    ,
                                                               'edge_id'     : edge_ids[0]           ,
                                                               'edge_label'  : None                  ,
+                                                              'edge_path'   : None                  ,   # NEW: path field
                                                               'edge_type'   : '@schema_mgraph_edge' ,
-                                                              'from_node_id': node_ids[0]           ,    # First edge
+                                                              'from_node_id': node_ids[0]           ,
                                                               'to_node_id'  : node_ids[1]}          ,
                                                edge_ids[1]: { 'edge_data'   : {}                    ,
                                                               'edge_id'     : edge_ids[1]           ,
                                                               'edge_label'  : None                  ,
+                                                              'edge_path'   : None                  ,   # NEW: path field
                                                               'edge_type'   : '@schema_mgraph_edge' ,
-                                                              'from_node_id': node_ids[1],    # Second edge
-                                                              'to_node_id'  : node_ids[2]}},
-                                    'graph_id': _.graph.graph_id(),
-                                    'nodes': { node_ids[0]: { 'node_data': {}                    ,
-                                                              'node_id': node_ids[0]             ,
-                                                              'node_type': '@schema_mgraph_node' },                               # First node
-                                                node_ids[1]: { 'node_data': {}                    ,
-                                                              'node_id': node_ids[1]             ,
-                                                              'node_type': '@schema_mgraph_node' },                               # Second node
-                                                node_ids[2]: { 'node_data': {}                    ,
-                                                               'node_id': node_ids[2]             ,
-                                                               'node_type': '@schema_mgraph_node' }}}                              # Third node
+                                                              'from_node_id': node_ids[1]           ,
+                                                              'to_node_id'  : node_ids[2]}          },
+                                    'graph_id': _.graph.graph_id()  ,
+                                    'graph_path': None              ,
+                                    'nodes'  : { node_ids[0]: { 'node_data': {}                     ,
+                                                                'node_id'  : node_ids[0]            ,
+                                                                'node_path': None                   ,   # NEW: path field
+                                                                'node_type': '@schema_mgraph_node'  },
+                                                 node_ids[1]: { 'node_data': {}                     ,
+                                                                'node_id'  : node_ids[1]            ,
+                                                                'node_path': None                   ,   # NEW: path field
+                                                                'node_type': '@schema_mgraph_node'  },
+                                                 node_ids[2]: { 'node_data': {}                     ,
+                                                                'node_id'  : node_ids[2]            ,
+                                                                'node_path': None                   ,   # NEW: path field
+                                                                'node_type': '@schema_mgraph_node'  }}}                          # Third node
 
     def test_to__xml(self):                                                                  # Test XML export
         with self.linear_graph.graph.export() as _:
