@@ -29,7 +29,7 @@ class test_Perf_Test__MGraph_Json(TestCase):
     def setUp(self):
         self.perf_test = Perf_Test__MGraph_Json()
 
-    def test__bug__in_to__mgraph_json(self):
+    def test__regression__in_to__mgraph_json(self):
         from mgraph_db.providers.json.domain.Domain__MGraph__Json__Graph import Domain__MGraph__Json__Graph
         mgraph        = MGraph__Json()
         domain_mgraph = mgraph.load().from_data(TEST_DATA__TECH_NEWS__FEED_XML_JSON)
@@ -38,7 +38,8 @@ class test_Perf_Test__MGraph_Json(TestCase):
 
         mgraph_model_data_json = mgraph.export().to__mgraph_json()
         for edge_id, edge_data in mgraph_model_data_json.get('edges').items():
-            assert type(edge_id) == Obj_Id      # BUG this should be str
+            #assert type(edge_id) == Obj_Id      # BUG this should be str
+            assert type(edge_id) == str          # FIXED this should be str
 
     def test__bug__run_workflow__on_json(self):
         pytest.skip("this test fails due to the test__bug__in_to__mgraph_json")
