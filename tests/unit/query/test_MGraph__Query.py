@@ -19,9 +19,9 @@ from osbot_utils.utils.Objects                                       import base
 from osbot_utils.type_safe.Type_Safe                                 import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id     import Obj_Id
 
-class Test_Edge(Schema__MGraph__Edge): pass                                                 # Create test edge type
+class An_Edge(Schema__MGraph__Edge): pass                                                 # Create test edge type
 
-class test_MGraph__Query__Methods(TestCase):
+class test_MGraph__Query(TestCase):
 
     def setUp(self):
         self.mgraph       = MGraph__Simple__Test_Data().create()                    # Create test graph
@@ -311,7 +311,7 @@ class test_MGraph__Query__Methods(TestCase):
             node_4 = _.new_node(node_type=Schema__MGraph__Node__Value, value="12"   , value_type=int)
 
             # Create connections using different edge types
-            edge_1 = _.new_edge(from_node_id = node_1.node_id, to_node_id = node_2.node_id, edge_type = Test_Edge            )
+            edge_1 = _.new_edge(from_node_id = node_1.node_id, to_node_id = node_2.node_id, edge_type = An_Edge)
             edge_2 = _.new_edge(from_node_id = node_2.node_id,to_node_id  = node_3.node_id, edge_type = Schema__MGraph__Edge)
             edge_3 = _.new_edge(from_node_id = node_2.node_id,to_node_id  = node_4.node_id, edge_type = Schema__MGraph__Edge)
 
@@ -331,7 +331,7 @@ class test_MGraph__Query__Methods(TestCase):
             assert first_node.node_data.value == "test1"
 
             # Test with edge type filter
-            result = _.with_node_value("test2", Test_Edge)
+            result = _.with_node_value("test2", An_Edge)
             assert result.count() == 1
             first_node = result.first()
             assert first_node.node_data.value == "test2"
