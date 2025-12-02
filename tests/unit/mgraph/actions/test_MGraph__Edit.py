@@ -680,3 +680,9 @@ class test_MGraph__Edit(TestCase):
         with mgraph.index() as index:
             assert type(index) is MGraph__Index
             assert node.node_id in index.get_nodes_by_path(Node_Path("test"))
+
+    # def test__round_trip__simple_graphs(self):
+    #     with MGraph() as mgraph:
+    #         with mgraph.values() as value:
+    #             value.get_or_create('aaa')
+    #         mgraph.graph.model.data.print_obj()

@@ -51,8 +51,8 @@ class test_MGraph__Diff__Values(TestCase):
             node_b = edit_b.add_node(Schema__MGraph__Node__Value(node_data=value_data_b))
 
         diff = self.differ.compare([str])
-        assert diff.json() == { 'added_values'  : {'builtins.str': {'value_a'}},
-                                'removed_values': {'builtins.str': {'value_b'}}}
+        assert diff.json() == { 'added_values'  : {'builtins.str': ['value_a']},
+                                'removed_values': {'builtins.str': ['value_b']}}
 
         assert diff.added_values  [str] == {"value_a"}                              # Check values were properly categorized
         assert diff.removed_values[str] == {"value_b"}
@@ -72,10 +72,10 @@ class test_MGraph__Diff__Values(TestCase):
             edit_b.add_node(Schema__MGraph__Node__Value(node_data=int_data_b))
 
         diff = self.differ.compare([str, int])
-        assert diff.obj()  == __( added_values =__(builtins_str={'str_a'}),
-                                  removed_values=__(builtins_str={'str_b'}))
-        assert diff.json() == { 'added_values'  : { 'builtins.str': {'str_a'}},
-                                'removed_values': { 'builtins.str': {'str_b'}}}
+        assert diff.obj()  == __( added_values =__(builtins_str=['str_a']),
+                                  removed_values=__(builtins_str=['str_b']))
+        assert diff.json() == { 'added_values'  : { 'builtins.str': ['str_a']},
+                                'removed_values': { 'builtins.str': ['str_b']}}
 
         assert str in diff.added_values
         assert str in diff.removed_values

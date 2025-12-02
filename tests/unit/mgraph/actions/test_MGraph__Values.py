@@ -38,7 +38,7 @@ class test_MGraph__Values(TestCase):
         assert self.mgraph.index().values_index.index_data.json() == { 'hash_to_node'  : {'f8bb59eae6'  : node_id_str}  ,
                                                                        'node_to_hash'  : {node_id_str   : 'f8bb59eae6'} ,
                                                                        'type_by_value' : {'f8bb59eae6'  : 'builtins.int'},
-                                                                       'values_by_type': {'builtins.int': {'f8bb59eae6'}}}
+                                                                       'values_by_type': {'builtins.int': ['f8bb59eae6']}}
         assert self.mgraph.index().index_data.json()              == { 'edges_by_incoming_label'        : {}                                              ,
                                                                        'edges_by_outgoing_label'        : {}                                              ,
                                                                        'edges_by_path'                  : {}                                              ,   # NEW: path index
@@ -48,10 +48,10 @@ class test_MGraph__Values(TestCase):
                                                                        'edges_to_nodes'                 : {}                                              ,
                                                                        'edges_types'                    : {}                                              ,
                                                                        'nodes_by_path'                  : {}                                              ,   # NEW: path index
-                                                                       'nodes_by_type'                  : {'Schema__MGraph__Node__Value': {node_id_str}}  ,
-                                                                       'nodes_to_incoming_edges'        : {node_id_str: set()}                            ,
+                                                                       'nodes_by_type'                  : {'Schema__MGraph__Node__Value': [node_id_str]}  ,
+                                                                       'nodes_to_incoming_edges'        : {node_id_str: []}                            ,
                                                                        'nodes_to_incoming_edges_by_type': {}                                              ,
-                                                                       'nodes_to_outgoing_edges'        : {node_id_str: set()}                            ,
+                                                                       'nodes_to_outgoing_edges'        : {node_id_str: []}                            ,
                                                                        'nodes_to_outgoing_edges_by_type': {}                                              ,
                                                                        'nodes_types'                    : {node_id_str: 'Schema__MGraph__Node__Value'}}
 
