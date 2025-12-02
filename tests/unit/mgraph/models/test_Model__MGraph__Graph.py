@@ -1,6 +1,5 @@
-from types import NoneType
-
 import pytest
+from types                                                          import NoneType
 from unittest                                                       import TestCase
 from mgraph_db.mgraph.models.Model__MGraph__Types                   import Model__MGraph__Types
 from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
