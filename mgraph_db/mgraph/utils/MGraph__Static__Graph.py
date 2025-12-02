@@ -1,4 +1,5 @@
 from typing                                                         import List
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from mgraph_db.mgraph.MGraph                                        import MGraph
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
@@ -10,7 +11,7 @@ class MGraph__Static__Graph(Type_Safe):
 
     def create_nodes(self, count: int) -> List[Obj_Id]:                                                          # Creates specified number of nodes
         with self.graph.edit() as edit:
-            return [edit.new_node().node_id for _ in range(count)]
+            return [edit.new_node(node_type=Schema__MGraph__Node).node_id for _ in range(count)]
 
     def validate_node_count(self, num_nodes: int, min_nodes: int, graph_type: str):                                   # Validates minimum number of nodes for graph type
         if num_nodes < min_nodes:

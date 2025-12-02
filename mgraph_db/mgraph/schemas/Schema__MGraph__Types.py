@@ -6,7 +6,7 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Node          import Schema__MGrap
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data    import Schema__MGraph__Node__Data
 
 class Schema__MGraph__Types(Type_Safe):
-    edge_type        : Type[Schema__MGraph__Edge         ]
-    graph_data_type  : Type[Schema__MGraph__Graph__Data]
-    node_type        : Type[Schema__MGraph__Node         ]
-    node_data_type   : Type[Schema__MGraph__Node__Data   ]
+    edge_type        : Type[Schema__MGraph__Edge         ] = None
+    graph_data_type  : Type[Schema__MGraph__Graph__Data  ] = None
+    node_type        : Type[Schema__MGraph__Node         ] = None
+    node_data_type   : Type[Schema__MGraph__Node__Data   ] = None

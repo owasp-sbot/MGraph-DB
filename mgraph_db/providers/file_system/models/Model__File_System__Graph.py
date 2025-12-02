@@ -6,7 +6,7 @@ from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id             im
 
 class Model__File_System__Graph(Model__MGraph__Graph):                                                   # Model for filesystem graph
     data          : Schema__File_System__Graph
-    model_types : Model__File_System__Default_Types
+    model_types   : Model__File_System__Default_Types
 
 
     def allow_circular_refs(self) -> bool:                                                               # Check if circular refs allowed

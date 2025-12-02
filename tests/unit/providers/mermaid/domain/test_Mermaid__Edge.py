@@ -24,7 +24,8 @@ class test_Mermaid__Edge(TestCase):
                                                                      edge_id      = _.edge_id                   ,
                                                                      edge_label   = None                        ,
                                                                      edge_type    = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge.Schema__Mermaid__Edge',
-                                                                     edge_data    = __()           ,
+                                                                     edge_data    = None           ,
+                                                                     edge_path     =None           ,
                                                                      from_node_id = _.from_node_id ,
                                                                      to_node_id   = _.to_node_id   )),
                                                    graph = self.graph.obj())

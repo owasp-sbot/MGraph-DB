@@ -1,4 +1,5 @@
 from typing                                                         import List, Type
+from mgraph_db.mgraph.actions.MGraph__Type__Resolver                import MGraph__Type__Resolver
 from mgraph_db.mgraph.domain.Domain__MGraph__Types                  import Domain__MGraph__Types
 from mgraph_db.mgraph.models.Model__MGraph__Edge                    import Model__MGraph__Edge
 from mgraph_db.mgraph.models.Model__MGraph__Node                    import Model__MGraph__Node
@@ -15,7 +16,14 @@ from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_
 class Domain__MGraph__Graph(Type_Safe):
     domain_types : Domain__MGraph__Types
     model        : Model__MGraph__Graph
-    graph_type   : Type['Domain__MGraph__Graph']
+    graph_type   : Type['Domain__MGraph__Graph'] = None                                     # Optional - uses default when None
+    resolver     : MGraph__Type__Resolver                                                   # Auto-instantiated - provides type resolution
+
+    def __init__(self, **kwargs):
+        graph_id = kwargs.pop('graph_id', None)
+        super().__init__(**kwargs)
+        if graph_id:
+            self.model.data.graph_id = graph_id
 
 
     def delete_edge(self, edge_id: Edge_Id) -> bool:
@@ -40,10 +48,16 @@ class Domain__MGraph__Graph(Type_Safe):
         return self.model.data.graph_id
 
     def mgraph_edge(self, edge: Model__MGraph__Edge) -> Domain__MGraph__Edge:
-        return self.domain_types.edge_domain_type(edge=edge, graph=self.model)
+        edge_domain_type = self.resolver.edge_domain_type(
+            self.domain_types.edge_domain_type if self.domain_types else None
+        )
+        return edge_domain_type(edge=edge, graph=self.model)
 
-    def mgraph_node(self, node: Model__MGraph__Node) -> Domain__MGraph__Edge:
-        return self.domain_types.node_domain_type(node=node, graph=self.model)
+    def mgraph_node(self, node: Model__MGraph__Node) -> Domain__MGraph__Node:
+        node_domain_type = self.resolver.node_domain_type(
+            self.domain_types.node_domain_type if self.domain_types else None
+        )
+        return node_domain_type(node=node, graph=self.model)
 
     def add_edge(self, edge: Schema__MGraph__Edge):
         edge = self.model.add_edge(edge)
@@ -52,7 +66,7 @@ class Domain__MGraph__Graph(Type_Safe):
     def connect_nodes(self, from_node: Domain__MGraph__Node,
                             to_node  : Domain__MGraph__Node,
                             edge_type: Type[Schema__MGraph__Edge] = None
-                       ) -> Domain__MGraph__Edge:                   # Creates an edge between two nodes
+                       ) -> Domain__MGraph__Edge:                                           # Creates an edge between two nodes
         return self.new_edge(edge_type    = edge_type ,
                              from_node_id = from_node.node_id,
                              to_node_id   = to_node.node_id  )
@@ -74,10 +88,10 @@ class Domain__MGraph__Graph(Type_Safe):
         node = self.model.node(node_id)
         if node:
             return self.mgraph_node(node=node)
+        return None
 
     def nodes(self) -> List[Domain__MGraph__Node]:
         return [self.mgraph_node(node=node) for node in self.model.nodes()]
 
     def nodes_ids(self):
         return self.model.nodes_ids()
-

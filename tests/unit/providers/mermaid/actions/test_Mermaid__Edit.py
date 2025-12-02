@@ -64,7 +64,8 @@ class test__Mermaid__Edit(TestCase):
                                                                             edge_mode        = ''      ),
                                                           edge_label   = None                           ,
                                                           edge_type    = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge.Schema__Mermaid__Edge',
-                                                          edge_data    = __()                           ,
+                                                          edge_data    = None                           ,
+                                                          edge_path    = None,
                                                           from_node_id = from_node.node_id              ,
                                                           to_node_id   = to_node.node_id                ))
 

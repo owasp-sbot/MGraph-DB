@@ -23,7 +23,7 @@ class test_MGraph__Diff__Values(TestCase):
         node_value = Schema__MGraph__Node__Value      (node_data=value_data)
 
         with self.graph_a.edit() as edit:                                             # Add value node to graph A
-            edit.add_node(node_value)
+            edit.add_node(node_value).set_node_type(Schema__MGraph__Node__Value)
 
         values = self.differ.get_values_by_type(self.graph_a, str)
         assert len(values)              == 1
@@ -43,13 +43,16 @@ class test_MGraph__Diff__Values(TestCase):
             value_data_a = Schema__MGraph__Node__Value__Data(value="value_a", value_type=str)
             node_a = edit_a.add_node(Schema__MGraph__Node__Value(node_data=value_data_a))
 
+        assert node_a.node_data.obj() == __(value_type='builtins.str', value='value_a', key='')
+        assert node_a.node_type       is Schema__MGraph__Node__Value
+
         with self.graph_b.edit() as edit_b:
             value_data_b = Schema__MGraph__Node__Value__Data(value="value_b", value_type=str)
             node_b = edit_b.add_node(Schema__MGraph__Node__Value(node_data=value_data_b))
 
         diff = self.differ.compare([str])
-        assert diff.json() == { 'added_values'  : {'builtins.str': {'value_a'}},
-                                'removed_values': {'builtins.str': {'value_b'}}}
+        assert diff.json() == { 'added_values'  : {'builtins.str': ['value_a']},
+                                'removed_values': {'builtins.str': ['value_b']}}
 
         assert diff.added_values  [str] == {"value_a"}                              # Check values were properly categorized
         assert diff.removed_values[str] == {"value_b"}
@@ -69,10 +72,10 @@ class test_MGraph__Diff__Values(TestCase):
             edit_b.add_node(Schema__MGraph__Node__Value(node_data=int_data_b))
 
         diff = self.differ.compare([str, int])
-        assert diff.obj()  == __( added_values =__(builtins_str={'str_a'}),
-                                  removed_values=__(builtins_str={'str_b'}))
-        assert diff.json() == { 'added_values'  : { 'builtins.str': {'str_a'}},
-                                'removed_values': { 'builtins.str': {'str_b'}}}
+        assert diff.obj()  == __( added_values =__(builtins_str=['str_a']),
+                                  removed_values=__(builtins_str=['str_b']))
+        assert diff.json() == { 'added_values'  : { 'builtins.str': ['str_a']},
+                                'removed_values': { 'builtins.str': ['str_b']}}
 
         assert str in diff.added_values
         assert str in diff.removed_values

@@ -7,7 +7,7 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Edge  import Schema__MGraph__Edge
 from osbot_utils.utils.Env                          import load_dotenv
 
 
-class TestEdge(Schema__MGraph__Edge): pass
+class An_Edge(Schema__MGraph__Edge): pass
 
 class test_MGraph__Builder(TestCase):
 
@@ -101,7 +101,7 @@ class test_MGraph__Builder(TestCase):
         # Create a more complex graph
         with self.mgraph.builder() as g:
             (g.add_node("Person")
-             .connect_to("John", TestEdge)
+             .connect_to("John", An_Edge)
              .add_predicate("has attribute", "age")
              .connect_to(25)
              .node_up()

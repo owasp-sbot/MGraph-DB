@@ -1,5 +1,5 @@
 from unittest                                                                   import TestCase
-from osbot_utils.testing.__                                                     import __
+from osbot_utils.testing.__ import __, __SKIP__
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                              import Schema__MGraph__Edge
 from mgraph_db.providers.simple.schemas.Schema__Simple__Node                    import Schema__Simple__Node
 from osbot_utils.utils.Env                                                      import load_dotenv
@@ -40,8 +40,9 @@ class test_MGraph__Export__Dot(TestCase):
         config.node.font.name = "Times"
         config.node.font.size = 12
 
-        exporter = MGraph__Export__Dot(graph=self.domain_graph, config=config)
+        exporter = MGraph__Export__Dot(graph=self.domain_graph, config=config)#.set_graph_node()
 
+        assert type(exporter)                          is MGraph__Export__Dot
         assert exporter.graph                          == self.domain_graph
         assert exporter.config.display.node_value      is True
         assert exporter.config.display.edge_id         is False
@@ -56,6 +57,7 @@ class test_MGraph__Export__Dot(TestCase):
                                     dot_code         = None                                             ,
                                     on_add_node      = None                                             ,
                                     on_add_edge      = None                                             ,
+                                    resolver         = __SKIP__                                         ,
                                     node_renderer    = exporter.node_renderer   .obj()                  ,
                                     edge_renderer    = exporter.edge_renderer   .obj()                  ,
                                     style_manager    = exporter.style_manager   .obj()                  ,

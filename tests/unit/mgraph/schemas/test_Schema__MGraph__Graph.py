@@ -1,12 +1,16 @@
 import re
 import pytest
 from unittest                                                       import TestCase
+from mgraph_db.mgraph.MGraph                                        import MGraph
+from osbot_utils.testing.__                                         import __, __SKIP__
 from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                 import Schema__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data           import Schema__MGraph__Graph__Data
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data            import Schema__MGraph__Node__Data
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.identifiers.Graph_Path                import Graph_Path
+from osbot_utils.type_safe.primitives.domains.identifiers.Graph_Id  import Graph_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 
 
@@ -69,3 +73,98 @@ class test_Schema__MGraph__Graph(TestCase):
 
         assert len(graph.nodes) == 2
         assert len(graph.edges) == 2
+
+    def test_graph_with_path(self):                                                                 # Test graph creation with path
+        with Schema__MGraph__Graph( graph_id     = Graph_Id()                    ,
+                                    graph_type   = Schema__MGraph__Graph         ,
+                                    graph_data   = Schema__MGraph__Graph__Data() ,
+                                    schema_types = Schema__MGraph__Types()       ,
+                                    graph_path   = Graph_Path("service.my-graph")) as _:
+            assert _.graph_path      == Graph_Path("service.my-graph")
+            assert str(_.graph_path) == "service.my-graph"
+
+    def test_graph_without_path(self):                                                              # Test graph creation without path (backward compatibility)
+        with Schema__MGraph__Graph( graph_id     = Graph_Id()                    ,
+                                    graph_type   = Schema__MGraph__Graph         ,
+                                    graph_data   = Schema__MGraph__Graph__Data() ,
+                                    schema_types = Schema__MGraph__Types()       ) as _:
+            assert _.graph_path is None
+
+    def test_graph_serialization_roundtrip_with_path(self):                                         # Test that graph path survives serialization
+        with Schema__MGraph__Graph( graph_id     = Graph_Id()                    ,
+                                    graph_type   = Schema__MGraph__Graph         ,
+                                    graph_data   = Schema__MGraph__Graph__Data() ,
+                                    schema_types = Schema__MGraph__Types()       ,
+                                    graph_path   = Graph_Path("test.graph.path") ) as _:
+            json_data = _.json()
+            restored  = Schema__MGraph__Graph.from_json(json_data)
+
+            assert restored.graph_path      == _.graph_path
+            assert str(restored.graph_path) == "test.graph.path"
+
+    def test_graph_default_value(self):
+        graph_id = 'c0787747'
+        node_id  = 'adf69958'
+        with Schema__MGraph__Graph(graph_id=graph_id) as _:
+            assert _.obj() == __(graph_path   = None,
+                                 edges        = __(),
+                                 graph_data   = None, # __(),
+                                 graph_id     = graph_id,
+                                 graph_type   = None, #'mgraph_db.mgraph.schemas.Schema__MGraph__Graph.Schema__MGraph__Graph',
+                                 nodes        = __(),
+                                 schema_types = None)   #__(edge_type='mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge',
+                                                        #   graph_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data',
+                                                        #   node_type='mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node',
+                                                        #   node_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data'))
+        node_value = "this is a new value"
+        with MGraph(graph_id=graph_id) as _:
+            _.edit().new_value(node_value, node_id=node_id)
+            # todo: see if we can make more values None
+            assert _.obj() == __(graph=__(graph_type=None,
+                                          domain_types=__(node_domain_type=None, edge_domain_type=None),
+                                          model=__(data=__(graph_data=None,
+                                                           graph_path=None,
+                                                           graph_type=None,
+                                                           schema_types=None,
+                                                           edges=__(),
+                                                           graph_id='c0787747',
+                                                           nodes=__(adf69958=__(node_id='adf69958',
+                                                                                node_type='mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value.Schema__MGraph__Node__Value',
+                                                                                node_data=__(value_type = 'builtins.str',
+                                                                                             value      = node_value    ,
+                                                                                             key        = ''            ),
+                                                                                node_path=None))),
+                                                   model_types=__(node_model_type=None, edge_model_type=None),
+                                                   resolver=__SKIP__),
+                                          resolver=__SKIP__),
+                                 query_class='mgraph_db.query.MGraph__Query.MGraph__Query',
+                                 edit_class='mgraph_db.mgraph.actions.MGraph__Edit.MGraph__Edit',
+                                 screenshot_class='mgraph_db.mgraph.actions.MGraph__Screenshot.MGraph__Screenshot')
+            # this is what it looked like before the refactoring to have the graph, node and edge types to start with None
+            # assert _.obj() == __(graph         = __(domain_types = __(node_domain_type = 'mgraph_db.mgraph.domain.Domain__MGraph__Node.Domain__MGraph__Node' ,
+            #                                                           edge_domain_type = 'mgraph_db.mgraph.domain.Domain__MGraph__Edge.Domain__MGraph__Edge') ,
+            #
+            #                                         model        = __(data = __(graph_path   = None                                                ,
+            #                                                                     edges        = __()                                               ,
+            #                                                                     graph_data   = __()                                               ,
+            #                                                                     graph_id     = graph_id                                           ,
+            #                                                                     graph_type   = 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph.Schema__MGraph__Graph' ,
+            #                                                                     nodes        = __(adf69958 = __(node_data = __(value_type = 'builtins.str' ,
+            #                                                                                                                    value      = 'this is a new value' ,
+            #                                                                                                                    key        = ''                    ) ,
+            #                                                                                                     node_id   = 'adf69958'             ,
+            #                                                                                                     node_type = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value.Schema__MGraph__Node__Value' ,
+            #                                                                                                     node_path = None))                ,
+            #                                                                     schema_types = __(edge_type        = 'mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge'             ,
+            #                                                                                       graph_data_type = 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data' ,
+            #                                                                                       node_type       = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node'               ,
+            #                                                                                       node_data_type  = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data')) ,
+            #
+            #                                                    model_types = __(node_model_type = 'mgraph_db.mgraph.models.Model__MGraph__Node.Model__MGraph__Node' ,
+            #                                                                     edge_model_type = 'mgraph_db.mgraph.models.Model__MGraph__Edge.Model__MGraph__Edge')) ,
+            #
+            #                          graph_type      = 'mgraph_db.mgraph.domain.Domain__MGraph__Graph.Domain__MGraph__Graph') ,
+            #
+            #                 query_class     = 'mgraph_db.query.MGraph__Query.MGraph__Query'                          ,
+            #                 edit_class      = 'mgraph_db.mgraph.actions.MGraph__Edit.MGraph__Edit'                   ,
+            #                 screenshot_class= 'mgraph_db.mgraph.actions.MGraph__Screenshot.MGraph__Screenshot'       )

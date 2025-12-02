@@ -48,5 +48,9 @@ class Domain__MGraph__Node(Type_Safe):                                          
             return self.graph.node(edge.from_node_id())
         return None
 
+    def set_node_type(self, node_type=None):
+        self.node.data.set_node_type(node_type)
+        return self
+
     def value(self):
         return self.node_data.value

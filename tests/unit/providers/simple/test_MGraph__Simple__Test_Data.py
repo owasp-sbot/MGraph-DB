@@ -24,28 +24,34 @@ class test_MGraph__Simple__Test_Data(TestCase):
             nodes_ids = _.nodes_ids()
             edges_ids = _.edges_ids()
         with self.test_data.export() as _:
-            assert _.to__json() == {'edges': { edges_ids[0]: { 'edge_data'   : {}                   ,
-                                                               'edge_id'     : edges_ids[0]         ,
-                                                               'edge_type'   : '@schema_mgraph_edge',
-                                                               'edge_label'  : None                 ,
-                                                               'from_node_id': nodes_ids[0]         ,
-                                                               'to_node_id'  : nodes_ids[1]         },
-                                               edges_ids[1]: {'edge_data'   : {}                    ,
-                                                              'edge_id'     : edges_ids[1]          ,
-                                                              'edge_label'  : None                  ,
-                                                              'edge_type'   : '@schema_mgraph_edge' ,
-                                                              'from_node_id': nodes_ids[0]          ,
-                                                              'to_node_id'  : nodes_ids[2]          }},
-                                     'graph_id': _.graph.graph_id(),
-                                     'nodes': { nodes_ids[0]: {'node_data': {'name': 'Node 1', 'value': 'A'},
-                                                            'node_id': nodes_ids[0],
-                                                            'node_type': '@schema_simple_node'},
-                                               nodes_ids[1]: {'node_data': {'name': 'Node 2', 'value': 'B'},
-                                                            'node_id': nodes_ids[1],
-                                                            'node_type': '@schema_simple_node'},
-                                               nodes_ids[2]: {'node_data': {'name': 'Node 3', 'value': 'C'},
-                                                            'node_id': nodes_ids[2],
-                                                            'node_type': '@schema_simple_node'}}}
+            assert _.to__json() == {'edges'   : { edges_ids[0]: { 'edge_data'   : None                   ,
+                                                                  'edge_id'     : edges_ids[0]          ,
+                                                                  'edge_label'  : None                  ,
+                                                                  'edge_path'   : None                  ,   # NEW: path field
+                                                                  'edge_type'   : '@schema_mgraph_edge' ,
+                                                                  'from_node_id': nodes_ids[0]          ,
+                                                                  'to_node_id'  : nodes_ids[1]          },
+                                                  edges_ids[1]: { 'edge_data'   : None                   ,
+                                                                  'edge_id'     : edges_ids[1]          ,
+                                                                  'edge_label'  : None                  ,
+                                                                  'edge_path'   : None                  ,   # NEW: path field
+                                                                  'edge_type'   : '@schema_mgraph_edge' ,
+                                                                  'from_node_id': nodes_ids[0]          ,
+                                                                  'to_node_id'  : nodes_ids[2]          }},
+                                    'graph_id': _.graph.graph_id()                                      ,
+                                    'graph_path': None                                                  ,
+                                    'nodes'   : { nodes_ids[0]: { 'node_data': {'name': 'Node 1', 'value': 'A'},
+                                                                  'node_id'  : nodes_ids[0]             ,
+                                                                  'node_path': None                     ,   # NEW: path field
+                                                                  'node_type': '@schema_simple_node'    },
+                                                  nodes_ids[1]: { 'node_data': {'name': 'Node 2', 'value': 'B'},
+                                                                  'node_id'  : nodes_ids[1]             ,
+                                                                  'node_path': None                     ,   # NEW: path field
+                                                                  'node_type': '@schema_simple_node'    },
+                                                  nodes_ids[2]: { 'node_data': {'name': 'Node 3', 'value': 'C'},
+                                                                  'node_id'  : nodes_ids[2]             ,
+                                                                  'node_path': None                     ,   # NEW: path field
+                                                                  'node_type': '@schema_simple_node'    }}}
 
     def test__export__to_dot(self):
         with self.test_data.data() as _:
@@ -91,20 +97,33 @@ graph TD
 
     def test__index__stats(self):
         with self.test_data.index() as _:
-            assert _.stats() == {'index_data': { 'edge_to_nodes'        : 2                                          ,
-                                                 'edges_by_type'        : { 'Schema__MGraph__Edge'  : 2              },
-                                                 'node_edge_connections': { 'avg_incoming_edges'    : 1              ,
-                                                                            'avg_outgoing_edges'    : 1              ,
-                                                                            'max_incoming_edges'    : 1              ,
-                                                                            'max_outgoing_edges'    : 2              ,
-                                                                            'total_nodes'           : 3              },
-                                                 # 'nodes_by_field'        : { 'name'                 : { 'Node 1': 1  ,
-                                                 #                                                        'Node 2': 1  ,
-                                                 #                                                        'Node 3': 1  },
-                                                 #                             'value'                : { 'A'     : 1  ,
-                                                 #                                                        'B'     : 1  ,
-                                                 #                                                        'C'     : 1  }},
-                                                 'nodes_by_type'         : { 'Schema__Simple__Node': 3               }}}
+            assert _.stats() == {'index_data': {'edge_to_nodes': 2,
+                                                'edges_by_path': {},
+                                                'edges_by_type': {'Schema__MGraph__Edge': 2},
+                                                'node_edge_connections': {'avg_incoming_edges': 1,
+                                                                          'avg_outgoing_edges': 1,
+                                                                          'max_incoming_edges': 1,
+                                                                          'max_outgoing_edges': 2,
+                                                                          'total_nodes': 3},
+                                                'nodes_by_path': {},
+                                                'nodes_by_type': {'Schema__Simple__Node': 3}},
+                                 'paths': {'edge_paths': {}, 'node_paths': {}},
+                                 'summary': {'edges_with_paths': 0,
+                                             'nodes_with_paths': 0,
+                                             'total_edges': 2,
+                                             'total_nodes': 3,
+                                             'total_predicates': 0,
+                                             'unique_edge_paths': 0,
+                                             'unique_node_paths': 0}} != {'index_data': {'edge_to_nodes': 2,
+                                                'edges_by_path': {},
+                                                'edges_by_type': {'Schema__MGraph__Edge': 2},
+                                                'node_edge_connections': {'avg_incoming_edges': 1,
+                                                                          'avg_outgoing_edges': 1,
+                                                                          'max_incoming_edges': 1,
+                                                                          'max_outgoing_edges': 2,
+                                                                          'total_nodes': 3},
+                                                'nodes_by_path': {},
+                                                'nodes_by_type': {'Schema__Simple__Node': 3}}}
 
 
 

@@ -1,20 +1,22 @@
-from unittest                                        import TestCase
-from mgraph_db.mgraph.schemas.Schema__MGraph__Types  import Schema__MGraph__Types
-from mgraph_db.mgraph.domain.Domain__MGraph__Edge    import Domain__MGraph__Edge
-from mgraph_db.mgraph.domain.Domain__MGraph__Node    import Domain__MGraph__Node
-from mgraph_db.mgraph.models.Model__MGraph__Node     import Model__MGraph__Node
-from mgraph_db.mgraph.domain.Domain__MGraph__Graph   import Domain__MGraph__Graph
-from mgraph_db.mgraph.models.Model__MGraph__Graph    import Model__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Graph  import Schema__MGraph__Graph
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node   import Schema__MGraph__Node
+from unittest                                            import TestCase
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data import Schema__MGraph__Node__Data
+from mgraph_db.mgraph.schemas.Schema__MGraph__Types      import Schema__MGraph__Types
+from mgraph_db.mgraph.domain.Domain__MGraph__Edge        import Domain__MGraph__Edge
+from mgraph_db.mgraph.domain.Domain__MGraph__Node        import Domain__MGraph__Node
+from mgraph_db.mgraph.models.Model__MGraph__Node         import Model__MGraph__Node
+from mgraph_db.mgraph.domain.Domain__MGraph__Graph       import Domain__MGraph__Graph
+from mgraph_db.mgraph.models.Model__MGraph__Graph        import Model__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph      import Schema__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node       import Schema__MGraph__Node
 
 class Simple_Node(Schema__MGraph__Node): pass                                                   # Helper class for testing
 
 class test_Domain__MGraph__Graph(TestCase):
 
     def setUp(self):                                                                            # Initialize test data
-        self.schema_types = Schema__MGraph__Types  (node_type    = Simple_Node,
-                                                    edge_type    = None)
+        self.schema_types = Schema__MGraph__Types  (node_type       = Simple_Node,
+                                                    node_data_type  = Schema__MGraph__Node__Data,
+                                                    edge_type       = None)
         self.schema_graph = Schema__MGraph__Graph           (schema_types = self.schema_types    ,
                                                              graph_type   = Schema__MGraph__Graph)
         self.model_graph = Model__MGraph__Graph             (data         = self.schema_graph    )                         # Create model graph

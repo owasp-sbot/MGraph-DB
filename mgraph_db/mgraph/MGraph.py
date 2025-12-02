@@ -17,6 +17,13 @@ class MGraph(Type_Safe):                                                        
     edit_class      : Type[MGraph__Edit      ]
     screenshot_class: Type[MGraph__Screenshot]
 
+    def __init__(self, **kwargs):                                     # Initialize MGraph and optionally assign graph_id
+        graph_id = kwargs.pop('graph_id', None)
+        super().__init__(**kwargs)
+
+        if graph_id:
+            self.graph.model.data.graph_id = graph_id
+
     def builder(self) -> MGraph__Builder:
         return MGraph__Builder(mgraph_edit=self.edit())
 
