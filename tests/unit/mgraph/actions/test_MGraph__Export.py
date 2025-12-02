@@ -26,28 +26,25 @@ class test_MGraph__Export(TestCase):
         empty_graph = MGraph()
         data        = empty_graph.export().to__mgraph_json()
         assert data      == empty_graph.graph.model.data.json()
-        assert obj(data) == __(edges        = __()                                           ,
-                               graph_data   = __()                                           ,
-                               graph_id     = empty_graph.data().graph_id()                  ,
-                               graph_type   = 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph.Schema__MGraph__Graph' ,
-                               nodes        = __()                                           ,
-                               schema_types = __(edge_type        = 'mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge',
-                                                 graph_data_type  = 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data',
-                                                 node_type        = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node',
-                                                 node_data_type   = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data'))
+        assert obj(data) == __(edges        = __()                          ,
+                               graph_data   = None                          ,
+                               graph_id     = empty_graph.data().graph_id() ,
+                               graph_type   = None                          ,
+                               nodes        = __()                          ,
+                               schema_types = None)
 
     def test_to__json(self):                                                                  # Test minimal JSON export
         node_ids = self.linear_graph.node_ids
         edge_ids = self.linear_graph.edge_ids
         with self.linear_graph.graph.export() as _:
-            assert _.to__json() == {'edges': { edge_ids[0]: { 'edge_data'   : {}                    ,
+            assert _.to__json() == {'edges': { edge_ids[0]: { 'edge_data'   : None                    ,
                                                               'edge_id'     : edge_ids[0]           ,
                                                               'edge_label'  : None                  ,
                                                               'edge_path'   : None                  ,   # NEW: path field
                                                               'edge_type'   : '@schema_mgraph_edge' ,
                                                               'from_node_id': node_ids[0]           ,
                                                               'to_node_id'  : node_ids[1]}          ,
-                                               edge_ids[1]: { 'edge_data'   : {}                    ,
+                                               edge_ids[1]: { 'edge_data'   : None                    ,
                                                               'edge_id'     : edge_ids[1]           ,
                                                               'edge_label'  : None                  ,
                                                               'edge_path'   : None                  ,   # NEW: path field

@@ -81,9 +81,9 @@ class test_MGraph__Edit(TestCase):
 
     def test_new_node__indexed(self):                                                               # Test that new node is added to index
         with self.graph_edit as _:
-            node      = _.new_node()
-            node_type = node.node.data.node_type.__name__
-
+            node      = _.new_node() #.set_node_type()
+            node_type = node.node.data.node_type
+            assert node_type    is None
             assert node.node_id in _.index().get_nodes_by_type(Schema__MGraph__Node)
 
     def test_add_node(self):                                                                        # Test adding a pre-created node

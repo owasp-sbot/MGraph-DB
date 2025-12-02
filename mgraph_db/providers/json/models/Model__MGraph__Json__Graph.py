@@ -1,3 +1,4 @@
+from mgraph_db.mgraph.actions.MGraph__Type__Resolver                        import MGraph__Type__Resolver
 from mgraph_db.providers.json.models.Model__MGraph__Json__Node              import Model__MGraph__Json__Node
 from mgraph_db.providers.json.models.Model__MGraph__Json__Node__List        import Model__MGraph__Json__Node__List
 from mgraph_db.providers.json.models.Model__MGraph__Json__Node__Property    import Model__MGraph__Json__Node__Property
@@ -15,11 +16,12 @@ from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Dict      impo
 class Model__MGraph__Json__Graph(Model__MGraph__Graph):
     data       : Schema__MGraph__Json__Graph
     model_types: Model__MGraph__Json__Types
+    resolver   : MGraph__Type__Resolver
 
-    def __init__(self, **kwargs):
-        data        = kwargs.get('data'       ) or self.__annotations__['data']()
+    def __init__(self, **kwargs):                                                                   # todo: this was originally done (Jan 2025) for performance reasons (not using the Type_Safe __init__()
+        data        = kwargs.get('data'       ) or self.__annotations__['data']()                   #       see if that is still the case (lots of optimisations done to that library since)
         model_types = kwargs.get('model_types') or self.__annotations__['model_types']()
-        node_dict   = dict(data=data, model_types=model_types)
+        node_dict   = dict(data=data, model_types=model_types, resolver=MGraph__Type__Resolver())
         object.__setattr__(self, '__dict__', node_dict)
 
     def node(self, node_id):

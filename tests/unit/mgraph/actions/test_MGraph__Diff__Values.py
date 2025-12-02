@@ -23,7 +23,7 @@ class test_MGraph__Diff__Values(TestCase):
         node_value = Schema__MGraph__Node__Value      (node_data=value_data)
 
         with self.graph_a.edit() as edit:                                             # Add value node to graph A
-            edit.add_node(node_value)
+            edit.add_node(node_value).set_node_type(Schema__MGraph__Node__Value)
 
         values = self.differ.get_values_by_type(self.graph_a, str)
         assert len(values)              == 1
@@ -42,6 +42,9 @@ class test_MGraph__Diff__Values(TestCase):
         with self.graph_a.edit() as edit_a:                                         # Add different values to each graph
             value_data_a = Schema__MGraph__Node__Value__Data(value="value_a", value_type=str)
             node_a = edit_a.add_node(Schema__MGraph__Node__Value(node_data=value_data_a))
+
+        assert node_a.node_data.obj() == __(value_type='builtins.str', value='value_a', key='')
+        assert node_a.node_type       is Schema__MGraph__Node__Value
 
         with self.graph_b.edit() as edit_b:
             value_data_b = Schema__MGraph__Node__Value__Data(value="value_b", value_type=str)

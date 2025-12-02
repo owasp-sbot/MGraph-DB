@@ -62,7 +62,7 @@ class test_MGraph__Export__Base(TestCase):
 
     def test_create_node_data(self):                                           # Test node data creation
         with self.mgraph_simple.edit() as edit:
-            node = edit.new_node(value='test')
+            node = edit.new_node(value='test').set_node_type()
 
         node_data = self.exporter.create_node_data(node)
         assert type(node_data)                  is dict                        # Check return type

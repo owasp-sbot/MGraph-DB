@@ -12,14 +12,18 @@ from osbot_utils.type_safe.Type_Safe                                import Type_
 
 class Schema__MGraph__Graph(Type_Safe):
     edges        : Dict[Edge_Id, Schema__MGraph__Edge]
-    graph_data   : Schema__MGraph__Graph__Data
+    graph_data   : Schema__MGraph__Graph__Data         = None
     graph_id     : Graph_Id
-    graph_path   : Graph_Path                        = None         # Optional path identifier for string-based classification
-    graph_type   : Type['Schema__MGraph__Graph']     #= None
+    graph_path   : Graph_Path                          = None         # Optional path identifier for string-based classification
+    graph_type   : Type['Schema__MGraph__Graph']       = None
     nodes        : Dict[Node_Id, Schema__MGraph__Node]
-    schema_types : Schema__MGraph__Types
+    schema_types : Schema__MGraph__Types               = None
 
     def __init__(self, **kwargs):
         if kwargs.get('graph_id') is None:                          # make sure .graph_id is set
             kwargs['graph_id'] = Graph_Id(Obj_Id())                 # we need to use Obj_Id() here because Graph_Id() == ''
         super().__init__(**kwargs)
+
+    def set_graph_type(self, graph_type=None):                      # exception to rule the Type_Safe doesn't have methods
+        self.graph_type = graph_type or self.__class__
+        return self

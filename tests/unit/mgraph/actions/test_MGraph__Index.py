@@ -42,14 +42,23 @@ class test_MGraph_Index(TestCase):
                                                              'nodes_to_outgoing_edges'        : {},
                                                              'nodes_to_outgoing_edges_by_type': {},
                                                              'nodes_types'                    : {}},
+                                           'resolver': { 'mgraph_defaults'  : {'edge_data_type': 'mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Data.Schema__MGraph__Edge__Data',
+                                                         'edge_domain_type' : 'mgraph_db.mgraph.domain.Domain__MGraph__Edge.Domain__MGraph__Edge',
+                                                         'edge_model_type'  : 'mgraph_db.mgraph.models.Model__MGraph__Edge.Model__MGraph__Edge',
+                                                         'edge_type'        : 'mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge',
+                                                         'graph_data_type'  : 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data',
+                                                         'graph_type'       : 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph.Schema__MGraph__Graph',
+                                                         'node_data_type'   : 'mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data',
+                                                         'node_domain_type' : 'mgraph_db.mgraph.domain.Domain__MGraph__Node.Domain__MGraph__Node',
+                                                         'node_model_type'  : 'mgraph_db.mgraph.models.Model__MGraph__Node.Model__MGraph__Node',
+                                                         'node_type'        : 'mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node'}},
                                            'values_index': { 'index_data': { 'hash_to_node'   : {},
                                                                              'node_to_hash'   : {},
                                                                              'type_by_value'  : {},
                                                                              'values_by_type' : {}}}}
 
     def test_add_node(self):    # Test adding a node to the index
-        node_to_add = Schema__MGraph__Node()
-
+        node_to_add = Schema__MGraph__Node().set_node_type()
         with self.mgraph_index as _:
             _.add_node(node_to_add)
 
@@ -59,8 +68,8 @@ class test_MGraph_Index(TestCase):
             assert node_to_add.node_id in _.index_data.nodes_to_outgoing_edges
 
     def test_add_edge(self):                                                                                            # Test adding an edge to the index
-        node_1  = Schema__MGraph__Node()
-        node_2  = Schema__MGraph__Node()
+        node_1  = Schema__MGraph__Node().set_node_type()
+        node_2  = Schema__MGraph__Node().set_node_type()
         edge    = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id)
         edge_id = edge.edge_id
 
@@ -69,13 +78,13 @@ class test_MGraph_Index(TestCase):
             _.add_node(node_2)
             _.add_edge(edge  )
 
-            assert edge.edge_type.__name__ in _.index_data.edges_by_type                                                # Verify edge was added to type and node relationship indexes
-            assert edge_id in _.index_data.edges_by_type          [edge.edge_type.__name__]
+            assert edge.__class__.__name__ in _.index_data.edges_by_type                                                # Verify edge was added to type and node relationship indexes
+            assert edge_id in _.index_data.edges_by_type          [edge.__class__.__name__]
             assert edge_id in _.index_data.nodes_to_outgoing_edges[node_1.node_id         ]
             assert edge_id in _.index_data.nodes_to_incoming_edges[node_2.node_id         ]
 
     def test_remove_node(self):                                                                                         # Test removing a node from the index
-        node_to_remove = Schema__MGraph__Node()
+        node_to_remove = Schema__MGraph__Node(node_type=Schema__MGraph__Node)
 
         with self.mgraph_index as _:
             _.add_node   (node_to_remove)
@@ -86,9 +95,9 @@ class test_MGraph_Index(TestCase):
             assert node_to_remove.node_id            not in _.index_data.nodes_to_incoming_edges
 
     def test_remove_edge(self):                                                                                         # Test removing an edge from the index
-        node_1  = Schema__MGraph__Node()
-        node_2  = Schema__MGraph__Node()
-        edge    = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id)
+        node_1  = Schema__MGraph__Node().set_node_type()
+        node_2  = Schema__MGraph__Node().set_node_type()
+        edge    = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id).set_edge_type()
         edge_id = edge.edge_id
 
         with self.mgraph_index as _:
@@ -102,8 +111,8 @@ class test_MGraph_Index(TestCase):
             assert edge_id                 not in _.index_data.nodes_to_incoming_edges.get(node_2.node_id, set())
 
     def test_get_methods(self):                                                                                         # Test various get methods of the index
-        node_1  = Schema__MGraph__Node()
-        node_2  = Schema__MGraph__Node()
+        node_1  = Schema__MGraph__Node().set_node_type()
+        node_2  = Schema__MGraph__Node().set_node_type()
         edge    = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id)
         edge_id = edge.edge_id
 
@@ -116,8 +125,8 @@ class test_MGraph_Index(TestCase):
             assert edge_id        in _.get_edges_by_type(Schema__MGraph__Edge)
 
     def test_json(self):
-        node_1 = Schema__MGraph__Node()
-        node_2 = Schema__MGraph__Node()
+        node_1 = Schema__MGraph__Node().set_node_type()
+        node_2 = Schema__MGraph__Node().set_node_type()
         edge_1 = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id)
         node_1_id = node_1.node_id
         node_2_id = node_2.node_id
@@ -185,9 +194,9 @@ class test_MGraph_Index(TestCase):
 
     def test_from_graph(self):                                                                      # Test creating index from graph using class method
         mgraph    = MGraph()
-        node_1    = Schema__MGraph__Node()
-        node_2    = Schema__MGraph__Node()
-        edge_1    = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id)
+        node_1    = Schema__MGraph__Node().set_node_type()
+        node_2    = Schema__MGraph__Node().set_node_type()
+        edge_1    = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id).set_edge_type()
         node_1_id = node_1.node_id
         node_2_id = node_2.node_id
         edge_1_id = edge_1.edge_id
@@ -239,9 +248,9 @@ class test_MGraph_Index(TestCase):
         node_2_id = 'bbbbbbbb'
         edge_1_id = 'cccccccc'
         mgraph    = MGraph()
-        node_1    = Schema__MGraph__Node(node_id=node_1_id)
-        node_2    = Schema__MGraph__Node(node_id=node_2_id)
-        edge_1    = Schema__MGraph__Edge(edge_id=edge_1_id, from_node_id=node_1.node_id, to_node_id=node_2.node_id)
+        node_1    = Schema__MGraph__Node(node_id=node_1_id).set_node_type()
+        node_2    = Schema__MGraph__Node(node_id=node_2_id).set_node_type()
+        edge_1    = Schema__MGraph__Edge(edge_id=edge_1_id, from_node_id=node_1.node_id, to_node_id=node_2.node_id).set_edge_type()
 
         with mgraph.edit() as _:
             _.add_node(node_1)                                                   # Add nodes and edges to graph
@@ -277,8 +286,8 @@ class test_MGraph_Index(TestCase):
 
 
     def test_save_to_file__and__from_file(self):                                                             # Test save and load functionality
-        node_1 = Schema__MGraph__Node()
-        node_2 = Schema__MGraph__Node()
+        node_1 = Schema__MGraph__Node().set_node_type()
+        node_2 = Schema__MGraph__Node().set_node_type()
         edge   = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id)
 
         with self.mgraph_index as _:
@@ -306,15 +315,15 @@ class test_MGraph_Index(TestCase):
 
         value      = "test_value"
         value_data = Schema__MGraph__Node__Value__Data(value=value, value_type=str)              # Create value node
-        value_node = Value_Node(node_data=value_data)
+        value_node = Value_Node(node_data=value_data).set_node_type()
 
-        node_1     = Schema__MGraph__Node()                                                                 # Create connecting nodes
-        node_2     = Schema__MGraph__Node()
-        node_3     = Schema__MGraph__Node()
+        node_1     = Schema__MGraph__Node().set_node_type()                                                 # Create connecting nodes
+        node_2     = Schema__MGraph__Node().set_node_type()
+        node_3     = Schema__MGraph__Node().set_node_type()
 
-        edge_1     = Test_Edge           (from_node_id=node_1.node_id, to_node_id=value_node.node_id)       # Create edges
-        edge_2     = Test_Edge           (from_node_id=node_2.node_id, to_node_id=value_node.node_id)
-        edge_3     = Schema__MGraph__Edge(from_node_id=node_3.node_id, to_node_id=value_node.node_id)
+        edge_1     = Test_Edge           (from_node_id=node_1.node_id, to_node_id=value_node.node_id).set_edge_type()       # Create edges
+        edge_2     = Test_Edge           (from_node_id=node_2.node_id, to_node_id=value_node.node_id).set_edge_type()
+        edge_3     = Schema__MGraph__Edge(from_node_id=node_3.node_id, to_node_id=value_node.node_id).set_edge_type()
 
         print()
         print()
@@ -347,15 +356,15 @@ class test_MGraph_Index(TestCase):
 
     def test_add_edge_with_label(self):                                                     # Test adding an edge with label and verifying index structures
 
-        node_1 = Schema__MGraph__Node()                                                     # Create test nodes and edge
-        node_2 = Schema__MGraph__Node()
+        node_1 = Schema__MGraph__Node().set_node_type()                                     # Create test nodes and edge                 
+        node_2 = Schema__MGraph__Node().set_node_type()
 
         edge_label = Schema__MGraph__Edge__Label(predicate    = Safe_Id('created_by'),         # Create an edge with a label
                                                  incoming     = Safe_Id('creator_of'),
                                                  outgoing     = Safe_Id('created'   ))
         edge        = Schema__MGraph__Edge      (from_node_id = node_1.node_id      ,
                                                  to_node_id   = node_2.node_id      ,
-                                                 edge_label   = edge_label          )
+                                                 edge_label   = edge_label          ).set_edge_type()
 
         with self.mgraph_index as _:
             _.add_node(node_1)
@@ -376,8 +385,8 @@ class test_MGraph_Index(TestCase):
             assert edge.edge_id in _.index_data.edges_by_outgoing_label['created']
 
     def test_remove_edge_with_label(self):                                                      # Test removing an edge with label and ensuring all indexes are cleaned up
-        node_1 = Schema__MGraph__Node()                                                         # Create test nodes and edge with label
-        node_2 = Schema__MGraph__Node()
+        node_1 = Schema__MGraph__Node().set_node_type()                                         # Create test nodes and edge with label
+        node_2 = Schema__MGraph__Node().set_node_type()
 
         edge_label = Schema__MGraph__Edge__Label(predicate    = Safe_Id('supports'    ),
                                                  incoming     = Safe_Id('supported_by'),
@@ -403,21 +412,21 @@ class test_MGraph_Index(TestCase):
     def test_multiple_edges_with_same_predicate(self):                                          # Test indexing multiple edges with the same predicate
 
         # Create test nodes
-        node_1 = Schema__MGraph__Node()
-        node_2 = Schema__MGraph__Node()
-        node_3 = Schema__MGraph__Node()
+        node_1 = Schema__MGraph__Node().set_node_type()
+        node_2 = Schema__MGraph__Node().set_node_type()
+        node_3 = Schema__MGraph__Node().set_node_type()
 
         # Create two edges with the same predicate
         edge_label_1 = Schema__MGraph__Edge__Label(predicate = Safe_Id('references'))
         edge_label_2 = Schema__MGraph__Edge__Label(predicate = Safe_Id('references'))
 
         edge_1 = Schema__MGraph__Edge(from_node_id = node_1.node_id,
-                                     to_node_id   = node_2.node_id,
-                                     edge_label   = edge_label_1)
+                                      to_node_id   = node_2.node_id,
+                                      edge_label   = edge_label_1 ).set_edge_type()
 
         edge_2 = Schema__MGraph__Edge(from_node_id = node_2.node_id,
-                                     to_node_id   = node_3.node_id,
-                                     edge_label   = edge_label_2)
+                                      to_node_id   = node_3.node_id,
+                                      edge_label   = edge_label_2 ).set_edge_type()
 
         with self.mgraph_index as _:
             _.add_node(node_1)
@@ -440,9 +449,9 @@ class test_MGraph_Index(TestCase):
 
     def test_query_helpers_for_predicates(self):                                    #  Test helper methods for querying edges by predicates
         # Create test data
-        node_1 = Schema__MGraph__Node()
-        node_2 = Schema__MGraph__Node()
-        node_3 = Schema__MGraph__Node()
+        node_1 = Schema__MGraph__Node().set_node_type()
+        node_2 = Schema__MGraph__Node().set_node_type()
+        node_3 = Schema__MGraph__Node().set_node_type()
 
         edge_label_1 = Schema__MGraph__Edge__Label(predicate = Safe_Id('depends_on'))
         edge_label_2 = Schema__MGraph__Edge__Label(predicate = Safe_Id('depends_on'))
@@ -528,9 +537,9 @@ class test_MGraph_Index(TestCase):
 
     def test_get_all_edge_paths__with_paths(self):                               # Test with edges having paths
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
-            node_3 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
+            node_3 = Schema__MGraph__Node().set_node_type()
 
             edge_1 = Schema__MGraph__Edge(from_node_id = node_1.node_id           ,
                                           to_node_id   = node_2.node_id           ,
@@ -562,7 +571,7 @@ class test_MGraph_Index(TestCase):
 
     def test_get_node_path__not_found(self):                                     # Test node without path
         with self.mgraph_index as _:
-            node = Schema__MGraph__Node()                                        # No path
+            node = Schema__MGraph__Node().set_node_type()                        # No path
             _.add_node(node)
 
             result = _.get_node_path(node.node_id)
@@ -577,8 +586,8 @@ class test_MGraph_Index(TestCase):
 
     def test_get_edge_path__found(self):                                         # Test finding an edge's path
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
             edge   = Schema__MGraph__Edge(from_node_id = node_1.node_id          ,
                                           to_node_id   = node_2.node_id          ,
                                           edge_path    = Edge_Path("edge.path")  )
@@ -592,8 +601,8 @@ class test_MGraph_Index(TestCase):
 
     def test_get_edge_path__not_found(self):                                     # Test edge without path
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
             edge   = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id)
 
             _.add_node(node_1)
@@ -624,9 +633,9 @@ class test_MGraph_Index(TestCase):
     def test_count_edges_by_path__multiple(self):                                # Test counting edges at path
         with self.mgraph_index as _:
             path   = Edge_Path("shared.edge.path")
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
-            node_3 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
+            node_3 = Schema__MGraph__Node().set_node_type()
 
             edge_1 = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id, edge_path=path)
             edge_2 = Schema__MGraph__Edge(from_node_id=node_2.node_id, to_node_id=node_3.node_id, edge_path=path)
@@ -651,8 +660,8 @@ class test_MGraph_Index(TestCase):
     def test_has_edge_path__exists(self):                                        # Test edge path existence check
         with self.mgraph_index as _:
             path   = Edge_Path("existing.edge")
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
             edge   = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id, edge_path=path)
 
             _.add_node(node_1)
@@ -670,9 +679,9 @@ class test_MGraph_Index(TestCase):
 
     def test_get_nodes_by_predicate__found(self):                                # Test getting target nodes via predicate
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
-            node_3 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
+            node_3 = Schema__MGraph__Node().set_node_type()
 
             edge_label = Schema__MGraph__Edge__Label(predicate=Safe_Id('has_child'))
             edge_1     = Schema__MGraph__Edge(from_node_id = node_1.node_id ,
@@ -696,7 +705,7 @@ class test_MGraph_Index(TestCase):
 
     def test_get_nodes_by_predicate__not_found(self):                            # Test with no matching predicate
         with self.mgraph_index as _:
-            node = Schema__MGraph__Node()
+            node = Schema__MGraph__Node().set_node_type()
             _.add_node(node)
 
             result = _.get_nodes_by_predicate(node.node_id, Safe_Id('nonexistent'))
@@ -705,9 +714,9 @@ class test_MGraph_Index(TestCase):
 
     def test_get_node_incoming_edges_by_predicate(self):                         # Test incoming edges by predicate
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
-            node_3 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
+            node_3 = Schema__MGraph__Node().set_node_type()
 
             edge_label = Schema__MGraph__Edge__Label(predicate=Safe_Id('parent_of'))
             edge_1     = Schema__MGraph__Edge(from_node_id = node_1.node_id ,
@@ -731,8 +740,8 @@ class test_MGraph_Index(TestCase):
 
     def test_get_edges_by_incoming_label(self):                                  # Test edges by incoming label
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
 
             edge_label = Schema__MGraph__Edge__Label(incoming=Safe_Id('receiver'))
             edge       = Schema__MGraph__Edge(from_node_id = node_1.node_id ,
@@ -750,8 +759,8 @@ class test_MGraph_Index(TestCase):
 
     def test_get_edges_by_outgoing_label(self):                                  # Test edges by outgoing label
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
 
             edge_label = Schema__MGraph__Edge__Label(outgoing=Safe_Id('sender'))
             edge       = Schema__MGraph__Edge(from_node_id = node_1.node_id ,
@@ -774,8 +783,8 @@ class test_MGraph_Index(TestCase):
 
     def test_edges_predicates__accessor(self):                                   # Test raw edges_predicates accessor
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
 
             edge_label = Schema__MGraph__Edge__Label(predicate=Safe_Id('test_pred'))
             edge       = Schema__MGraph__Edge(from_node_id = node_1.node_id ,
@@ -793,8 +802,8 @@ class test_MGraph_Index(TestCase):
 
     def test_edges_by_predicate_all__accessor(self):                             # Test raw edges_by_predicate accessor
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
 
             edge_label = Schema__MGraph__Edge__Label(predicate=Safe_Id('my_pred'))
             edge       = Schema__MGraph__Edge(from_node_id = node_1.node_id ,
@@ -840,8 +849,8 @@ class test_MGraph_Index(TestCase):
     def test_edges_by_path__accessor(self):                                      # Test raw edges_by_path accessor
         with self.mgraph_index as _:
             path   = Edge_Path("test.edge.path")
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
             edge   = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id, edge_path=path)
 
             _.add_node(node_1)
@@ -920,7 +929,7 @@ class test_MGraph_Index(TestCase):
 
     def test_stats__index_data_preserved(self):                                  # Test that index_data section preserved
         with self.mgraph_index as _:
-            node = Schema__MGraph__Node()
+            node = Schema__MGraph__Node().set_node_type()
             _.add_node(node)
 
             stats = _.stats()
@@ -937,9 +946,9 @@ class test_MGraph_Index(TestCase):
 
     def test_edges_ids__from__node_id(self):                                     # Test outgoing edge IDs
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
-            node_3 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
+            node_3 = Schema__MGraph__Node().set_node_type()
 
             edge_1 = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id)
             edge_2 = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_3.node_id)
@@ -959,9 +968,9 @@ class test_MGraph_Index(TestCase):
 
     def test_edges_ids__to__node_id(self):                                       # Test incoming edge IDs
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
-            node_3 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
+            node_3 = Schema__MGraph__Node().set_node_type()
 
             edge_1 = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_3.node_id)
             edge_2 = Schema__MGraph__Edge(from_node_id=node_2.node_id, to_node_id=node_3.node_id)
@@ -981,9 +990,9 @@ class test_MGraph_Index(TestCase):
 
     def test_nodes_ids__from__node_id(self):                                     # Test connected node IDs
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
-            node_3 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
+            node_3 = Schema__MGraph__Node().set_node_type()
 
             edge_1 = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id)
             edge_2 = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_3.node_id)
@@ -1003,8 +1012,8 @@ class test_MGraph_Index(TestCase):
 
     def test_get_node_connected_to_node__outgoing(self):                         # Test outgoing connected node by edge type
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
 
             edge = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id)
 
@@ -1018,7 +1027,7 @@ class test_MGraph_Index(TestCase):
 
     def test_get_node_connected_to_node__outgoing__not_found(self):              # Test when no connection exists
         with self.mgraph_index as _:
-            node = Schema__MGraph__Node()
+            node = Schema__MGraph__Node().set_node_type()
             _.add_node(node)
 
             result = _.get_node_connected_to_node__outgoing(node.node_id, 'Schema__MGraph__Edge')
@@ -1027,8 +1036,8 @@ class test_MGraph_Index(TestCase):
 
     def test_get_edge_predicate(self):                                           # Test getting predicate for edge
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
 
             edge_label = Schema__MGraph__Edge__Label(predicate=Safe_Id('my_predicate'))
             edge       = Schema__MGraph__Edge(from_node_id = node_1.node_id ,
@@ -1045,8 +1054,8 @@ class test_MGraph_Index(TestCase):
 
     def test_get_edge_predicate__not_found(self):                                # Test with edge without predicate
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
             edge   = Schema__MGraph__Edge(from_node_id=node_1.node_id, to_node_id=node_2.node_id)
 
             _.add_node(node_1)
@@ -1065,8 +1074,8 @@ class test_MGraph_Index(TestCase):
 
     def test_remove_edge__cleans_all_label_indexes(self):                        # Test all label indexes cleaned
         with self.mgraph_index as _:
-            node_1 = Schema__MGraph__Node()
-            node_2 = Schema__MGraph__Node()
+            node_1 = Schema__MGraph__Node().set_node_type()
+            node_2 = Schema__MGraph__Node().set_node_type()
 
             edge_label = Schema__MGraph__Edge__Label(predicate = Safe_Id('the_pred'    ),
                                                      incoming  = Safe_Id('the_incoming'),

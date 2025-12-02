@@ -34,3 +34,7 @@ class Domain__MGraph__Edge(Type_Safe):                                          
 
     def to_node_id(self) -> Node_Id:                                                              # Get source node ID
         return self.edge.to_node_id()
+
+    def set_edge_type(self, node_type=None):
+        self.edge.data.set_edge_type(node_type)
+        return self

@@ -1,5 +1,6 @@
 import pytest
 from unittest                                                       import TestCase
+from mgraph_db.mgraph.models.Model__MGraph__Types                   import Model__MGraph__Types
 from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id, is_obj_id
 from mgraph_db.mgraph.models.Model__MGraph__Edge                    import Model__MGraph__Edge
@@ -8,6 +9,8 @@ from mgraph_db.mgraph.models.Model__MGraph__Graph                   import Model
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                 import Schema__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from tests.unit.helpers.sqlite.models.test_Sqlite__Field__Type      import NoneType
+
 
 class Simple_Node(Schema__MGraph__Node): pass                                               # Helper class for testing
 
@@ -15,7 +18,7 @@ class test_Model__MGraph__Graph(TestCase):
 
     def setUp(self):                                                                        # Initialize test data
         self.schema_types  = Schema__MGraph__Types (node_type     = Simple_Node,
-                                                    edge_type     = Schema__MGraph__Edge)
+                                                    edge_type     = Schema__MGraph__Edge)       # todo: see if we need to do this
         self.graph_data    = Schema__MGraph__Graph          (schema_types  = self.schema_types     ,
                                                              graph_type    = Schema__MGraph__Graph  )
         self.graph         = Model__MGraph__Graph           (data          = self.graph_data        )
@@ -101,7 +104,16 @@ class test_Model__MGraph__Graph(TestCase):
     def test_custom_node_types(self):                                                       # Tests creation of nodes with custom types
         class Custom_Node(Simple_Node): pass
 
+        assert type(self.graph                              ) is Model__MGraph__Graph
+        assert type(self.graph.model_types                  ) is Model__MGraph__Types
+        assert type(self.graph.model_types.node_model_type  ) is NoneType                     # BUG?
+        assert type(self.graph.data                         ) is Schema__MGraph__Graph
+        assert type(self.graph.data.schema_types            ) is Schema__MGraph__Types
+        assert self.graph.data.schema_types.node_type         is Simple_Node
+        assert self.graph.data.schema_types.edge_type         is Schema__MGraph__Edge
+
         default_node = self.graph.new_node()                                                # Create node with default type
+
         assert isinstance(default_node, Model__MGraph__Node)
         assert default_node.node_type == Simple_Node                                        # Should use default_node_type
 
