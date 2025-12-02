@@ -1,3 +1,5 @@
+from types import NoneType
+
 import pytest
 from unittest                                                       import TestCase
 from mgraph_db.mgraph.models.Model__MGraph__Types                   import Model__MGraph__Types
@@ -9,7 +11,6 @@ from mgraph_db.mgraph.models.Model__MGraph__Graph                   import Model
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                 import Schema__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
-from tests.unit.helpers.sqlite.models.test_Sqlite__Field__Type      import NoneType
 
 
 class Simple_Node(Schema__MGraph__Node): pass                                               # Helper class for testing
