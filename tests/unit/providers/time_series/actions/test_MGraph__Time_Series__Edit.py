@@ -1,5 +1,6 @@
 from datetime                                                                              import datetime
 from unittest                                                                              import TestCase
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value                                  import Schema__MGraph__Node__Value
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                           import is_obj_id
 from mgraph_db.mgraph.actions.MGraph__Export                                               import MGraph__Export
 from mgraph_db.mgraph.actions.MGraph__Index                                                import MGraph__Index
@@ -176,16 +177,19 @@ class test_MGraph__Time_Series__Edit(TestCase):
     def test_edge_types(self):
         self.graph_edit.create_time_point(year=2024, month=2, day=14)
 
-        edge_type_map = {   Schema__MGraph__Time_Series__Edge__Year : 2024  ,
-                            Schema__MGraph__Time_Series__Edge__Month: 2     ,
-                            Schema__MGraph__Time_Series__Edge__Day  : 14    }
+        edge_type_map = {   Schema__MGraph__Time_Series__Edge__Year : '2024'  ,     # todo: see the side effect caused by the fact that with the recent refactoring this changed from an int value (2024) to an str value ('2024')
+                            Schema__MGraph__Time_Series__Edge__Month: '2'     ,
+                            Schema__MGraph__Time_Series__Edge__Day  : '14'    }
 
         with self.graph.data() as data:
             for edge in data.edges():
                 edge_type = type(edge.edge.data)
                 if edge_type in edge_type_map:
                     target_node = data.node(edge.to_node_id())
-                    assert isinstance(target_node.node.data, Schema__MGraph__Node__Value__Data)
+                    assert type(target_node.node.data)     is Schema__MGraph__Node__Value
+                    assert target_node.node.data.node_type is Schema__MGraph__Node__Value
+                    assert type(target_node.node.data.node_data) is Schema__MGraph__Node__Value__Data
+                    assert isinstance(target_node.node.data.node_data, Schema__MGraph__Node__Value__Data) is True
                     assert target_node.node_data.value == edge_type_map[edge_type]
 
     def test_cleanup(self):

@@ -19,6 +19,12 @@ class Domain__MGraph__Graph(Type_Safe):
     graph_type   : Type['Domain__MGraph__Graph'] = None                                     # Optional - uses default when None
     resolver     : MGraph__Type__Resolver                                                   # Auto-instantiated - provides type resolution
 
+    def __init__(self, **kwargs):
+        graph_id = kwargs.pop('graph_id', None)
+        super().__init__(**kwargs)
+        if graph_id:
+            self.model.data.graph_id = graph_id
+
 
     def delete_edge(self, edge_id: Edge_Id) -> bool:
         return self.model.delete_edge(edge_id)

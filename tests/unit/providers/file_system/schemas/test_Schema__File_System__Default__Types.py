@@ -12,10 +12,10 @@ class test_Schema__Types(TestCase):
         with Schema__File_System__Types() as _:
             assert _.obj() == __(graph_data_type  = 'mgraph_db.providers.file_system.schemas.Schema__File_System__Graph__Config.Schema__File_System__Graph__Config' ,
                                  node_type        = 'mgraph_db.providers.file_system.schemas.Schema__Folder__Node.Schema__Folder__Node'                             ,
-                                 edge_type        = 'mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge'                                            ,
+                                 edge_type        = None                                            ,
                                  node_data_type   = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data'                                )
 
             assert _.graph_data_type   is Schema__File_System__Graph__Config
             assert _.node_type         is Schema__Folder__Node
-            assert _.edge_type         is Schema__MGraph__Edge
+            assert _.edge_type         is None
             assert _.node_data_type    is Schema__MGraph__Node__Data

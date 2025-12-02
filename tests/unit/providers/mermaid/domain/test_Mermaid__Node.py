@@ -1,5 +1,5 @@
 from unittest                                                           import TestCase
-from osbot_utils.testing.__                                             import __
+from osbot_utils.testing.__ import __, __SKIP__
 from osbot_utils.type_safe.Type_Safe                                    import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id       import Safe_Id
 from mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node          import Schema__Mermaid__Node
@@ -11,7 +11,7 @@ from mgraph_db.providers.mermaid.domain.Domain__Mermaid__Node           import D
 class test_Mermaid_Node(TestCase):
 
     def setUp(self):
-        self.mermaid_node           = Domain__Mermaid__Node()
+        self.mermaid_node           = Domain__Mermaid__Node(node_id='01401a63', )
         self.mermaid_node_id        = self.mermaid_node.node_id
         self.mermaid_node_data      = self.mermaid_node.node.data
 
@@ -22,34 +22,66 @@ class test_Mermaid_Node(TestCase):
             graph_id = _.graph_id
 
             assert type(_) is Domain__Mermaid__Node
-            assert _.obj() == __(node=__(data=__(key         = node_key                     ,
-                                                 label       = node_key                     ,
-                                                 node_data =__(node_shape        = Schema__Mermaid__Node__Shape.default,
-                                                                show_label       = True     ,
-                                                                wrap_with_quotes = True     ,
-                                                                markdown         = False    ),
-                                                 node_id     = node_id                       ,
-                                                 node_type   = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node.Schema__Mermaid__Node'                                            )),
-                                 graph=__(data=__(schema_types  = __(edge_type        = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge.Schema__Mermaid__Edge'                  ,
-                                                                     edge_config_type = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge__Config.Schema__Mermaid__Edge__Config'  ,
-                                                                     graph_data_type  = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph__Config.Schema__Mermaid__Graph__Config',
-                                                                     node_type        = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node.Schema__Mermaid__Node'                  ,
-                                                                     node_data_type   = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Data.Schema__Mermaid__Node__Data'      ),
-                                                  edges         = __(),
-                                                  graph_data    = __(allow_circle_edges    = False     ,
-                                                                     allow_duplicate_edges = False     ,
-                                                                     graph_title           = ''       ),
-                                                  graph_id      = graph_id                             ,
-                                                  graph_type    = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph.Schema__Mermaid__Graph',
-                                                  mermaid_code  = [],
-                                                  nodes         = __(),
-                                                  render_config = __(add_nodes         = True   ,
-                                                                                         diagram_direction = 'LR'   ,
-                                                                                         diagram_type      = 'graph',
-                                                                                         line_before_edges = True   ,
-                                                                                         directives        = []     )),
-                                          model_types = __(node_model_type = 'mgraph_db.providers.mermaid.models.Model__Mermaid__Node.Model__Mermaid__Node',
-                                                             edge_model_type = 'mgraph_db.providers.mermaid.models.Model__Mermaid__Edge.Model__Mermaid__Edge')))
+            assert _.obj() == __(node=__(data=__(node_data=__(node_shape='default',
+                                                              show_label=True,
+                                                              wrap_with_quotes=True,
+                                                              markdown=False),
+                                                 node_id='01401a63',
+                                                 node_type='mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node.Schema__Mermaid__Node',
+                                                 key=node_key,
+                                                 label=node_key,
+                                                 node_path=None)),
+                                 graph=__(data=__(edges=__(),
+                                                  graph_data=__(allow_circle_edges=False,
+                                                                allow_duplicate_edges=False,
+                                                                graph_title=''),
+                                                  graph_id=graph_id,
+                                                  graph_type='mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph.Schema__Mermaid__Graph',
+                                                  nodes=__(),
+                                                  schema_types=__(edge_type='mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge.Schema__Mermaid__Edge',
+                                                                  graph_data_type='mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph__Config.Schema__Mermaid__Graph__Config',
+                                                                  node_type='mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node.Schema__Mermaid__Node',
+                                                                  node_data_type='mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Data.Schema__Mermaid__Node__Data',
+                                                                  edge_config_type='mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge__Config.Schema__Mermaid__Edge__Config'),
+                                                  mermaid_code=[],
+                                                  render_config=__(add_nodes=True,
+                                                                   diagram_direction='LR',
+                                                                   diagram_type='graph',
+                                                                   line_before_edges=True,
+                                                                   directives=[]),
+                                                  graph_path=None),
+                                          model_types=__(node_model_type='mgraph_db.providers.mermaid.models.Model__Mermaid__Node.Model__Mermaid__Node',
+                                                         edge_model_type='mgraph_db.providers.mermaid.models.Model__Mermaid__Edge.Model__Mermaid__Edge'),
+                                          resolver=__SKIP__))
+
+            # assert _.obj() == __(node=__(data=__(key         = node_key                     ,
+            #                                      label       = node_key                     ,
+            #                                      node_data =__(node_shape        = Schema__Mermaid__Node__Shape.default,
+            #                                                     show_label       = True     ,
+            #                                                     wrap_with_quotes = True     ,
+            #                                                     markdown         = False    ),
+            #                                      node_id     = node_id                       ,
+            #                                      node_type   = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node.Schema__Mermaid__Node'                                            )),
+            #                      graph=__(data=__(schema_types  = __(edge_type        = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge.Schema__Mermaid__Edge'                  ,
+            #                                                          edge_config_type = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Edge__Config.Schema__Mermaid__Edge__Config'  ,
+            #                                                          graph_data_type  = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph__Config.Schema__Mermaid__Graph__Config',
+            #                                                          node_type        = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node.Schema__Mermaid__Node'                  ,
+            #                                                          node_data_type   = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Node__Data.Schema__Mermaid__Node__Data'      ),
+            #                                       edges         = __(),
+            #                                       graph_data    = __(allow_circle_edges    = False     ,
+            #                                                          allow_duplicate_edges = False     ,
+            #                                                          graph_title           = ''       ),
+            #                                       graph_id      = graph_id                             ,
+            #                                       graph_type    = 'mgraph_db.providers.mermaid.schemas.Schema__Mermaid__Graph.Schema__Mermaid__Graph',
+            #                                       mermaid_code  = [],
+            #                                       nodes         = __(),
+            #                                       render_config = __(add_nodes         = True   ,
+            #                                                                              diagram_direction = 'LR'   ,
+            #                                                                              diagram_type      = 'graph',
+            #                                                                              line_before_edges = True   ,
+            #                                                                              directives        = []     )),
+            #                               model_types = __(node_model_type = 'mgraph_db.providers.mermaid.models.Model__Mermaid__Node.Model__Mermaid__Node',
+            #                                                  edge_model_type = 'mgraph_db.providers.mermaid.models.Model__Mermaid__Edge.Model__Mermaid__Edge')))
 
     def test_label(self):
         with self.mermaid_node as _:

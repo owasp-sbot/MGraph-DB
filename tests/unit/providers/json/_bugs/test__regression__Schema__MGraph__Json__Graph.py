@@ -8,9 +8,9 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data                        
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Graph               import Schema__MGraph__Json__Graph
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node__Value         import Schema__MGraph__Json__Node__Value
 
-class test_Schema__MGraph__Json__Graph__Bug(TestCase):
+class test__regression__Schema__MGraph__Json__Graph(TestCase):
 
-    def test___bug__from_json__node_data__not_preserved(self):
+    def test__regression__from_json__node_data__not_preserved(self):
         value_node      = Schema__MGraph__Json__Node__Value(node_data=dict(value="test_value", value_type=str))
         value_node_json = value_node.json()
         node_id         = value_node.node_id
@@ -25,7 +25,7 @@ class test_Schema__MGraph__Json__Graph__Bug(TestCase):
         assert graph_round_trip.nodes[value_node.node_id].node_data.json() != {}                                                                # Fixed: BUG should not be {}
         assert graph_round_trip.nodes[value_node.node_id].node_data.json() == {'value': 'test_value', 'value_type': 'builtins.str'}             # Fixed
         assert Schema__MGraph__Json__Graph.from_json(graph_json).json()    == graph_json                                                        # Fixed: BUG should be equal
-        assert graph_round_trip.nodes[value_node.node_id].obj()            == __(node_data=__(value='test_value', value_type='builtins.str'),   # BUG should not be empty
+        assert graph_round_trip.nodes[value_node.node_id].obj()            == __(node_data=__(value='test_value', value_type='builtins.str'),   # Fixed should not be empty
                                                                                  node_id=node_id_str,
                                                                                  node_type=full_type_name(Schema__MGraph__Json__Node__Value))   # node_type is correct Schema__MGraph__Json__Node__Value
 
@@ -104,14 +104,14 @@ class test_Schema__MGraph__Json__Graph__Bug(TestCase):
 
         assert node.node_id == 'a1234567'
         assert node.node_id == node_id
-        assert node.json()  == { 'node_data': {},
+        assert node.json()  == { 'node_data': None,
                                  'node_id': 'a1234567',
                                  'node_path': None,
-                                 'node_type': 'mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node'}
-        assert node.obj()   == __( node_data=__(),
+                                 'node_type': None}
+        assert node.obj()   == __( node_data=None,
                                    node_id='a1234567',
                                    node_path= None,
-                                   node_type='mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node')
+                                   node_type = None)
 
         roundtrip = Schema__MGraph__Node.from_json(node.json())
         assert roundtrip.json() == node.json()

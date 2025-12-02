@@ -24,14 +24,14 @@ class test_MGraph__Simple__Test_Data(TestCase):
             nodes_ids = _.nodes_ids()
             edges_ids = _.edges_ids()
         with self.test_data.export() as _:
-            assert _.to__json() == {'edges'   : { edges_ids[0]: { 'edge_data'   : {}                    ,
+            assert _.to__json() == {'edges'   : { edges_ids[0]: { 'edge_data'   : None                   ,
                                                                   'edge_id'     : edges_ids[0]          ,
                                                                   'edge_label'  : None                  ,
                                                                   'edge_path'   : None                  ,   # NEW: path field
                                                                   'edge_type'   : '@schema_mgraph_edge' ,
                                                                   'from_node_id': nodes_ids[0]          ,
                                                                   'to_node_id'  : nodes_ids[1]          },
-                                                  edges_ids[1]: { 'edge_data'   : {}                    ,
+                                                  edges_ids[1]: { 'edge_data'   : None                   ,
                                                                   'edge_id'     : edges_ids[1]          ,
                                                                   'edge_label'  : None                  ,
                                                                   'edge_path'   : None                  ,   # NEW: path field

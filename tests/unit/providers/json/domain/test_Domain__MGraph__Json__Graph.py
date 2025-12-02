@@ -13,7 +13,7 @@ from mgraph_db.providers.json.models.Model__MGraph__Json__Node         import Mo
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Edge       import Schema__MGraph__Json__Edge
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Graph      import Schema__MGraph__Json__Graph
 from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node       import Schema__MGraph__Json__Node
-from osbot_utils.testing.__                                            import __
+from osbot_utils.testing.__ import __, __SKIP__
 from osbot_utils.type_safe.Type_Safe                                   import Type_Safe
 from osbot_utils.utils.Objects                                         import full_type_name, base_classes
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                     import Domain__MGraph__Graph
@@ -24,25 +24,43 @@ class test_Domain__MGraph__Json__Graph(TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.graph = Domain__MGraph__Json__Graph()
+        cls.graph = Domain__MGraph__Json__Graph(graph_id='d7c01e03')
 
     def test__init__(self):
         with self.graph as _:
             assert isinstance(_, Domain__MGraph__Graph)
-            assert _.obj() == __(domain_types = __(node_domain_type = full_type_name(Domain__MGraph__Json__Node),
-                                                   edge_domain_type = full_type_name(Domain__MGraph__Json__Edge)),
-                                 graph_type   = full_type_name(Domain__MGraph__Json__Graph)                            ,
-                                 model        = __(data             = __(schema_types    = __(edge_type        = full_type_name(Schema__MGraph__Json__Edge   ),
-                                                                                              graph_data_type  = full_type_name(Schema__MGraph__Graph__Data  ),
-                                                                                              node_type        = full_type_name(Schema__MGraph__Json__Node   ),
-                                                                                              node_data_type   = full_type_name(Schema__MGraph__Node__Data   )),
-                                                                         edges           = __()             ,
-                                                                         graph_data      = __(root_id=None) ,
-                                                                         graph_id        = _.graph_id()     ,
-                                                                         graph_type      = full_type_name(Schema__MGraph__Json__Graph),
-                                                                         nodes           = __()),
-                                                  model_types       = __(node_model_type = full_type_name(Model__MGraph__Json__Node),
-                                                                         edge_model_type = full_type_name(Model__MGraph__Json__Edge)))) != __()
+            assert _.obj() == __(domain_types=__(  node_domain_type='mgraph_db.providers.json.domain.Domain__MGraph__Json__Node.Domain__MGraph__Json__Node',
+                                                   edge_domain_type='mgraph_db.providers.json.domain.Domain__MGraph__Json__Edge.Domain__MGraph__Json__Edge'),
+                                   model=__(data=__(graph_data=__(root_id=None),
+                                                    graph_id='d7c01e03',
+                                                    graph_type='mgraph_db.providers.json.schemas.Schema__MGraph__Json__Graph.Schema__MGraph__Json__Graph',
+                                                    schema_types=__(edge_type='mgraph_db.providers.json.schemas.Schema__MGraph__Json__Edge.Schema__MGraph__Json__Edge',
+                                                                    graph_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data',
+                                                                    node_type='mgraph_db.providers.json.schemas.Schema__MGraph__Json__Node.Schema__MGraph__Json__Node',
+                                                                    node_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data'),
+                                                    edges=__(),
+                                                    nodes=__()),
+                                            model_types=__(node_model_type='mgraph_db.providers.json.models.Model__MGraph__Json__Node.Model__MGraph__Json__Node',
+                                                           edge_model_type='mgraph_db.providers.json.models.Model__MGraph__Json__Edge.Model__MGraph__Json__Edge'),
+                                            resolver=__SKIP__),
+                                   resolver=__SKIP__,
+                                   graph_type=None)
+            # assert _.obj() == __(domain_types = __(node_domain_type = full_type_name(Domain__MGraph__Json__Node),
+            #                                        edge_domain_type = full_type_name(Domain__MGraph__Json__Edge)),
+            #                      graph_type   = full_type_name(Domain__MGraph__Json__Graph)                            ,
+            #                      resolver     = __SKIP__                ,
+            #                      model        = __(data             = __(schema_types    = __(edge_type        = full_type_name(Schema__MGraph__Json__Edge   ),
+            #                                                                                   graph_data_type  = full_type_name(Schema__MGraph__Graph__Data  ),
+            #                                                                                   node_type        = full_type_name(Schema__MGraph__Json__Node   ),
+            #                                                                                   node_data_type   = full_type_name(Schema__MGraph__Node__Data   )),
+            #                                                              edges           = __()             ,
+            #                                                              graph_data      = __(root_id=None) ,
+            #                                                              graph_id        = _.graph_id()     ,
+            #                                                              graph_type      = full_type_name(Schema__MGraph__Json__Graph),
+            #                                                              nodes           = __()),
+            #                                       resolver          = __SKIP__                ,
+            #                                       model_types       = __(node_model_type = full_type_name(Model__MGraph__Json__Node),
+            #                                                              edge_model_type = full_type_name(Model__MGraph__Json__Edge))))
 
     def test_new_node(self):
         with self.graph.new_node() as _:
