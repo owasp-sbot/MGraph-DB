@@ -17,7 +17,7 @@ class test_Domain__MGraph__Node(TestCase):
         self.schema_node  = Schema__MGraph__Node      (node_data = self.node_data  ,
                                                       node_type = Schema__MGraph__Node)
         self.model_node   = Model__MGraph__Node       (data      = self.schema_node)
-        self.graph        = Model__MGraph__Graph      (data      = None           )                  # Mock graph for testing
+        self.graph        = Model__MGraph__Graph      (                            )                  # Mock graph for testing
         self.node         = Domain__MGraph__Node      (node      = self.model_node,
                                                        graph     = self.graph     )
         self.graph.add_node(self.node.node.data)
