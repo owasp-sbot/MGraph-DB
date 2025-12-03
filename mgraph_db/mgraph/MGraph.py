@@ -1,4 +1,5 @@
 from typing                                         import Type
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph import Schema__MGraph__Graph
 from mgraph_db.mgraph.actions.MGraph__Builder       import MGraph__Builder
 from mgraph_db.mgraph.actions.MGraph__Values        import MGraph__Values
 from mgraph_db.mgraph.actions.MGraph__Export        import MGraph__Export
@@ -39,6 +40,9 @@ class MGraph(Type_Safe):                                                        
 
     def index(self) -> MGraph__Index:
         return self.edit().index()                                                                      # get the index from the .edit() logic (so that everybody is using the same object)
+
+    def graph_model_data(self) -> Schema__MGraph__Graph:
+        return self.graph.model.data
 
     def query(self) -> MGraph__Query:
         mgraph_data  = self.data()

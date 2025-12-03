@@ -33,6 +33,8 @@ class Domain__MGraph__Json__Graph(Domain__MGraph__Graph):
 
     def root_content(self) -> Optional[Domain__MGraph__Json__Node]:                             # Get the content node attached to root (if any)"""
         root = self.root()
+        if root.node is None:
+            return None
         edges = self.model.node__from_edges(root.node_id)
         if not edges:
             return None
