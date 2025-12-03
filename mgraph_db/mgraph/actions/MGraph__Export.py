@@ -72,7 +72,7 @@ class MGraph__Export(Type_Safe):
                 to_elem.text    = str(edge.to_node_id())
         return self.format_xml(root, indent='  ')
 
-    def to__dot(self, show_value=False, show_edge_ids=True) -> str:                       # Export as DOT graph
+    def to__dot(self) -> str:                       # Export as DOT graph
         return self.export_dot().process_graph()
 
     def to__dot_types(self):                        # todo: a) see if we still need this, and if we do, fix this method since to_types_view doesn't exist any more
