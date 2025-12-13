@@ -41,6 +41,7 @@ class PlantUML__Base(Type_Safe):                                                
         if not type_obj:
             return Safe_Str__Label('Node')
         name = getattr(type_obj, '__name__', str(type_obj))
+        # todo: check the performance implications of this for loop
         for prefix in ['Schema__MGraph__', 'Schema__', 'Domain__MGraph__', 'Domain__']:
             if name.startswith(prefix):
                 name = name[len(prefix):]

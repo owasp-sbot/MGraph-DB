@@ -28,7 +28,7 @@ class PlantUML__Node__Renderer(PlantUML__Base):                                 
         display    = self.config.display                                              # display settings
 
         if display.show_node_type:                                                    # add type name
-            type_name = self.type_name__from__type(node.node_type())
+            type_name = self.type_name__from__type(node.node_type)
             parts.append(f'<<{type_name}>>')
 
         if display.show_node_value:                                                   # add value if present
@@ -42,14 +42,14 @@ class PlantUML__Node__Renderer(PlantUML__Base):                                 
             parts.append(f'[{node_id_str}]')
 
         if not parts:                                                                 # fallback to type name
-            type_name = self.type_name__from__type(node.node_type())
+            type_name = self.type_name__from__type(node.node_type)
             parts.append(str(type_name))
 
         label = '\\n'.join(parts)                                                     # join with PlantUML newlines
         return self.escape_label(label)
 
     def resolve_color(self, node: Domain__MGraph__Node) -> Optional[Safe_Str__Id]:    # resolve node color
-        type_name  = str(self.type_name__from__type(node.node_type()))
+        type_name  = str(self.type_name__from__type(node.node_type))
         type_colors = self.config.node.type_colors or {}
 
         if type_name in type_colors:                                                  # check type mapping

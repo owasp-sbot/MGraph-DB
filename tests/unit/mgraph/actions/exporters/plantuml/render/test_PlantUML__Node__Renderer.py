@@ -1,17 +1,14 @@
 from unittest                                                                         import TestCase
-from unittest.mock                                                                    import MagicMock, Mock
-from osbot_utils.testing.__                                                           import __
 from osbot_utils.utils.Objects                                                        import base_classes
-from osbot_utils.type_safe.Type_Safe                                                 import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Id       import Safe_Str__Id
-
-from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config                                        import PlantUML__Config
-from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config                                        import PlantUML__Config__Graph
-from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config                                        import PlantUML__Config__Node
-from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config                                        import PlantUML__Config__Edge
-from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config                                        import PlantUML__Config__Display
-from mgraph_db.mgraph.actions.exporters.plantuml.render.PlantUML__Node__Renderer                                import PlantUML__Node__Renderer
-from mgraph_db.mgraph.actions.exporters.plantuml.render.PlantUML__Base                                          import PlantUML__Base
+from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config              import PlantUML__Config
+from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config              import PlantUML__Config__Graph
+from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config              import PlantUML__Config__Node
+from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config              import PlantUML__Config__Edge
+from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config              import PlantUML__Config__Display
+from mgraph_db.mgraph.actions.exporters.plantuml.render.PlantUML__Node__Renderer      import PlantUML__Node__Renderer
+from mgraph_db.mgraph.actions.exporters.plantuml.render.PlantUML__Base                import PlantUML__Base
+from mgraph_db.providers.simple.MGraph__Simple                                        import MGraph__Simple
 
 
 class test_PlantUML__Node__Renderer(TestCase):
@@ -23,6 +20,16 @@ class test_PlantUML__Node__Renderer(TestCase):
             node    = PlantUML__Config__Node   ()                                  ,
             edge    = PlantUML__Config__Edge   ()                                  ,
             display = PlantUML__Config__Display()                                  )
+
+    def setUp(self):
+        self.mgraph_simple = MGraph__Simple()
+
+    def safe_id(self, node_id):                                                       # helper to sanitize node ID for PlantUML
+        safe_str = str(node_id).replace('-', '_').replace(' ', '_')
+        safe_str = ''.join(c if c.isalnum() or c == '_' else '_' for c in safe_str)
+        if safe_str and safe_str[0].isdigit():
+            safe_str = f'n_{safe_str}'
+        return safe_str or 'node'
 
     def test__init__(self):                                                           # test auto-initialization
         with PlantUML__Node__Renderer() as _:
@@ -37,52 +44,138 @@ class test_PlantUML__Node__Renderer(TestCase):
             assert _.config                 is self.config
 
     def test_render__basic(self):                                                     # test basic node rendering
-        node      = self._create_mock_node('node-123', 'Schema__MGraph__Node')
-        node_data = None
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_safe  = self.safe_id(node.node_id)
 
         with PlantUML__Node__Renderer(config=self.config) as _:
-            result = _.render(node, node_data)
+            result = _.render(domain_node, node_data)
             assert 'card'                   in result                                 # default shape
-            assert 'node_123'               in result                                 # sanitized ID
-            assert '<<Node>>'               in result                                 # type name shown
+            assert node_id_safe             in result                                 # sanitized ID
+            assert '<<Simple__Node>>'               in result                                 # type name shown
+            assert result                   == f'card "<<Simple__Node>>" as {node_id_safe}'
 
-    def test_render__with_value(self):                                                # test value node rendering
-        node      = self._create_mock_node('value-456', 'Schema__MGraph__Node__Value')
-        node_data = self._create_mock_node_data('hello world')
-
-        with PlantUML__Node__Renderer(config=self.config) as _:
-            result = _.render(node, node_data)
-            assert 'hello world'            in result                                 # value shown
-            assert 'value_456'              in result                                 # sanitized ID
-
-    def test_render__with_color(self):                                                # test colored node
-        config = PlantUML__Config(
-            graph   = PlantUML__Config__Graph  ()                                  ,
-            node    = PlantUML__Config__Node(
-                        type_colors = {'Node__Value': Safe_Str__Id('LightGreen')}) ,
-            edge    = PlantUML__Config__Edge   ()                                  ,
-            display = PlantUML__Config__Display()                                  )
-
-        node      = self._create_mock_node('colored-789', 'Schema__MGraph__Node__Value')
-        node_data = self._create_mock_node_data('test')
-
-        with PlantUML__Node__Renderer(config=config) as _:
-            result = _.render(node, node_data)
-            assert '#LightGreen'            in result                                 # color applied
-
-    def test_render__shape_rectangle(self):                                           # test rectangle shape
+    def test_render__with_shape_rectangle(self):                                      # test rectangle shape
         config = PlantUML__Config(
             graph   = PlantUML__Config__Graph  ()                                  ,
             node    = PlantUML__Config__Node(shape='rectangle')                    ,
             edge    = PlantUML__Config__Edge   ()                                  ,
             display = PlantUML__Config__Display()                                  )
 
-        node      = self._create_mock_node('rect-123', 'Schema__MGraph__Node')
-        node_data = None
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_safe  = self.safe_id(node.node_id)
 
         with PlantUML__Node__Renderer(config=config) as _:
-            result = _.render(node, node_data)
+            result = _.render(domain_node, node_data)
             assert result.startswith('rectangle')                                     # rectangle shape
+            assert result                   == f'rectangle "<<Simple__Node>>" as {node_id_safe}'
+
+    def test_render__with_shape_component(self):                                      # test component shape
+        config = PlantUML__Config(
+            graph   = PlantUML__Config__Graph  ()                                  ,
+            node    = PlantUML__Config__Node(shape='component')                    ,
+            edge    = PlantUML__Config__Edge   ()                                  ,
+            display = PlantUML__Config__Display()                                  )
+
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_safe  = self.safe_id(node.node_id)
+
+        with PlantUML__Node__Renderer(config=config) as _:
+            result = _.render(domain_node, node_data)
+            assert result                   == f'component "<<Simple__Node>>" as {node_id_safe}'
+
+    def test_render__with_shape_database(self):                                       # test database shape
+        config = PlantUML__Config(
+            graph   = PlantUML__Config__Graph  ()                                  ,
+            node    = PlantUML__Config__Node(shape='database')                     ,
+            edge    = PlantUML__Config__Edge   ()                                  ,
+            display = PlantUML__Config__Display()                                  )
+
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_safe  = self.safe_id(node.node_id)
+
+        with PlantUML__Node__Renderer(config=config) as _:
+            result = _.render(domain_node, node_data)
+            assert result                   == f'database "<<Simple__Node>>" as {node_id_safe}'
+
+    def test_render__with_shape_cloud(self):                                          # test cloud shape
+        config = PlantUML__Config(
+            graph   = PlantUML__Config__Graph  ()                                  ,
+            node    = PlantUML__Config__Node(shape='cloud')                        ,
+            edge    = PlantUML__Config__Edge   ()                                  ,
+            display = PlantUML__Config__Display()                                  )
+
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_safe  = self.safe_id(node.node_id)
+
+        with PlantUML__Node__Renderer(config=config) as _:
+            result = _.render(domain_node, node_data)
+            assert result                   == f'cloud "<<Simple__Node>>" as {node_id_safe}'
+
+    def test_render__with_default_color(self):                                        # test default color
+        config = PlantUML__Config(
+            graph   = PlantUML__Config__Graph  ()                                  ,
+            node    = PlantUML__Config__Node(default_color=Safe_Str__Id('LightBlue')),
+            edge    = PlantUML__Config__Edge   ()                                  ,
+            display = PlantUML__Config__Display()                                  )
+
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_safe  = self.safe_id(node.node_id)
+
+        with PlantUML__Node__Renderer(config=config) as _:
+            result = _.render(domain_node, node_data)
+            assert '#LightBlue'             in result                                 # color applied
+            assert result                   == f'card "<<Simple__Node>>" as {node_id_safe} #LightBlue'
+
+    def test_render__with_type_color_mapping(self):                                   # test type-specific color
+        config = PlantUML__Config(
+            graph   = PlantUML__Config__Graph  ()                                  ,
+            node    = PlantUML__Config__Node(
+                        type_colors = {'Simple__Node': Safe_Str__Id('LightGreen')})        ,
+            edge    = PlantUML__Config__Edge   ()                                  ,
+            display = PlantUML__Config__Display()                                  )
+
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_safe  = self.safe_id(node.node_id)
+
+        with PlantUML__Node__Renderer(config=config) as _:
+            result = _.render(domain_node, node_data)
+            assert '#LightGreen'            in result                                 # color applied
+            assert result                   == f'card "<<Simple__Node>>" as {node_id_safe} #LightGreen'
 
     def test_render__hide_type(self):                                                 # test hiding type
         config = PlantUML__Config(
@@ -91,12 +184,18 @@ class test_PlantUML__Node__Renderer(TestCase):
             edge    = PlantUML__Config__Edge   ()                                  ,
             display = PlantUML__Config__Display(show_node_type=False)              )
 
-        node      = self._create_mock_node('no-type-123', 'Schema__MGraph__Node')
-        node_data = None
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_safe  = self.safe_id(node.node_id)
 
         with PlantUML__Node__Renderer(config=config) as _:
-            result = _.render(node, node_data)
+            result = _.render(domain_node, node_data)
             assert '<<'                     not in result                             # type not shown
+            assert result                   == f'card "Simple__Node" as {node_id_safe}'
 
     def test_render__show_id(self):                                                   # test showing node ID
         config = PlantUML__Config(
@@ -105,12 +204,55 @@ class test_PlantUML__Node__Renderer(TestCase):
             edge    = PlantUML__Config__Edge   ()                                  ,
             display = PlantUML__Config__Display(show_node_id=True)                 )
 
-        node      = self._create_mock_node('id-abc-123', 'Schema__MGraph__Node')
-        node_data = None
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_safe  = self.safe_id(node.node_id)
+        node_id_short = str(node.node_id)[:8]
 
         with PlantUML__Node__Renderer(config=config) as _:
-            result = _.render(node, node_data)
-            assert '[id-abc-1'              in result                                 # truncated ID shown
+            result = _.render(domain_node, node_data)
+            assert f'[{node_id_short}'      in result                                 # truncated ID shown
+            assert result                   == f'card "<<Simple__Node>>\\n[{node_id_short}]" as {node_id_safe}'
+
+    def test_render__show_id_and_hide_type(self):                                     # test showing ID and hiding type
+        config = PlantUML__Config(
+            graph   = PlantUML__Config__Graph  ()                                  ,
+            node    = PlantUML__Config__Node   ()                                  ,
+            edge    = PlantUML__Config__Edge   ()                                  ,
+            display = PlantUML__Config__Display(show_node_id=True, show_node_type=False))
+
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_safe  = self.safe_id(node.node_id)
+        node_id_short = str(node.node_id)[:8]
+
+        with PlantUML__Node__Renderer(config=config) as _:
+            result = _.render(domain_node, node_data)
+            assert '<<'                     not in result
+            assert f'[{node_id_short}'      in result
+            assert result                   == f'card "[{node_id_short}]" as {node_id_safe}'
+
+    def test_render__with_none_node_data(self):                                       # test with None node_data
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_id_safe  = self.safe_id(node.node_id)
+
+        with PlantUML__Node__Renderer(config=self.config) as _:
+            result = _.render(domain_node, None)                                      # explicitly pass None
+            assert 'card'                   in result
+            assert node_id_safe             in result
+            assert result                   == f'card "<<Simple__Node>>" as {node_id_safe}'
 
     def test_build_label__type_only(self):                                            # test label with type only
         config = PlantUML__Config(
@@ -120,33 +262,70 @@ class test_PlantUML__Node__Renderer(TestCase):
             display = PlantUML__Config__Display(show_node_type  = True ,
                                                 show_node_value = False)           )
 
-        node      = self._create_mock_node('test-123', 'Schema__MGraph__Node')
-        node_data = None
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
 
         with PlantUML__Node__Renderer(config=config) as _:
-            label = _.build_label(node, node_data)
-            assert '<<Node>>'               in label
+            label = _.build_label(domain_node, node_data)
+            assert '<<Simple__Node>>'               in label
+            assert label                    == '<<Simple__Node>>'
 
-    def test_build_label__value_only(self):                                           # test label with value only
+    def test_build_label__nothing_shown(self):                                        # test label when nothing shown
         config = PlantUML__Config(
             graph   = PlantUML__Config__Graph  ()                                  ,
             node    = PlantUML__Config__Node   ()                                  ,
             edge    = PlantUML__Config__Edge   ()                                  ,
             display = PlantUML__Config__Display(show_node_type  = False,
-                                                show_node_value = True )           )
+                                                show_node_value = False,
+                                                show_node_id    = False)           )
 
-        node      = self._create_mock_node('test-123', 'Schema__MGraph__Node__Value')
-        node_data = self._create_mock_node_data('my value')
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
 
         with PlantUML__Node__Renderer(config=config) as _:
-            label = _.build_label(node, node_data)
-            assert 'my value'               in label
-            assert '<<'                     not in label                              # no type
+            label = _.build_label(domain_node, node_data)
+            assert label                    == 'Simple__Node'                                 # fallback to type name
+
+    def test_build_label__with_id(self):                                              # test label with ID
+        config = PlantUML__Config(
+            graph   = PlantUML__Config__Graph  ()                                  ,
+            node    = PlantUML__Config__Node   ()                                  ,
+            edge    = PlantUML__Config__Edge   ()                                  ,
+            display = PlantUML__Config__Display(show_node_type  = True ,
+                                                show_node_value = False,
+                                                show_node_id    = True )           )
+
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_short = str(node.node_id)[:8]
+
+        with PlantUML__Node__Renderer(config=config) as _:
+            label = _.build_label(domain_node, node_data)
+            assert '<<Simple__Node>>'               in label
+            assert f'[{node_id_short}'      in label
+            assert label                    == f'<<Simple__Node>>\\n[{node_id_short}]'
 
     def test_resolve_color__no_mapping(self):                                         # test color without mapping
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+
         with PlantUML__Node__Renderer(config=self.config) as _:
-            node = self._create_mock_node('test', 'Schema__MGraph__Node')
-            color = _.resolve_color(node)
+            color = _.resolve_color(domain_node)
             assert color                    is None                                   # no default color
 
     def test_resolve_color__with_default(self):                                       # test default color
@@ -156,42 +335,102 @@ class test_PlantUML__Node__Renderer(TestCase):
             edge    = PlantUML__Config__Edge   ()                                  ,
             display = PlantUML__Config__Display()                                  )
 
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+
         with PlantUML__Node__Renderer(config=config) as _:
-            node = self._create_mock_node('test', 'Schema__MGraph__Node')
-            color = _.resolve_color(node)
+            color = _.resolve_color(domain_node)
             assert color                    == 'white'
 
-    def test_extract_value__with_value(self):                                         # test value extraction
-        node_data = self._create_mock_node_data('test value')
-        with PlantUML__Node__Renderer(config=self.config) as _:
-            value = _.extract_value(node_data)
-            assert value                    == 'test value'
+    def test_resolve_color__type_mapping_takes_precedence(self):                      # test type mapping precedence
+        config = PlantUML__Config(
+            graph   = PlantUML__Config__Graph  ()                                  ,
+            node    = PlantUML__Config__Node(
+                        default_color = Safe_Str__Id('white')                      ,
+                        type_colors   = {'Simple__Node': Safe_Str__Id('yellow')})          ,
+            edge    = PlantUML__Config__Edge   ()                                  ,
+            display = PlantUML__Config__Display()                                  )
+
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+
+        with PlantUML__Node__Renderer(config=config) as _:
+            color = _.resolve_color(domain_node)
+            assert color                    == 'yellow'                               # type mapping takes precedence
 
     def test_extract_value__none_data(self):                                          # test None node_data
         with PlantUML__Node__Renderer(config=self.config) as _:
             value = _.extract_value(None)
             assert value                    is None
 
-    def test_extract_value__no_value_attr(self):                                      # test data without value
-        node_data = Mock()
-        del node_data.value                                                           # remove value attr
+    def test_extract_value__with_node_data(self):                                     # test extract_value with real node_data
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+
         with PlantUML__Node__Renderer(config=self.config) as _:
             value = _.extract_value(node_data)
-            assert value                    is None
+            assert value                    is None                                   # Simple nodes don't have value attr
 
     # ═══════════════════════════════════════════════════════════════════════════════
-    # Helper methods
+    # Tests for multiple nodes
     # ═══════════════════════════════════════════════════════════════════════════════
 
-    def _create_mock_node(self, node_id: str, type_name: str):                        # create mock node
-        node = Mock()
-        node.node_id.return_value = node_id
+    def test_render__multiple_nodes_same_config(self):                                # test rendering multiple nodes
+        with self.mgraph_simple.edit() as edit:
+            node1 = edit.new_node()
+            node2 = edit.new_node()
+            node3 = edit.new_node()
 
-        mock_type = type(type_name, (), {'__name__': type_name})                      # create type with name
-        node.node_type.return_value = mock_type
-        return node
+        mgraph_data = self.mgraph_simple.data()
 
-    def _create_mock_node_data(self, value):                                          # create mock node_data
-        node_data = Mock()
-        node_data.value = value
-        return node_data
+        with PlantUML__Node__Renderer(config=self.config) as _:
+            results = []
+            for node_id in [node1.node_id, node2.node_id, node3.node_id]:
+                domain_node = mgraph_data.node(node_id)
+                node_data   = domain_node.node_data
+                result      = _.render(domain_node, node_data)
+                results.append(result)
+                node_id_safe = self.safe_id(node_id)
+                assert result               == f'card "<<Simple__Node>>" as {node_id_safe}'
+
+            assert len(results)             == 3
+            assert len(set(results))        == 3                                      # all unique (different IDs)
+
+    def test_render__with_all_options(self):                                          # test with all display options enabled
+        config = PlantUML__Config(
+            graph   = PlantUML__Config__Graph  ()                                  ,
+            node    = PlantUML__Config__Node(
+                        shape         = 'rectangle'                                ,
+                        default_color = Safe_Str__Id('LightYellow'))               ,
+            edge    = PlantUML__Config__Edge   ()                                  ,
+            display = PlantUML__Config__Display(
+                        show_node_type  = True                                     ,
+                        show_node_value = True                                     ,
+                        show_node_id    = True)                                    )
+
+        with self.mgraph_simple.edit() as edit:
+            node = edit.new_node()
+
+        mgraph_data   = self.mgraph_simple.data()
+        domain_node   = mgraph_data.node(node.node_id)
+        node_data     = domain_node.node_data
+        node_id_safe  = self.safe_id(node.node_id)
+        node_id_short = str(node.node_id)[:8]
+
+        with PlantUML__Node__Renderer(config=config) as _:
+            result = _.render(domain_node, node_data)
+            assert 'rectangle'              in result
+            assert '<<Simple__Node>>'               in result
+            assert f'[{node_id_short}'      in result
+            assert '#LightYellow'           in result
+            assert result                   == f'rectangle "<<Simple__Node>>\\n[{node_id_short}]" as {node_id_safe} #LightYellow'

@@ -3,6 +3,7 @@ from xml.dom                                                                impo
 from xml.etree                                                              import ElementTree
 from xml.etree.ElementTree                                                  import Element, SubElement
 from mgraph_db.mgraph.actions.exporters.dot.MGraph__Export__Dot             import MGraph__Export__Dot
+from mgraph_db.mgraph.actions.exporters.plantuml.MGraph__Export__PlantUML   import MGraph__Export__PlantUML
 from mgraph_db.mgraph.actions.exporters.tree.MGraph__Export__Tree_Values    import MGraph__Export__Tree_Values
 from osbot_utils.decorators.methods.cache_on_self                           import cache_on_self
 from osbot_utils.utils.Files                                                import temp_file, file_create
@@ -20,6 +21,10 @@ class MGraph__Export(Type_Safe):
     @cache_on_self
     def export_dot(self) -> MGraph__Export__Dot:
         return MGraph__Export__Dot(graph=self.graph)
+
+    @cache_on_self
+    def export_plantuml(self) -> MGraph__Export__Dot:
+        return MGraph__Export__PlantUML(graph=self.graph)
 
     @cache_on_self
     def export_tree_values(self, **kwargs) -> MGraph__Export__Tree_Values:

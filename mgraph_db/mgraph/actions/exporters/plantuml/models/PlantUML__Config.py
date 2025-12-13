@@ -9,6 +9,7 @@ from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Lab
 class PlantUML__Config__Display(Type_Safe):                                           # controls what gets shown in output
     show_node_id         : bool                               = False                 # display node IDs in labels
     show_node_type       : bool                               = True                  # display node type names
+    #show_node_path       : bool                               = True                 # todo: add support for showing the node path
     show_node_value      : bool                               = True                  # display values for value nodes
     show_edge_predicate  : bool                               = True                  # display edge predicates
     show_edge_type       : bool                               = False                 # display edge type names

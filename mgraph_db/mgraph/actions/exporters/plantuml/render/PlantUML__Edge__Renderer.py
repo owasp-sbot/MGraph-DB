@@ -36,7 +36,7 @@ class PlantUML__Edge__Renderer(PlantUML__Base):                                 
                 parts.append(str(predicate))
 
         if display.show_edge_type:                                                    # add edge type
-            type_name = self.type_name__from__type(edge.edge_type())
+            type_name = self.type_name__from__type(edge.edge_type)
             parts.append(f'<<{type_name}>>')
 
         return ' '.join(parts) if parts else None
