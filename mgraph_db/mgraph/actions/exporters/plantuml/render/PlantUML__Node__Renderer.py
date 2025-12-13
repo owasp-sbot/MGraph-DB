@@ -13,7 +13,7 @@ class PlantUML__Node__Renderer(PlantUML__Base):                                 
 
     def render(self, node: Domain__MGraph__Node,                                      # render node to complete statement
                      node_data: Schema__MGraph__Node__Data) -> str:
-        puml_id    = self.safe_id(node.node_id())                                     # sanitized PlantUML ID
+        puml_id    = self.safe_id(node.node_id)                                       # sanitized PlantUML ID
         label      = self.build_label(node, node_data)                                # build display label
         shape      = self.config.node.shape                                           # get shape from config
         color      = self.resolve_color(node)                                         # resolve background color
@@ -38,7 +38,7 @@ class PlantUML__Node__Renderer(PlantUML__Base):                                 
                 parts.append(wrapped)
 
         if display.show_node_id:                                                      # add node ID
-            node_id_str = str(node.node_id())[:8]
+            node_id_str = str(node.node_id)[:8]
             parts.append(f'[{node_id_str}]')
 
         if not parts:                                                                 # fallback to type name

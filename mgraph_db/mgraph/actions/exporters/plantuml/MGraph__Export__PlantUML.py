@@ -1,6 +1,7 @@
-from typing                                                                           import List, Optional, Callable
+from typing                                                                           import Optional, Callable
+from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Context             import PlantUML__Context
+from mgraph_db.mgraph.actions.exporters.plantuml.models.safe_str.Safe_Str__PlantUML   import Safe_Str__PlantUML
 from osbot_utils.type_safe.Type_Safe                                                  import Type_Safe
-from osbot_utils.type_safe.primitives.domains.common.safe_str.Safe_Str__Text          import Safe_Str__Text
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                                    import Domain__MGraph__Graph
 from mgraph_db.mgraph.actions.MGraph__Index                                           import MGraph__Index
 from mgraph_db.mgraph.actions.MGraph__Data                                            import MGraph__Data
@@ -14,9 +15,6 @@ from mgraph_db.mgraph.actions.exporters.plantuml.render.PlantUML__Edge__Renderer
 from mgraph_db.mgraph.actions.exporters.plantuml.render.PlantUML__Format__Generator   import PlantUML__Format__Generator
 
 
-class PlantUML__Context(Type_Safe):                                                   # holds rendered statements
-    nodes                : List[str]                                                  # rendered node statements
-    edges                : List[str]                                                  # rendered edge statements
 
 
 class MGraph__Export__PlantUML(Type_Safe):                                            # main PlantUML exporter orchestrator
@@ -30,8 +28,8 @@ class MGraph__Export__PlantUML(Type_Safe):                                      
     edge_renderer        : PlantUML__Edge__Renderer           = None                  # edge renderer instance
     format_generator     : PlantUML__Format__Generator        = None                  # format generator instance
 
-    on_add_node          : Callable                           = None                  # callback: on_add_node(node, node_data) -> Optional[str]
-    on_add_edge          : Callable                           = None                  # callback: on_add_edge(edge, from_node, to_node, edge_data) -> Optional[str]
+    on_add_node          : Optional[Callable]                 = None                  # callback: on_add_node(node, node_data) -> Optional[str]
+    on_add_edge          : Optional[Callable]                 = None                  # callback: on_add_edge(edge, from_node, to_node, edge_data) -> Optional[str]
 
     def setup(self):                                                                  # initialize renderers and config
         if not self.config:                                                           # create default config
@@ -62,7 +60,7 @@ class MGraph__Export__PlantUML(Type_Safe):                                      
 
         return self
 
-    def render(self) -> Safe_Str__Text:                                               # render graph to PlantUML DSL
+    def render(self) -> Safe_Str__PlantUML:                                             # render graph to PlantUML DSL
         self.setup()                                                                  # ensure initialization
         self.context.nodes = []                                                       # reset context
         self.context.edges = []
@@ -83,7 +81,7 @@ class MGraph__Export__PlantUML(Type_Safe):                                      
 
         lines.append(self.format_generator.end_uml())                                 # @enduml
 
-        return Safe_Str__Text('\n'.join(lines))
+        return Safe_Str__PlantUML('\n'.join(lines))
 
     def render_nodes(self):                                                           # render all nodes to context
         if not self.data:

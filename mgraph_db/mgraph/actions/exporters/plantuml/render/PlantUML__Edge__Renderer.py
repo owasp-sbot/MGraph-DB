@@ -16,8 +16,8 @@ class PlantUML__Edge__Renderer(PlantUML__Base):                                 
                      from_node : Domain__MGraph__Node      ,
                      to_node   : Domain__MGraph__Node      ,
                      edge_data : Schema__MGraph__Edge__Data) -> str:
-        from_id    = self.safe_id(from_node.node_id())                                # sanitized source ID
-        to_id      = self.safe_id(to_node.node_id())                                  # sanitized target ID
+        from_id    = self.safe_id(from_node.node_id)                                # sanitized source ID
+        to_id      = self.safe_id(to_node.node_id)                                  # sanitized target ID
         arrow      = self.config.edge.style                                           # arrow style from config
         label      = self.build_label(edge, edge_data)                                # build edge label
 
