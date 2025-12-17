@@ -1,5 +1,4 @@
-from typing                                                                           import Type, Optional
-
+from typing                                                                           import Type
 from osbot_utils.type_safe.Type_Safe                                                  import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Id       import Safe_Str__Id
 from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Label    import Safe_Str__Label

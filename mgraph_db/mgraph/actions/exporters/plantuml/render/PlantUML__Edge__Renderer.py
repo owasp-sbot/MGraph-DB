@@ -1,12 +1,10 @@
 from typing                                                                           import Optional
-from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Id       import Safe_Str__Id
 from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Label    import Safe_Str__Label
 from mgraph_db.mgraph.domain.Domain__MGraph__Edge                                     import Domain__MGraph__Edge
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                                     import Domain__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Data                              import Schema__MGraph__Edge__Data
-
-from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config                                        import PlantUML__Config
-from mgraph_db.mgraph.actions.exporters.plantuml.render.PlantUML__Base                                          import PlantUML__Base
+from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config              import PlantUML__Config
+from mgraph_db.mgraph.actions.exporters.plantuml.render.PlantUML__Base                import PlantUML__Base
 
 
 class PlantUML__Edge__Renderer(PlantUML__Base):                                       # renders a single edge to PlantUML statement

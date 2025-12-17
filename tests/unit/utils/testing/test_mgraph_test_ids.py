@@ -4,8 +4,7 @@ from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_I
 from osbot_utils.type_safe.primitives.domains.identifiers.Graph_Id  import Graph_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
-
-from mgraph_db.utils.testing.MGraph__Test__Ids import MGraph__Test__Ids
+from mgraph_db.utils.testing.MGraph__Test__Ids                      import MGraph__Test__Ids
 from mgraph_db.utils.testing.mgraph_test_ids                        import mgraph_test_ids, test_ids
 
 

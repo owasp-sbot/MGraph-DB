@@ -1,11 +1,9 @@
-from typing                                                                           import Optional
-from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Id       import Safe_Str__Id
-from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Label    import Safe_Str__Label
-from mgraph_db.mgraph.domain.Domain__MGraph__Node                                     import Domain__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data                              import Schema__MGraph__Node__Data
-
-from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config                                        import PlantUML__Config
-from mgraph_db.mgraph.actions.exporters.plantuml.render.PlantUML__Base                                          import PlantUML__Base
+from typing                                                                     import Optional
+from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Id import Safe_Str__Id
+from mgraph_db.mgraph.domain.Domain__MGraph__Node                               import Domain__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data                        import Schema__MGraph__Node__Data
+from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config        import PlantUML__Config
+from mgraph_db.mgraph.actions.exporters.plantuml.render.PlantUML__Base          import PlantUML__Base
 
 
 class PlantUML__Node__Renderer(PlantUML__Base):                                       # renders a single node to PlantUML statement

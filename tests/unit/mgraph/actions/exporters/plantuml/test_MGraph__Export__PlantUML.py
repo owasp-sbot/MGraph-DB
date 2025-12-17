@@ -1,7 +1,5 @@
 from unittest                                                                         import TestCase
-
-from mgraph_db.utils.testing.MGraph__Test__Ids import MGraph__Test__Ids
-from mgraph_db.utils.testing.mgraph_test_ids import mgraph_test_ids
+from mgraph_db.utils.testing.mgraph_test_ids                                          import mgraph_test_ids
 from osbot_utils.utils.Objects                                                        import base_classes
 from osbot_utils.type_safe.Type_Safe                                                  import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Label    import Safe_Str__Label
