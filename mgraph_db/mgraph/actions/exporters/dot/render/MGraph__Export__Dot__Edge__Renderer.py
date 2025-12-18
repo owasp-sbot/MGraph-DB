@@ -33,7 +33,7 @@ class MGraph__Export__Dot__Edge__Renderer(MGraph__Export__Dot__Base):
         elif self.config.display.edge_id:
             label_parts.append(f"  edge_id = '{edge.edge_id}'")
         if self.config.display.edge_path_str:
-            label_parts.append(f'{edge.edge_id}')
+            label_parts.append(f'{edge.edge.data.edge_path}')
         elif self.config.display.edge_path:
             label_parts.append(f"  edge_path = '{edge.edge.data.edge_path}'")
         if self.config.display.edge_type:

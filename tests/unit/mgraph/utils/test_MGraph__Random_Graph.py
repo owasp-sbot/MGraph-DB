@@ -7,7 +7,6 @@ from mgraph_db.mgraph.models.Model__MGraph__Node             import Model__MGrap
 from mgraph_db.mgraph.schemas.Schema__MGraph__Types          import Schema__MGraph__Types
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge           import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node           import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data     import Schema__MGraph__Node__Data
 from mgraph_db.mgraph.MGraph                                 import MGraph
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph           import Domain__MGraph__Graph
 from mgraph_db.mgraph.models.Model__MGraph__Graph            import Model__MGraph__Graph

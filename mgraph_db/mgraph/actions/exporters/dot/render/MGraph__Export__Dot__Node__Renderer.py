@@ -190,7 +190,7 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
             #if self.config.display.node_value_str:                                         # Add value if requested
             #    label_parts.append(f"{node.node_data.value}")
             if self.config.display.node_value:                                              # Add value if requested
-                label_part = node.node_data.value                                           # todo: refactor out this logic (since it is repeated multiple times and we are reusing a local variable)
+                label_part = node.node_data.value.strip()                                           # todo: refactor out this logic (since it is repeated multiple times and we are reusing a local variable)
                 if self.config.render.label_show_var_name:
                     label_part = f"node_value='{label_part}'"
                 label_parts.append(label_part)
