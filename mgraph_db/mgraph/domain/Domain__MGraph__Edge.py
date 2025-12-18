@@ -15,6 +15,7 @@ class Domain__MGraph__Edge(Type_Safe):                                          
     edge_id     = set_as_property('edge.data', 'edge_id'    , Edge_Id                    ) # Edge ID
     edge_label  = set_as_property('edge.data', 'edge_label' , Schema__MGraph__Edge__Label)
     edge_type   = set_as_property('edge.data', 'edge_type'  , type   )
+    edge_path   = set_as_property('edge.data', 'edge_path'  , str    )
 
 
     def from_node(self, domain_node_type = Domain__MGraph__Node) -> Domain__MGraph__Node:                                                        # Get source node
