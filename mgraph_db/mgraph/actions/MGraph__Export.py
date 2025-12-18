@@ -3,6 +3,7 @@ from xml.dom                                                                impo
 from xml.etree                                                              import ElementTree
 from xml.etree.ElementTree                                                  import Element, SubElement
 from mgraph_db.mgraph.actions.exporters.dot.MGraph__Export__Dot             import MGraph__Export__Dot
+from mgraph_db.mgraph.actions.exporters.plantuml.MGraph__Export__PlantUML   import MGraph__Export__PlantUML
 from mgraph_db.mgraph.actions.exporters.tree.MGraph__Export__Tree_Values    import MGraph__Export__Tree_Values
 from osbot_utils.decorators.methods.cache_on_self                           import cache_on_self
 from osbot_utils.utils.Files                                                import temp_file, file_create
@@ -22,37 +23,23 @@ class MGraph__Export(Type_Safe):
         return MGraph__Export__Dot(graph=self.graph)
 
     @cache_on_self
+    def export_plantuml(self) -> MGraph__Export__Dot:
+        return MGraph__Export__PlantUML(graph=self.graph)
+
+    @cache_on_self
     def export_tree_values(self, **kwargs) -> MGraph__Export__Tree_Values:
         return MGraph__Export__Tree_Values(graph=self.graph, **kwargs)
 
     def to__mgraph_json(self):                                                                  # Export full graph data
         return self.graph.model.data.json()
 
-    def to__json(self, type_registry=False, schema_types=False, graph_type=False) -> Dict[str, Any]:                                                       # return a compressed json view of the graph's data
+    def to__json(self, type_registry=False, schema_types=False) -> Dict[str, Any]:                                                       # return a compressed json view of the graph's data
         json_data = self.graph.model.data.json__compress()
-        if type_registry is False     : del json_data['_type_registry']
-        if schema_types  is False     : del json_data['schema_types'  ]
-        if graph_type    is False     : del json_data['graph_type'    ]
-        if not json_data['graph_data']: del json_data['graph_data'    ]
+        if type_registry is False:
+            del json_data['_type_registry']
+        if schema_types is False and 'schema_types' in json_data:
+            del json_data['schema_types']
         return json_data
-
-        # todo: see if we need this
-        # nodes = {}                                                                                 # Export minimal topology with node data
-        # edges = {}
-        # with self.data() as _:
-        #     for domain_node in _.nodes():                                                       # Process nodes
-        #         node_id = domain_node.node_id
-        #         node_data = {}
-        #         if domain_node.node_data:
-        #             for field_name, field_value in domain_node.node_data.__dict__.items():
-        #                 node_data[field_name] = field_value
-        #         nodes[node_id] = node_data if node_data else {}
-        #
-        #     for domain_edge in _.edges():                                                       # Process edges
-        #         edge = domain_edge.edge_id
-        #         edges[edge] = {'from_node_id': domain_edge.from_node_id(),
-        #                      'to_node_id'   : domain_edge.to_node_id  ()}
-        # return dict(nodes=nodes, edges=edges)
 
     def to__xml(self) -> str:                                                                   # Export as XML
         root  = Element('graph')                                                                # Create root element and main containers

@@ -28,8 +28,14 @@ class MGraph__Export__Dot__Edge__Renderer(MGraph__Export__Dot__Base):
 
     def create_edge_label_attributes(self, edge: Domain__MGraph__Edge) -> List[str]:
         label_parts = []
-        if self.config.display.edge_id:
+        if self.config.display.edge_id_str:
+            label_parts.append(f'{edge.edge_id}')
+        elif self.config.display.edge_id:
             label_parts.append(f"  edge_id = '{edge.edge_id}'")
+        if self.config.display.edge_path_str:
+            label_parts.append(f'{edge.edge.data.edge_path}')
+        elif self.config.display.edge_path:
+            label_parts.append(f"  edge_path = '{edge.edge.data.edge_path}'")
         if self.config.display.edge_type:
             edge_type = self.resolver.edge_type(edge.edge.data.edge_type)                   # Resolve type using resolver
             type_name = self.type_name__from__type(edge_type)
@@ -43,16 +49,15 @@ class MGraph__Export__Dot__Edge__Renderer(MGraph__Export__Dot__Base):
             type_full_name = edge_type.__name__
             label_parts.append(f"  edge_type_full_name = '{type_full_name}'")
 
-        if self.config.display.edge_predicate:
-            if edge.edge.data.edge_label:
-                label_part = edge.edge.data.edge_label.predicate                            # todo: (with with what happens in the node rendered) refactor out this logic (since it is repeated multiple times and we are reusing a local variable)
-                if self.config.render.label_show_var_name:
-                    label_part = f"predicate='{label_part}'"
-                label_parts.append(label_part)
-
         if self.config.display.edge_predicate_str:
             if edge.edge.data.edge_label:
                 label_parts.append(f"{edge.edge.data.edge_label.predicate}")
+        elif self.config.display.edge_predicate:
+            if edge.edge.data.edge_label:
+                label_part = edge.edge.data.edge_label.predicate                            # todo: (with with what happens in the node rendered) refactor out this logic (since it is repeated multiple times and we are reusing a local variable)
+                label_part = f"predicate='{label_part}'"
+                label_parts.append(label_part)
+
 
         if label_parts:                                                                     # Combine all parts
             if len(label_parts) == 1:

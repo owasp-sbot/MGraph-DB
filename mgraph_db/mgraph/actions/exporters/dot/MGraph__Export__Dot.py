@@ -202,6 +202,9 @@ class MGraph__Export__Dot(MGraph__Export__Base):
     def set_graph__rank_dir__rl         (self): return self.set_graph__rank_dir('RL'      )
 
     def show_edge__id                (self): self.config.display.edge_id             = True      ; return self
+    def show_edge__id__str           (self): self.config.display.edge_id_str         = True      ; return self
+    def show_edge__path              (self): self.config.display.edge_path           = True      ; return self
+    def show_edge__path__str         (self): self.config.display.edge_path_str       = True      ; return self
     def show_edge__predicate         (self): self.config.display.edge_predicate      = True      ; return self
     def show_edge__predicate__str    (self): self.config.display.edge_predicate_str  = True      ; return self
     def show_edge__type              (self): self.config.display.edge_type           = True      ; return self
@@ -211,6 +214,7 @@ class MGraph__Export__Dot(MGraph__Export__Base):
 
     def show_node__id                (self): self.config.display.node_id             = True      ; return self
     def show_node__value             (self): self.config.display.node_value          = True      ; return self
+    def show_node__path              (self): self.config.display.node_path           = True      ; return self
 
     def show_node__value__key        (self): self.config.display.node_value_key      = True      ; return self
     def show_node__value__type       (self): self.config.display.node_value_type     = True      ; return self

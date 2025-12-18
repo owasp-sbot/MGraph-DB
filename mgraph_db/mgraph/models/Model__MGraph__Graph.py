@@ -1,4 +1,5 @@
 from typing                                                             import List
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data                import Schema__MGraph__Node__Data
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id       import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id       import Node_Id
@@ -101,11 +102,13 @@ class Model__MGraph__Graph(Type_Safe):
                 node_type__kwargs[key] = value                                              #       but in general this is not a good pattern to follow
             if key in node_data_type__annotations:
                 node_data__type_kwargs[key] = value
-
-        if issubclass(node_data_type, Schema__MGraph__Node__Value__Data):                   # handle edge case which happens when we are creating a new value node
-            if node_data__type_kwargs == {}:                                                # but have not provided any value
-                node_data__type_kwargs['key'] = Node_Id(Node_Id(Obj_Id()))                  # which means we need to make sure this is an unique node (or it can't be indexed)
-        node_data = node_data_type(**node_data__type_kwargs                )                # Create node data object           # todo: see if this is be test way (and location) to handle this
+        if node_data_type is Schema__MGraph__Node__Data:                                    # if this is a Schema__MGraph__Node__Data
+            node_data = None                                                                # then we don't need to create the object since Schema__MGraph__Node__Data has not attributes
+        else:
+            if issubclass(node_data_type, Schema__MGraph__Node__Value__Data):                   # handle edge case which happens when we are creating a new value node
+                if node_data__type_kwargs == {}:                                                # but have not provided any value
+                    node_data__type_kwargs['key'] = Node_Id(Node_Id(Obj_Id()))                  # which means we need to make sure this is an unique node (or it can't be indexed)
+            node_data = node_data_type(**node_data__type_kwargs                )                # Create node data object           # todo: see if this is be test way (and location) to handle this
 
         node      = node_type     (node_data=node_data, **node_type__kwargs)                # Create a node with the node data
 

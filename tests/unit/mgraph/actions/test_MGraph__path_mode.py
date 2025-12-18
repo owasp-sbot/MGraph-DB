@@ -16,7 +16,7 @@ class test_MGraph__path_mode(TestCase):
             assert node.node_data.value == "hello"
             assert node.node.data.node_path == "root"
 
-    def test__bug__path_mode_serialization_minimal(self):                                         # Verify path-mode graphs serialize without type overhead
+    def test__regression__path_mode_serialization_minimal(self):                                         # Verify path-mode graphs serialize without type overhead
         mgraph = create_empty_mgraph()
 
         with mgraph.edit() as _:
@@ -29,10 +29,13 @@ class test_MGraph__path_mode(TestCase):
         #assert json_data.get('schema_types') is None or 'schema_types' not in json_data
 
         assert json_data.get('graph_type' ) == '@schema_mgraph_graph'                       # BUG: these should not be here
-        assert json_data.get('schema_types') == { 'edge_type': None,
-                                                  'graph_data_type': None,
-                                                  'node_data_type': None,
-                                                  'node_type': None}
+        # assert json_data.get('schema_types') == { 'edge_type': None,
+        #                                           'graph_data_type': None,
+        #                                           'node_data_type': None,
+        #                                           'node_type': None}          # BUG
+        assert json_data.get('schema_types') == {}                              # FIXED
+
+
 
     def test_path_mode_multiple_nodes(self):                                                # Create multiple nodes in path-mode
         mgraph = create_empty_mgraph()
