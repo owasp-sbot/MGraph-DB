@@ -181,6 +181,11 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
             node_type = self.resolver.node_type(node.node.data.node_type)                   # Resolve type using resolver
             type_full_name = node_type.__name__
             label_parts.append(f"node_type_full_name='{type_full_name}'")
+        if self.config.display.node_path:                                              # Add value if requested
+            node_path = node.node.data.node_path                                           # todo: refactor out this logic (since it is repeated multiple times and we are reusing a local variable)
+            if self.config.render.label_show_var_name:
+                node_path = f"node_path='{node_path}'"
+            label_parts.append(node_path)
         if hasattr(node.node_data, 'value'):                                                # Only proceed for nodes with value data
             #if self.config.display.node_value_str:                                         # Add value if requested
             #    label_parts.append(f"{node.node_data.value}")

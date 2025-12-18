@@ -1,3 +1,4 @@
+from types                                                   import NoneType
 from unittest                                                import TestCase
 from mgraph_db.mgraph.domain.Domain__MGraph__Edge            import Domain__MGraph__Edge
 from mgraph_db.mgraph.domain.Domain__MGraph__Node            import Domain__MGraph__Node
@@ -128,7 +129,7 @@ class test_MGraph__Random_Graph(TestCase):
             assert type(model_node.data            ) == Schema__MGraph__Node
 
             assert type(schema_node                ) == Schema__MGraph__Node
-            assert type(schema_node.node_data) == Schema__MGraph__Node__Data
+            assert type(schema_node.node_data)       is NoneType
 
 
             domain_edge = _.graph.edges                       () [0]
@@ -145,7 +146,7 @@ class test_MGraph__Random_Graph(TestCase):
             assert type(model_edge           ) == Model__MGraph__Edge
             assert type(model_edge.data      ) == Schema__MGraph__Edge
             assert type(schema_node          ) == Schema__MGraph__Node
-            assert type(schema_node.node_data) == Schema__MGraph__Node__Data
+            assert type(schema_node.node_data) is NoneType
             assert type(schema_edge          ) == Schema__MGraph__Edge
 
 

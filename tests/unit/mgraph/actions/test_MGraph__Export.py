@@ -46,15 +46,12 @@ class test_MGraph__Export(TestCase):
                                                               'from_node_id': str(node_ids[1])           ,
                                                               'to_node_id'  : str(node_ids[2])}          },
                                     'graph_id': str(_.graph.graph_id())  ,
-                                    'nodes'  : { str(node_ids[0]): { 'node_data': {}                     ,
-                                                                'node_id'  : str(node_ids[0])            ,
-                                                                'node_type': '@schema_mgraph_node'  },
-                                                 str(node_ids[1]): { 'node_data': {}                     ,
-                                                                'node_id'  : str(node_ids[1])            ,
-                                                                'node_type': '@schema_mgraph_node'  },
-                                                 str(node_ids[2]): { 'node_data': {}                     ,
-                                                                'node_id'  : str(node_ids[2])            ,
-                                                                'node_type': '@schema_mgraph_node'  }}}                          # Third node
+                                    'nodes'  : { str(node_ids[0]): { 'node_id'  : str(node_ids[0])            ,
+                                                                     'node_type': '@schema_mgraph_node'  },
+                                                 str(node_ids[1]): { 'node_id'  : str(node_ids[1])            ,
+                                                                     'node_type': '@schema_mgraph_node'  },
+                                                 str(node_ids[2]): { 'node_id'  : str(node_ids[2])            ,
+                                                                     'node_type': '@schema_mgraph_node'  }}}                          # Third node
 
     def test_to__xml(self):                                                                  # Test XML export
         with self.linear_graph.graph.export() as _:
