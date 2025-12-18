@@ -55,7 +55,7 @@ class MGraph__Export__Dot__Edge__Renderer(MGraph__Export__Dot__Base):
         elif self.config.display.edge_predicate:
             if edge.edge.data.edge_label:
                 label_part = edge.edge.data.edge_label.predicate                            # todo: (with with what happens in the node rendered) refactor out this logic (since it is repeated multiple times and we are reusing a local variable)
-                label_part = f"predicate='{label_part}'"
+                label_part = f"  predicate='{label_part}'"
                 label_parts.append(label_part)
 
 

@@ -2,6 +2,7 @@ from typing                                                                 impo
 from xml.dom                                                                import minidom
 from xml.etree                                                              import ElementTree
 from xml.etree.ElementTree                                                  import Element, SubElement
+from osbot_utils.utils.Dev                                                  import pprint
 from mgraph_db.mgraph.actions.exporters.dot.MGraph__Export__Dot             import MGraph__Export__Dot
 from mgraph_db.mgraph.actions.exporters.plantuml.MGraph__Export__PlantUML   import MGraph__Export__PlantUML
 from mgraph_db.mgraph.actions.exporters.tree.MGraph__Export__Tree_Values    import MGraph__Export__Tree_Values
@@ -40,6 +41,9 @@ class MGraph__Export(Type_Safe):
         if schema_types is False and 'schema_types' in json_data:
             del json_data['schema_types']
         return json_data
+
+    def to__json__print(self):
+        pprint(self.to__json())
 
     def to__xml(self) -> str:                                                                   # Export as XML
         root  = Element('graph')                                                                # Create root element and main containers

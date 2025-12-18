@@ -183,9 +183,10 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
             label_parts.append(f"node_type_full_name='{type_full_name}'")
         if self.config.display.node_path:                                              # Add value if requested
             node_path = node.node.data.node_path                                           # todo: refactor out this logic (since it is repeated multiple times and we are reusing a local variable)
-            if self.config.render.label_show_var_name:
-                node_path = f"node_path='{node_path}'"
-            label_parts.append(node_path)
+            if node_path:
+                if self.config.render.label_show_var_name:
+                    node_path = f"node_path='{node_path}'"
+                label_parts.append(node_path)
         if hasattr(node.node_data, 'value'):                                                # Only proceed for nodes with value data
             #if self.config.display.node_value_str:                                         # Add value if requested
             #    label_parts.append(f"{node.node_data.value}")
@@ -206,8 +207,16 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
             if len(label_parts)==1:
                 return [f'label="{label_parts[0]}"']
             else:
-                return [f'label="{"\\l".join(label_parts)}\\l"']
+                #return [f'label="{"\\l".join(label_parts)}\\l"']       # todo: add option to with this 'left-justified multiline label layout' which crashes in viz.js when using LR and rounded
+                joined = "\\n".join(self._escape_label(p) for p in label_parts)
+                return [f'label="{joined}"']
         return []
+
+    def _escape_label(self, text: str) -> str:
+        return (text.replace("\\", "\\\\")
+                    .replace('"', '\\"')
+                    .replace("\n", "\\n")
+        )
 
     def format_node_definition(self, node_id: str, attrs: List[str]) -> str:
         attrs_str = f' [{", ".join(attrs)}]' if attrs else ''
