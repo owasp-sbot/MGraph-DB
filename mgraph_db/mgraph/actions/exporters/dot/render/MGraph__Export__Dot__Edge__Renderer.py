@@ -28,7 +28,9 @@ class MGraph__Export__Dot__Edge__Renderer(MGraph__Export__Dot__Base):
 
     def create_edge_label_attributes(self, edge: Domain__MGraph__Edge) -> List[str]:
         label_parts = []
-        if self.config.display.edge_id:
+        if self.config.display.edge_id_str:
+            label_parts.append(f'{edge.edge_id}')
+        elif self.config.display.edge_id:
             label_parts.append(f"  edge_id = '{edge.edge_id}'")
         if self.config.display.edge_type:
             edge_type = self.resolver.edge_type(edge.edge.data.edge_type)                   # Resolve type using resolver

@@ -2,6 +2,7 @@ from osbot_utils.type_safe.Type_Safe import Type_Safe
 
 class MGraph__Export__Dot__Config__Display(Type_Safe):
     edge_id             : bool  = False                       # Whether to show edge IDs
+    edge_id_str         : bool  = False                       # Whether to show edge IDs
     edge_predicate      : bool  = False
     edge_predicate_str  : bool  = False
     edge_type           : bool  = False                       # Whether to show edge types (short version)
