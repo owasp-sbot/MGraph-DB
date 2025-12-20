@@ -133,10 +133,10 @@ class MGraph__Edit(Type_Safe):
         if node:
             old_path = node.node.data.node_path
             if old_path:                                                # Remove from old path index
-                self.index()._remove_node_path(node.node.data)
+                self.index().remove_node_path(node.node.data)
             node.node.data.node_path = node_path                        # Update the node's path
             if node_path:                                               # Add to new path index
-                self.index()._index_node_path(node.node.data)
+                self.index().index_node_path(node.node.data)
             return True
         return False
 
@@ -145,10 +145,10 @@ class MGraph__Edit(Type_Safe):
         if edge:
             old_path = edge.edge.data.edge_path
             if old_path:                                                # Remove from old path index
-                self.index()._remove_edge_path(edge.edge.data)
+                self.index().remove_edge_path(edge.edge.data)
             edge.edge.data.edge_path = edge_path                        # Update the edge's path
             if edge_path:                                               # Add to new path index
-                self.index()._index_edge_path(edge.edge.data)
+                self.index().index_edge_path(edge.edge.data)
             return True
         return False
 

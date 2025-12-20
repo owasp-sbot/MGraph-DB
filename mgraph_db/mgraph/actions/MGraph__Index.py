@@ -16,8 +16,8 @@ from osbot_utils.type_safe.Type_Safe                                import Type_
 from osbot_utils.utils.Json                                         import json_file_create, json_load_file
 
 class MGraph__Index(Type_Safe):
-    index_data  : Schema__MGraph__Index__Data
-    values_index: MGraph__Index__Values
+    index_data  : Schema__MGraph__Index__Data                                               # todo: refactor types data out of this index and into a separate variable
+    values_index: MGraph__Index__Values                                                     #       to handle the cases were the consumers don't really need the type data
     resolver    : MGraph__Type__Resolver                                                    # Auto-instantiated - provides type resolution
 
     def __init__(self, **kwargs):
@@ -41,12 +41,12 @@ class MGraph__Index(Type_Safe):
             self.index_data.nodes_by_type[node_type_name] = set()
         self.index_data.nodes_by_type[node_type_name].add(node_id)
 
-        self._index_node_path(node)                                                         # Add to path index
+        self.index_node_path(node)                                                         # Add to path index
 
         if node.node_type and issubclass(node.node_type, Schema__MGraph__Node__Value):      # if the data is a value
             self.values_index.add_value_node(node)                                          # add it to the index
 
-    def _index_node_path(self, node: Schema__MGraph__Node) -> None:                         # Index a node's path if present
+    def index_node_path(self, node: Schema__MGraph__Node) -> None:                         # Index a node's path if present
         if node.node_path:
             node_path = node.node_path
             if node_path not in self.index_data.nodes_by_path:
@@ -56,9 +56,11 @@ class MGraph__Index(Type_Safe):
     def remove_node(self, node: Schema__MGraph__Node) -> None:                              # Remove a node and all its references from the index
         node_id = node.node_id
 
-        # todo: see the impact of outgoing_edges and incoming_edges vars not being used in this method
         outgoing_edges = self.index_data.nodes_to_outgoing_edges.pop(node_id, set())        # Get associated edges before removing node references
         incoming_edges = self.index_data.nodes_to_incoming_edges.pop(node_id, set())
+
+        for edge_id in outgoing_edges | incoming_edges:                                     # Clean up all connected edges
+            self.remove_edge_by_id(edge_id)
 
         node_type = self.resolver.node_type(node.node_type)                                 # Resolve type using resolver
         node_type_name = node_type.__name__
@@ -67,12 +69,20 @@ class MGraph__Index(Type_Safe):
             if not self.index_data.nodes_by_type[node_type_name]:
                 del self.index_data.nodes_by_type[node_type_name]
 
-        self._remove_node_path(node)                                                        # Remove from path index
+        self.remove_node_type(node)
+        self.remove_node_path(node)                                                        # Remove from path index
 
-        if node.node_data is Schema__MGraph__Node__Value:                                   # if the data is a value
-            self.values_index.remove_value_node(node.node_data)                             # remove it from the index
+        # if node.node_data is Schema__MGraph__Node__Value:                                   # if the data is a value
+        #     self.values_index.remove_value_node(node.node_data)                             # remove it from the index
 
-    def _remove_node_path(self, node: Schema__MGraph__Node) -> None:                        # Remove a node's path from index if present
+        if node.node_type and issubclass(node.node_type, Schema__MGraph__Node__Value):  # FIXED: match add_node logic
+            self.values_index.remove_value_node(node)
+
+    def remove_node_type(self, node: Schema__MGraph__Node) -> None:
+        if node.node_id in self.index_data.nodes_types:
+            del self.index_data.nodes_types[node.node_id]
+
+    def remove_node_path(self, node: Schema__MGraph__Node) -> None:                        # Remove a node's path from index if present
         if node.node_path:
             node_path = node.node_path
             if node_path in self.index_data.nodes_by_path:
@@ -119,9 +129,9 @@ class MGraph__Index(Type_Safe):
             self.index_data.nodes_to_incoming_edges[to_node_id] = set()
         self.index_data.nodes_to_incoming_edges[to_node_id].add(edge_id)
 
-        self._index_edge_path(edge)                                                         # Add to path index
+        self.index_edge_path(edge)                                                         # Add to path index
 
-    def _index_edge_path(self, edge: Schema__MGraph__Edge) -> None:                         # Index an edge's path if present
+    def index_edge_path(self, edge: Schema__MGraph__Edge) -> None:                         # Index an edge's path if present
         if edge.edge_path:
             edge_path = edge.edge_path
             if edge_path not in self.index_data.edges_by_path:
@@ -142,46 +152,122 @@ class MGraph__Index(Type_Safe):
 
             if edge.edge_label.incoming:                                                    # Index by incoming label
                 incoming = edge.edge_label.incoming
+                self.index_data.edges_incoming_labels[edge_id] = incoming                   # store reverse mapping
                 if incoming not in self.index_data.edges_by_incoming_label:
                     self.index_data.edges_by_incoming_label[incoming] = set()
                 self.index_data.edges_by_incoming_label[incoming].add(edge_id)
 
             if edge.edge_label.outgoing:                                                    # Index by outgoing label
                 outgoing = edge.edge_label.outgoing
+                self.index_data.edges_outgoing_labels[edge_id] = outgoing                   # store reverse mapping
                 if outgoing not in self.index_data.edges_by_outgoing_label:
                     self.index_data.edges_by_outgoing_label[outgoing] = set()
                 self.index_data.edges_by_outgoing_label[outgoing].add(edge_id)
 
     def remove_edge(self, edge: Schema__MGraph__Edge) -> None:                              # Remove an edge and all its references from the index
         edge_id = edge.edge_id
+        self.remove_edge_by_id(edge_id)
+        return self
 
-        self.remove_edge_label(edge)
+        # self.remove_edge_label(edge)
+        #
+        # if edge_id in self.index_data.edges_to_nodes:
+        #     from_node_id, to_node_id = self.index_data.edges_to_nodes.pop(edge_id)
+        #     self.index_data.nodes_to_outgoing_edges[from_node_id].discard(edge_id)
+        #     self.index_data.nodes_to_incoming_edges[to_node_id].discard(edge_id)
+        #
+        #     if to_node_id in self.index_data.nodes_to_incoming_edges_by_type:
+        #         edge_type = self.resolver.edge_type(edge.edge_type)                         # Resolve type using resolver
+        #         edge_type_name = edge_type.__name__
+        #         if edge_type_name in self.index_data.nodes_to_incoming_edges_by_type[to_node_id]:
+        #             self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name].discard(edge_id)
+        #             if not self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name]:
+        #                 del self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name]
+        #         if not self.index_data.nodes_to_incoming_edges_by_type[to_node_id]:
+        #             del self.index_data.nodes_to_incoming_edges_by_type[to_node_id]
+        #
+        # edge_type = self.resolver.edge_type(edge.edge_type)                                 # Resolve type using resolver
+        # edge_type_name = edge_type.__name__
+        # if edge_type_name in self.index_data.edges_by_type:
+        #     self.index_data.edges_by_type[edge_type_name].discard(edge_id)
+        #     if not self.index_data.edges_by_type[edge_type_name]:
+        #         del self.index_data.edges_by_type[edge_type_name]
+        #
+        # self.remove_edge_path(edge)                                                        # Remove from path index
+        #
+
+    def remove_edge_by_id(self, edge_id: Edge_Id) -> None:                                  # Remove edge using only its ID (data comes from index)
+        edge_type_name = self.index_data.edges_types.pop(edge_id, None)
 
         if edge_id in self.index_data.edges_to_nodes:
             from_node_id, to_node_id = self.index_data.edges_to_nodes.pop(edge_id)
+            self._remove_edge_node_references(edge_id, from_node_id, to_node_id, edge_type_name)
+
+        self._remove_edge_type_reference(edge_id, edge_type_name)
+        self._remove_edge_path_by_id(edge_id)
+        self._remove_edge_label_by_id(edge_id)
+        return self
+
+    def _remove_edge_node_references(self, edge_id: Edge_Id, from_node_id: Node_Id,
+                                           to_node_id: Node_Id, edge_type_name: str) -> None:
+        # Basic mappings
+        if from_node_id in self.index_data.nodes_to_outgoing_edges:
             self.index_data.nodes_to_outgoing_edges[from_node_id].discard(edge_id)
+        if to_node_id in self.index_data.nodes_to_incoming_edges:
             self.index_data.nodes_to_incoming_edges[to_node_id].discard(edge_id)
 
-            if to_node_id in self.index_data.nodes_to_incoming_edges_by_type:
-                edge_type = self.resolver.edge_type(edge.edge_type)                         # Resolve type using resolver
-                edge_type_name = edge_type.__name__
-                if edge_type_name in self.index_data.nodes_to_incoming_edges_by_type[to_node_id]:
-                    self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name].discard(edge_id)
-                    if not self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name]:
-                        del self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name]
-                if not self.index_data.nodes_to_incoming_edges_by_type[to_node_id]:
-                    del self.index_data.nodes_to_incoming_edges_by_type[to_node_id]
+        # Typed mappings - outgoing
+        if edge_type_name and from_node_id in self.index_data.nodes_to_outgoing_edges_by_type:
+            if edge_type_name in self.index_data.nodes_to_outgoing_edges_by_type[from_node_id]:
+                self.index_data.nodes_to_outgoing_edges_by_type[from_node_id][edge_type_name].discard(edge_id)
+                if not self.index_data.nodes_to_outgoing_edges_by_type[from_node_id][edge_type_name]:
+                    del self.index_data.nodes_to_outgoing_edges_by_type[from_node_id][edge_type_name]
+            if not self.index_data.nodes_to_outgoing_edges_by_type[from_node_id]:
+                del self.index_data.nodes_to_outgoing_edges_by_type[from_node_id]
 
-        edge_type = self.resolver.edge_type(edge.edge_type)                                 # Resolve type using resolver
-        edge_type_name = edge_type.__name__
-        if edge_type_name in self.index_data.edges_by_type:
+        # Typed mappings - incoming
+        if edge_type_name and to_node_id in self.index_data.nodes_to_incoming_edges_by_type:
+            if edge_type_name in self.index_data.nodes_to_incoming_edges_by_type[to_node_id]:
+                self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name].discard(edge_id)
+                if not self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name]:
+                    del self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name]
+            if not self.index_data.nodes_to_incoming_edges_by_type[to_node_id]:
+                del self.index_data.nodes_to_incoming_edges_by_type[to_node_id]
+
+    def _remove_edge_type_reference(self, edge_id: Edge_Id, edge_type_name: str) -> None:
+        if edge_type_name and edge_type_name in self.index_data.edges_by_type:
             self.index_data.edges_by_type[edge_type_name].discard(edge_id)
             if not self.index_data.edges_by_type[edge_type_name]:
                 del self.index_data.edges_by_type[edge_type_name]
 
-        self._remove_edge_path(edge)                                                        # Remove from path index
+    def _remove_edge_path_by_id(self, edge_id: Edge_Id) -> None:
+        for path, edge_ids in list(self.index_data.edges_by_path.items()):
+            if edge_id in edge_ids:
+                edge_ids.discard(edge_id)
+                if not edge_ids:
+                    del self.index_data.edges_by_path[path]
+                break
 
-    def _remove_edge_path(self, edge: Schema__MGraph__Edge) -> None:                        # Remove an edge's path from index if present
+    def _remove_edge_label_by_id(self, edge_id: Edge_Id) -> None:
+        predicate = self.index_data.edges_predicates.pop(edge_id, None)                 # Remove from predicate indexes
+        if predicate and predicate in self.index_data.edges_by_predicate:
+            self.index_data.edges_by_predicate[predicate].discard(edge_id)
+            if not self.index_data.edges_by_predicate[predicate]:
+                del self.index_data.edges_by_predicate[predicate]
+
+        incoming = self.index_data.edges_incoming_labels.pop(edge_id, None)             # Remove from incoming label index
+        if incoming and incoming in self.index_data.edges_by_incoming_label:
+            self.index_data.edges_by_incoming_label[incoming].discard(edge_id)
+            if not self.index_data.edges_by_incoming_label[incoming]:
+                del self.index_data.edges_by_incoming_label[incoming]
+
+        outgoing = self.index_data.edges_outgoing_labels.pop(edge_id, None)             # Remove from outgoing label index
+        if outgoing and outgoing in self.index_data.edges_by_outgoing_label:
+            self.index_data.edges_by_outgoing_label[outgoing].discard(edge_id)
+            if not self.index_data.edges_by_outgoing_label[outgoing]:
+                del self.index_data.edges_by_outgoing_label[outgoing]
+
+    def remove_edge_path(self, edge: Schema__MGraph__Edge) -> None:                        # Remove an edge's path from index if present
         if edge.edge_path:
             edge_path = edge.edge_path
             if edge_path in self.index_data.edges_by_path:
