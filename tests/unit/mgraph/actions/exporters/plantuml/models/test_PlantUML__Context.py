@@ -1,8 +1,6 @@
 from unittest                                                                         import TestCase
-from unittest.mock                                                                    import Mock, MagicMock
-from osbot_utils.testing.__                                                           import __
 from osbot_utils.utils.Objects                                                        import base_classes
-from osbot_utils.type_safe.Type_Safe                                                 import Type_Safe
+from osbot_utils.type_safe.Type_Safe                                                  import Type_Safe
 from mgraph_db.mgraph.actions.exporters.plantuml.MGraph__Export__PlantUML                                       import PlantUML__Context
 
 class test_PlantUML__Context(TestCase):

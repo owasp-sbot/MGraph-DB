@@ -7,6 +7,7 @@ from mgraph_db.mgraph.schemas.identifiers.Edge_Path                 import Edge_
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data     import Schema__MGraph__Index__Data
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 
 
 class test_MGraph__Index__Paths(TestCase):
@@ -156,7 +157,7 @@ class test_MGraph__Index__Paths(TestCase):
 
     def test_remove_edge_path_by_id__not_found(self):                           # Test removing nonexistent edge path
         with self.paths_index as _:
-            _.remove_edge_path_by_id(Edge_Id())                                 # Should not crash
+            _.remove_edge_path_by_id(Edge_Id(Obj_Id()))                                 # Should not crash
 
             assert _.edges_by_path() == {}
 
@@ -241,7 +242,7 @@ class test_MGraph__Index__Paths(TestCase):
 
     def test_get_node_path__not_found(self):                                    # Test get_node_path for node without path
         with self.paths_index as _:
-            result = _.get_node_path(Node_Id())
+            result = _.get_node_path(Node_Id(Obj_Id()))
 
             assert result is None
 
@@ -259,7 +260,7 @@ class test_MGraph__Index__Paths(TestCase):
 
     def test_get_edge_path__not_found(self):                                    # Test get_edge_path for edge without path
         with self.paths_index as _:
-            result = _.get_edge_path(Edge_Id())
+            result = _.get_edge_path(Edge_Id(Obj_Id()))
 
             assert result is None
 

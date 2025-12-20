@@ -1,11 +1,8 @@
-import re
 from io                                                             import StringIO
 from unittest                                                       import TestCase
 from unittest.mock                                                  import patch
-
-import pytest
-
 from osbot_utils.testing.Temp_File                                  import Temp_File
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.utils.Files                                        import file_exists
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
@@ -76,7 +73,7 @@ class test_MGraph__Index__Coverage(TestCase):
 
     def test_remove_edge_by_id__nonexistent_edge(self):                         # Test remove_edge_by_id with nonexistent edge
         with self.mgraph_index as _:
-            fake_edge_id = Edge_Id()
+            fake_edge_id = Edge_Id(Obj_Id())
 
             result = _.remove_edge_by_id(fake_edge_id)                          # Should not crash
 
@@ -192,13 +189,13 @@ class test_MGraph__Index__Coverage(TestCase):
 
     def test__remove_edge_type_reference__none_type(self):                      # Test with None edge_type_name
         with self.mgraph_index as _:
-            _._remove_edge_type_reference(Edge_Id(), None)
+            _._remove_edge_type_reference(Edge_Id(Obj_Id()), None)
 
             assert True                                                         # Should not crash
 
     def test__remove_edge_type_reference__type_not_in_index(self):              # Test when type not in edges_by_type
         with self.mgraph_index as _:
-            _._remove_edge_type_reference(Edge_Id(), 'NonExistentType')
+            _._remove_edge_type_reference(Edge_Id(Obj_Id()), 'NonExistentType')
 
             assert True                                                         # Should not crash
 
@@ -225,7 +222,7 @@ class test_MGraph__Index__Coverage(TestCase):
 
     def test__remove_edge_label_by_id__no_labels(self):                         # Test when edge has no labels
         with self.mgraph_index as _:
-            _._remove_edge_label_by_id(Edge_Id())
+            _._remove_edge_label_by_id(Edge_Id(Obj_Id()))
 
             assert True                                                         # Should not crash
 
@@ -535,7 +532,7 @@ class test_MGraph__Index__Coverage(TestCase):
 
     def test_edges_ids__from__node_id__nonexistent(self):                       # Test with nonexistent node_id
         with self.mgraph_index as _:
-            result = _.edges_ids__from__node_id(Node_Id())
+            result = _.edges_ids__from__node_id(Node_Id(Obj_Id()))
 
             assert result == []
 

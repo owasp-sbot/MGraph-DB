@@ -1,6 +1,4 @@
-from typing                                                         import Type, Optional, Union, Any
-
-
+from typing                                                             import Type, Optional, Union, Any
 from osbot_utils.type_safe.type_safe_core.decorators.type_safe          import type_safe
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                       import Domain__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data         import Schema__MGraph__Node__Value__Data

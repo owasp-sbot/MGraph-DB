@@ -1,4 +1,5 @@
 from mgraph_db.utils.testing.mgraph_test_ids                          import mgraph_test_ids
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id      import Obj_Id
 from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Dict import Type_Safe__Dict
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value             import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data       import Schema__MGraph__Node__Value__Data
@@ -29,12 +30,13 @@ class test_MGraph_Index(TestCase):
             assert type(_           ) is MGraph__Index
             assert type(_.index_data) is Schema__MGraph__Index__Data
             assert _.obj()            == __(index_data=__SKIP__,
-                                            labels_index=__(index_data=__SKIP__),
-                                            paths_index=__(index_data=__SKIP__),
-                                            values_index=__(index_data=__(hash_to_node=__(),
-                                                                          node_to_hash=__(),
-                                                                          values_by_type=__(),
-                                                                          type_by_value=__())),
+                                            labels_index = __(index_data=__SKIP__),
+                                            paths_index  = __(index_data=__SKIP__),
+                                            types_index  = __(index_data=__SKIP__),
+                                            values_index = __(index_data=__(hash_to_node   = __(),
+                                                                            node_to_hash   = __(),
+                                                                            values_by_type = __(),
+                                                                            type_by_value  = __())),
                                             resolver=__(mgraph_defaults=__(node_domain_type='mgraph_db.mgraph.domain.Domain__MGraph__Node.Domain__MGraph__Node',
                                                                            edge_domain_type='mgraph_db.mgraph.domain.Domain__MGraph__Edge.Domain__MGraph__Edge',
                                                                            node_model_type='mgraph_db.mgraph.models.Model__MGraph__Node.Model__MGraph__Node',
@@ -631,7 +633,7 @@ class test_MGraph_Index(TestCase):
 
     def test_get_node_path__nonexistent_node(self):                              # Test with nonexistent node_id
         with self.mgraph_index as _:
-            result = _.get_node_path(Node_Id())
+            result = _.get_node_path(Node_Id(Obj_Id()))
 
             assert result is None
 

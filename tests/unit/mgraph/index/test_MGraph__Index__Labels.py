@@ -4,6 +4,7 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schem
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label           import Schema__MGraph__Edge__Label
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data     import Schema__MGraph__Index__Data
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 
@@ -183,7 +184,7 @@ class test_MGraph__Index__Labels(TestCase):
 
     def test_remove_edge_label_by_id__not_found(self):                          # Test removing nonexistent edge label
         with self.labels_index as _:
-            _.remove_edge_label_by_id(Edge_Id())                                # Should not crash
+            _.remove_edge_label_by_id(Edge_Id(Obj_Id()))                                # Should not crash
 
             assert True
 
@@ -206,7 +207,7 @@ class test_MGraph__Index__Labels(TestCase):
 
     def test_get_edge_predicate__not_found(self):                               # Test get_edge_predicate with nonexistent edge
         with self.labels_index as _:
-            result = _.get_edge_predicate(Edge_Id())
+            result = _.get_edge_predicate(Edge_Id(Obj_Id()))
 
             assert result is None
 

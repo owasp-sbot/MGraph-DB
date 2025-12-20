@@ -1,12 +1,12 @@
 from typing                                                         import Type, Set, Any, Dict, Optional
 from mgraph_db.mgraph.index.MGraph__Index__Labels                   import MGraph__Index__Labels
 from mgraph_db.mgraph.index.MGraph__Index__Paths                    import MGraph__Index__Paths
+from mgraph_db.mgraph.index.MGraph__Index__Types                    import MGraph__Index__Types
 from mgraph_db.mgraph.index.MGraph__Index__Values                   import MGraph__Index__Values
 from mgraph_db.mgraph.actions.MGraph__Type__Resolver                import MGraph__Type__Resolver
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.schemas.identifiers.Edge_Path                 import Edge_Path
 from mgraph_db.mgraph.schemas.identifiers.Node_Path                 import Node_Path
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data     import Schema__MGraph__Index__Data
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
@@ -14,6 +14,7 @@ from osbot_utils.utils.Dev                                          import pprin
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data     import Schema__MGraph__Index__Data
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.utils.Json                                         import json_file_create, json_load_file
 
@@ -22,13 +23,18 @@ class MGraph__Index(Type_Safe):
     index_data   : Schema__MGraph__Index__Data                                              # Shared index data
     labels_index : MGraph__Index__Labels                                                    # Label indexing (extracted)
     paths_index  : MGraph__Index__Paths                                                     # Path indexing (extracted)
+    types_index  : MGraph__Index__Types                                                     # Type indexing (extracted)
     values_index : MGraph__Index__Values                                                    # Value node indexing
     resolver     : MGraph__Type__Resolver                                                   # Auto-instantiated - provides type resolution
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.labels_index.index_data = self.index_data                                      # Share index_data with labels_index
-        self.paths_index.index_data  = self.index_data                                      # Share index_data with paths_index
+        self._sync_index_data()                                                             # Share index_data with all sub-indexes
+
+    def _sync_index_data(self) -> None:                                                     # Sync index_data reference to all sub-indexes
+        self.labels_index.index_data = self.index_data
+        self.paths_index.index_data  = self.index_data
+        self.types_index.index_data  = self.index_data
 
     # ---- Node operations ----
 
@@ -37,17 +43,12 @@ class MGraph__Index(Type_Safe):
         node_type = self.resolver.node_type(node.node_type)                                 # Resolve type using resolver
         node_type_name = node_type.__name__
 
-        self.index_data.nodes_types[node_id] = node_type_name
-
-        if node_id not in self.index_data.nodes_to_outgoing_edges:                          # Initialize sets if needed
+        if node_id not in self.index_data.nodes_to_outgoing_edges:                          # Initialize edge sets if needed
             self.index_data.nodes_to_outgoing_edges[node_id] = set()
         if node_id not in self.index_data.nodes_to_incoming_edges:
             self.index_data.nodes_to_incoming_edges[node_id] = set()
 
-        if node_type_name not in self.index_data.nodes_by_type:                             # Add to type index
-            self.index_data.nodes_by_type[node_type_name] = set()
-        self.index_data.nodes_by_type[node_type_name].add(node_id)
-
+        self.types_index.index_node_type(node_id, node_type_name)                           # Delegate to types_index
         self.paths_index.index_node_path(node)                                              # Delegate to paths_index
 
         if node.node_type and issubclass(node.node_type, Schema__MGraph__Node__Value):      # if the data is a value
@@ -67,20 +68,16 @@ class MGraph__Index(Type_Safe):
 
         node_type = self.resolver.node_type(node.node_type)                                 # Resolve type using resolver
         node_type_name = node_type.__name__
-        if node_type_name in self.index_data.nodes_by_type:
-            self.index_data.nodes_by_type[node_type_name].discard(node_id)
-            if not self.index_data.nodes_by_type[node_type_name]:
-                del self.index_data.nodes_by_type[node_type_name]
 
-        self.remove_node_type(node)
+        self.types_index.remove_node_type(node_id, node_type_name)                          # Delegate to types_index
         self.paths_index.remove_node_path(node)                                             # Delegate to paths_index
 
         if node.node_type and issubclass(node.node_type, Schema__MGraph__Node__Value):
             self.values_index.remove_value_node(node)
 
-    def remove_node_type(self, node: Schema__MGraph__Node) -> None:
-        if node.node_id in self.index_data.nodes_types:
-            del self.index_data.nodes_types[node.node_id]
+    def remove_node_type(self, node: Schema__MGraph__Node) -> None:                         # Delegate to types_index
+        node_type = self.resolver.node_type(node.node_type)
+        self.types_index.remove_node_type(node.node_id, node_type.__name__)
 
     def remove_node_path(self, node: Schema__MGraph__Node) -> None:                         # Delegate to paths_index
         self.paths_index.remove_node_path(node)
@@ -96,26 +93,9 @@ class MGraph__Index(Type_Safe):
 
         self.labels_index.add_edge_label(edge)                                              # Delegate to labels_index
 
-        self.index_data.edges_types   [edge_id] = edge_type_name
-        self.index_data.edges_to_nodes[edge_id] = (from_node_id, to_node_id)
+        self.index_data.edges_to_nodes[edge_id] = (from_node_id, to_node_id)                # Store edge endpoints
 
-
-        if edge_type_name not in self.index_data.edges_by_type:                             # Add to type index
-            self.index_data.edges_by_type[edge_type_name] = set()
-        self.index_data.edges_by_type[edge_type_name].add(edge_id)
-
-        if to_node_id not in self.index_data.nodes_to_incoming_edges_by_type:               # Update the new nodes_to_incoming_edges_by_type
-            self.index_data.nodes_to_incoming_edges_by_type[to_node_id] = {}
-        if edge_type_name not in self.index_data.nodes_to_incoming_edges_by_type[to_node_id]:
-            self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name] = set()
-        self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name].add(edge_id)
-
-
-        if from_node_id not in self.index_data.nodes_to_outgoing_edges_by_type:             # Update the nodes_to_outgoing_edges_by_type index
-            self.index_data.nodes_to_outgoing_edges_by_type[from_node_id] = {}
-        if edge_type_name not in self.index_data.nodes_to_outgoing_edges_by_type[from_node_id]:
-            self.index_data.nodes_to_outgoing_edges_by_type[from_node_id][edge_type_name] = set()
-        self.index_data.nodes_to_outgoing_edges_by_type[from_node_id][edge_type_name].add(edge_id)
+        self.types_index.index_edge_type(edge_id, from_node_id, to_node_id, edge_type_name) # Delegate to types_index
 
         if from_node_id not in self.index_data.nodes_to_outgoing_edges:                     # Add to node relationship indexes
             self.index_data.nodes_to_outgoing_edges[from_node_id] = set()
@@ -144,7 +124,7 @@ class MGraph__Index(Type_Safe):
             from_node_id, to_node_id = self.index_data.edges_to_nodes.pop(edge_id)
             self._remove_edge_node_references(edge_id, from_node_id, to_node_id, edge_type_name)
 
-        self._remove_edge_type_reference(edge_id, edge_type_name)
+        self.types_index.remove_edge_type(edge_id, edge_type_name)                          # Delegate to types_index
         self.paths_index.remove_edge_path_by_id(edge_id)                                    # Delegate to paths_index
         self.labels_index.remove_edge_label_by_id(edge_id)                                  # Delegate to labels_index
         return self
@@ -157,29 +137,11 @@ class MGraph__Index(Type_Safe):
         if to_node_id in self.index_data.nodes_to_incoming_edges:
             self.index_data.nodes_to_incoming_edges[to_node_id].discard(edge_id)
 
-        # Typed mappings - outgoing
-        if edge_type_name and from_node_id in self.index_data.nodes_to_outgoing_edges_by_type:
-            if edge_type_name in self.index_data.nodes_to_outgoing_edges_by_type[from_node_id]:
-                self.index_data.nodes_to_outgoing_edges_by_type[from_node_id][edge_type_name].discard(edge_id)
-                if not self.index_data.nodes_to_outgoing_edges_by_type[from_node_id][edge_type_name]:
-                    del self.index_data.nodes_to_outgoing_edges_by_type[from_node_id][edge_type_name]
-            if not self.index_data.nodes_to_outgoing_edges_by_type[from_node_id]:
-                del self.index_data.nodes_to_outgoing_edges_by_type[from_node_id]
+        # Typed mappings - delegate to types_index
+        self.types_index.remove_edge_type_by_node(edge_id, from_node_id, to_node_id, edge_type_name)
 
-        # Typed mappings - incoming
-        if edge_type_name and to_node_id in self.index_data.nodes_to_incoming_edges_by_type:
-            if edge_type_name in self.index_data.nodes_to_incoming_edges_by_type[to_node_id]:
-                self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name].discard(edge_id)
-                if not self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name]:
-                    del self.index_data.nodes_to_incoming_edges_by_type[to_node_id][edge_type_name]
-            if not self.index_data.nodes_to_incoming_edges_by_type[to_node_id]:
-                del self.index_data.nodes_to_incoming_edges_by_type[to_node_id]
-
-    def _remove_edge_type_reference(self, edge_id: Edge_Id, edge_type_name: str) -> None:
-        if edge_type_name and edge_type_name in self.index_data.edges_by_type:
-            self.index_data.edges_by_type[edge_type_name].discard(edge_id)
-            if not self.index_data.edges_by_type[edge_type_name]:
-                del self.index_data.edges_by_type[edge_type_name]
+    def _remove_edge_type_reference(self, edge_id: Edge_Id, edge_type_name: str) -> None:   # Delegate to types_index
+        self.types_index.remove_edge_type(edge_id, edge_type_name)
 
     def _remove_edge_path_by_id(self, edge_id: Edge_Id) -> None:                            # Delegate to paths_index
         self.paths_index.remove_edge_path_by_id(edge_id)
@@ -247,7 +209,7 @@ class MGraph__Index(Type_Safe):
             edge_type_name = edge_type.__name__
             filtered_edges = set()
             for edge_id in incoming_edges:
-                if self.index_data.edges_types[edge_id] == edge_type_name:
+                if self.types_index.get_edge_type(edge_id) == edge_type_name:               # Use types_index
                     filtered_edges.add(edge_id)
             incoming_edges = filtered_edges
 
@@ -258,7 +220,7 @@ class MGraph__Index(Type_Safe):
         return connected_nodes
 
     def get_node_connected_to_node__outgoing(self, node_id: Node_Id, edge_type: str) -> Optional[Node_Id]:
-        connected_edges = self.index_data.nodes_to_outgoing_edges_by_type.get(node_id, {}).get(edge_type, set())
+        connected_edges = self.types_index.get_node_outgoing_edges_by_type(node_id, edge_type)  # Use types_index
 
         if connected_edges:
             edge_id = next(iter(connected_edges))
@@ -279,11 +241,11 @@ class MGraph__Index(Type_Safe):
     def get_node_incoming_edges(self, node: Schema__MGraph__Node) -> Set[Edge_Id]:
         return self.index_data.nodes_to_incoming_edges.get(node.node_id, set())
 
-    def get_nodes_by_type(self, node_type: Type[Schema__MGraph__Node]) -> Set[Node_Id]:
-        return self.index_data.nodes_by_type.get(node_type.__name__, set())
+    def get_nodes_by_type(self, node_type: Type[Schema__MGraph__Node]) -> Set[Node_Id]:     # Delegate to types_index
+        return self.types_index.get_nodes_by_type(node_type)
 
-    def get_edges_by_type(self, edge_type: Type[Schema__MGraph__Edge]) -> Set[Edge_Id]:
-        return self.index_data.edges_by_type.get(edge_type.__name__, set())
+    def get_edges_by_type(self, edge_type: Type[Schema__MGraph__Edge]) -> Set[Edge_Id]:     # Delegate to types_index
+        return self.types_index.get_edges_by_type(edge_type)
 
 
     # ============================================================================
@@ -409,14 +371,14 @@ class MGraph__Index(Type_Safe):
     # ---- Raw data accessors ----
 
     def edges_to_nodes                 (self): return self.index_data.edges_to_nodes
-    def edges_by_type                  (self): return self.index_data.edges_by_type
+    def edges_by_type                  (self): return self.types_index.edges_by_type()                   # Delegate to types_index
     def edges_by_path                  (self): return self.paths_index.edges_by_path()                   # Delegate to paths_index
-    def nodes_by_type                  (self): return self.index_data.nodes_by_type
+    def nodes_by_type                  (self): return self.types_index.nodes_by_type()                   # Delegate to types_index
     def nodes_by_path                  (self): return self.paths_index.nodes_by_path()                   # Delegate to paths_index
     def nodes_to_incoming_edges        (self): return self.index_data.nodes_to_incoming_edges
-    def nodes_to_incoming_edges_by_type(self): return self.index_data.nodes_to_incoming_edges_by_type
+    def nodes_to_incoming_edges_by_type(self): return self.types_index.nodes_to_incoming_edges_by_type() # Delegate to types_index
     def nodes_to_outgoing_edges        (self): return self.index_data.nodes_to_outgoing_edges
-    def nodes_to_outgoing_edges_by_type(self): return self.index_data.nodes_to_outgoing_edges_by_type
+    def nodes_to_outgoing_edges_by_type(self): return self.types_index.nodes_to_outgoing_edges_by_type() # Delegate to types_index
 
     def edges_predicates               (self) -> Dict[Edge_Id, Safe_Id]      : return self.labels_index.edges_predicates()         # Delegate to labels_index
     def edges_by_predicate_all         (self) -> Dict[Safe_Id, Set[Edge_Id]] : return self.labels_index.edges_by_predicate()       # Delegate to labels_index
@@ -458,4 +420,5 @@ class MGraph__Index(Type_Safe):
             _.index_data              = index_data
             _.paths_index.index_data  = index_data
             _.labels_index.index_data = index_data
+            _.types_index.index_data  = index_data
             return _
