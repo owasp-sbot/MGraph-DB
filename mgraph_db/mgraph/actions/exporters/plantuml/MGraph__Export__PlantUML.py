@@ -3,7 +3,7 @@ from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Context       
 from mgraph_db.mgraph.actions.exporters.plantuml.models.safe_str.Safe_Str__PlantUML   import Safe_Str__PlantUML
 from osbot_utils.type_safe.Type_Safe                                                  import Type_Safe
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                                    import Domain__MGraph__Graph
-from mgraph_db.mgraph.actions.MGraph__Index                                           import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                                             import MGraph__Index
 from mgraph_db.mgraph.actions.MGraph__Data                                            import MGraph__Data
 from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config              import PlantUML__Config
 from mgraph_db.mgraph.actions.exporters.plantuml.models.PlantUML__Config              import PlantUML__Config__Graph

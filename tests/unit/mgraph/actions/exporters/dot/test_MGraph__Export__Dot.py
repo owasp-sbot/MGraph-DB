@@ -1,5 +1,5 @@
 from unittest                                                                   import TestCase
-from osbot_utils.testing.__ import __, __SKIP__
+from osbot_utils.testing.__                                                     import __, __SKIP__
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                              import Schema__MGraph__Edge
 from mgraph_db.providers.simple.schemas.Schema__Simple__Node                    import Schema__Simple__Node
 from osbot_utils.utils.Env                                                      import load_dotenv

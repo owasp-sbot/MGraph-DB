@@ -8,7 +8,7 @@ from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_
 from osbot_utils.utils.Objects                                      import base_classes
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
 from mgraph_db.mgraph.actions.MGraph__Edit                          import MGraph__Edit
-from mgraph_db.mgraph.actions.MGraph__Index                         import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                           import MGraph__Index
 from mgraph_db.mgraph.domain.Domain__MGraph__Edge                   import Domain__MGraph__Edge
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node

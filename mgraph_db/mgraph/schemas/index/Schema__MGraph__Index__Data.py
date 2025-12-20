@@ -1,4 +1,4 @@
-from typing                                                         import Dict, Set
+from typing import Dict, Set, Tuple
 from mgraph_db.mgraph.schemas.identifiers.Edge_Path                 import Edge_Path
 from mgraph_db.mgraph.schemas.identifiers.Node_Path                 import Node_Path
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
@@ -16,7 +16,7 @@ class Schema__MGraph__Index__Data(Type_Safe):
     edges_incoming_labels          : Dict[Edge_Id  , Safe_Id                ]  # edge_id → incoming_label
     edges_outgoing_labels          : Dict[Edge_Id  , Safe_Id                ]  # edge_id → outgoing_label
     edges_predicates               : Dict[Edge_Id  , Safe_Id                ]  # edge_id -> predicate
-    edges_to_nodes                 : Dict[Edge_Id  , tuple[Node_Id, Node_Id]]  # edge_id -> (from_node_id, to_node_id)
+    edges_to_nodes                 : Dict[Edge_Id  , Tuple[Node_Id, Node_Id]]  # edge_id -> (from_node_id, to_node_id)
     edges_types                    : Dict[Edge_Id  , str                    ]  # edge_id -> edge_type name
     nodes_by_path                  : Dict[Node_Path, Set[Node_Id           ]]  # path -> set of node_ids
     nodes_by_type                  : Dict[str      , Set[Node_Id           ]]  # node_type name -> set of node_ids

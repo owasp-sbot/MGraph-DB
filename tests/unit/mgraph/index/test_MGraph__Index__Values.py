@@ -1,11 +1,11 @@
 import pytest
-from unittest                                                       import TestCase
-from osbot_utils.utils.Misc                                         import str_md5, lower
-from mgraph_db.mgraph.MGraph                                        import MGraph
-from mgraph_db.mgraph.actions.MGraph__Index__Values                 import MGraph__Index__Values, SIZE__VALUE_HASH
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
-from mgraph_db.mgraph.schemas.Schema__MGraph__Value__Index__Data    import Schema__MGraph__Value__Index__Data
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data     import Schema__MGraph__Node__Value__Data
+from unittest                                                          import TestCase
+from osbot_utils.utils.Misc                                            import str_md5, lower
+from mgraph_db.mgraph.MGraph                                           import MGraph
+from mgraph_db.mgraph.index.MGraph__Index__Values                      import MGraph__Index__Values, SIZE__VALUE_HASH
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value              import Schema__MGraph__Node__Value
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Value__Index__Data import Schema__MGraph__Value__Index__Data
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data        import Schema__MGraph__Node__Value__Data
 
 class test_MGraph__Index__Values(TestCase):
 

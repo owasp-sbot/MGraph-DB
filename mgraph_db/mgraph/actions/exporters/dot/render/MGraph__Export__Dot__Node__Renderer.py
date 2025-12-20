@@ -1,5 +1,5 @@
 from typing                                                                  import List
-from mgraph_db.mgraph.actions.MGraph__Index                                  import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                                    import MGraph__Index
 from mgraph_db.mgraph.actions.exporters.dot.render.MGraph__Export__Dot__Base import MGraph__Export__Dot__Base
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                            import Domain__MGraph__Node
 from osbot_utils.decorators.methods.cache_on_self                            import cache_on_self

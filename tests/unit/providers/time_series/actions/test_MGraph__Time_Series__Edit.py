@@ -3,7 +3,7 @@ from unittest                                                                   
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value                                  import Schema__MGraph__Node__Value
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                           import is_obj_id
 from mgraph_db.mgraph.actions.MGraph__Export                                               import MGraph__Export
-from mgraph_db.mgraph.actions.MGraph__Index                                                import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                                                  import MGraph__Index
 from mgraph_db.mgraph.actions.exporters.dot.MGraph__Export__Dot                            import MGraph__Export__Dot
 from mgraph_db.mgraph.actions.exporters.dot.utils.MGraph__Export__Dot__Time_Series__Colors import MGraph__Export__Dot__Time_Series__Colors, MGraph__Export__Dot__Time_Series__Colors__Scheme
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                                          import Domain__MGraph__Node

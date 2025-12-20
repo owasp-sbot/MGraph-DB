@@ -1,4 +1,4 @@
-from mgraph_db.utils.testing.mgraph_test_ids import mgraph_test_ids
+from mgraph_db.utils.testing.mgraph_test_ids                          import mgraph_test_ids
 from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Dict import Type_Safe__Dict
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value             import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data       import Schema__MGraph__Node__Value__Data
@@ -9,11 +9,11 @@ from osbot_utils.testing.__                                           import __,
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id     import Safe_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id     import Node_Id
 from mgraph_db.mgraph.MGraph                                          import MGraph
-from mgraph_db.mgraph.actions.MGraph__Index                           import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                             import MGraph__Index
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                    import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                    import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label             import Schema__MGraph__Edge__Label
-from mgraph_db.mgraph.schemas.Schema__MGraph__Index__Data             import Schema__MGraph__Index__Data
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data       import Schema__MGraph__Index__Data
 from mgraph_db.mgraph.schemas.identifiers.Node_Path                   import Node_Path
 from mgraph_db.mgraph.schemas.identifiers.Edge_Path                   import Edge_Path
 from mgraph_db.providers.simple.MGraph__Simple__Test_Data             import MGraph__Simple__Test_Data
@@ -28,37 +28,23 @@ class test_MGraph_Index(TestCase):
         with self.mgraph_index as _:
             assert type(_           ) is MGraph__Index
             assert type(_.index_data) is Schema__MGraph__Index__Data
-            assert _.json()           == { 'index_data'  : { 'edges_by_incoming_label'        : {},
-                                                             'edges_by_outgoing_label'        : {},
-                                                             'edges_by_path'                  : {},
-                                                             'edges_by_predicate'             : {},
-                                                             'edges_by_type'                  : {},
-                                                             'edges_incoming_labels'          : {},
-                                                             'edges_outgoing_labels'          : {},
-                                                             'edges_predicates'               : {},
-                                                             'edges_to_nodes'                 : {},
-                                                             'edges_types'                    : {},
-                                                             'nodes_by_path'                  : {},
-                                                             'nodes_by_type'                  : {},
-                                                             'nodes_to_incoming_edges'        : {},
-                                                             'nodes_to_incoming_edges_by_type': {},
-                                                             'nodes_to_outgoing_edges'        : {},
-                                                             'nodes_to_outgoing_edges_by_type': {},
-                                                             'nodes_types'                    : {}},
-                                           'resolver': { 'mgraph_defaults'  : {'edge_data_type': 'mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Data.Schema__MGraph__Edge__Data',
-                                                         'edge_domain_type' : 'mgraph_db.mgraph.domain.Domain__MGraph__Edge.Domain__MGraph__Edge',
-                                                         'edge_model_type'  : 'mgraph_db.mgraph.models.Model__MGraph__Edge.Model__MGraph__Edge',
-                                                         'edge_type'        : 'mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge',
-                                                         'graph_data_type'  : 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data',
-                                                         'graph_type'       : 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph.Schema__MGraph__Graph',
-                                                         'node_data_type'   : 'mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data',
-                                                         'node_domain_type' : 'mgraph_db.mgraph.domain.Domain__MGraph__Node.Domain__MGraph__Node',
-                                                         'node_model_type'  : 'mgraph_db.mgraph.models.Model__MGraph__Node.Model__MGraph__Node',
-                                                         'node_type'        : 'mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node'}},
-                                           'values_index': { 'index_data': { 'hash_to_node'   : {},
-                                                                             'node_to_hash'   : {},
-                                                                             'type_by_value'  : {},
-                                                                             'values_by_type' : {}}}}
+            assert _.obj()            == __(index_data=__SKIP__,
+                                           paths_index=__(index_data=__SKIP__),
+                                           values_index=__(index_data=__(hash_to_node=__(),
+                                                                         node_to_hash=__(),
+                                                                         values_by_type=__(),
+                                                                         type_by_value=__())),
+                                           resolver=__(mgraph_defaults=__(node_domain_type='mgraph_db.mgraph.domain.Domain__MGraph__Node.Domain__MGraph__Node',
+                                                                          edge_domain_type='mgraph_db.mgraph.domain.Domain__MGraph__Edge.Domain__MGraph__Edge',
+                                                                          node_model_type='mgraph_db.mgraph.models.Model__MGraph__Node.Model__MGraph__Node',
+                                                                          edge_model_type='mgraph_db.mgraph.models.Model__MGraph__Edge.Model__MGraph__Edge',
+                                                                          node_type='mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node',
+                                                                          node_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data',
+                                                                          edge_type='mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge',
+                                                                          edge_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Data.Schema__MGraph__Edge__Data',
+                                                                          graph_type='mgraph_db.mgraph.schemas.Schema__MGraph__Graph.Schema__MGraph__Graph',
+                                                                          graph_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data'))) != __()
+
 
     def test_add_node(self):    # Test adding a node to the index
         node_to_add = Schema__MGraph__Node().set_node_type()

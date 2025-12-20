@@ -1,7 +1,7 @@
 from unittest                               import TestCase
 from mgraph_db.query.MGraph__Query          import MGraph__Query
 from mgraph_db.mgraph.actions.MGraph__Data  import MGraph__Data
-from mgraph_db.mgraph.actions.MGraph__Index import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index   import MGraph__Index
 from mgraph_db.mgraph.MGraph                import MGraph
 
 

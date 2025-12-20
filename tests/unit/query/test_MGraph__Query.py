@@ -8,7 +8,7 @@ from mgraph_db.mgraph.domain.Domain__MGraph__Node                    import Doma
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                   import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value            import Schema__MGraph__Node__Value
 from mgraph_db.providers.simple.schemas.Schema__Simple__Node         import Schema__Simple__Node
-from mgraph_db.mgraph.actions.MGraph__Index                          import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                            import MGraph__Index
 from mgraph_db.mgraph.actions.MGraph__Data                           import MGraph__Data
 from mgraph_db.providers.simple.MGraph__Simple__Test_Data            import MGraph__Simple__Test_Data
 from mgraph_db.query.MGraph__Query                                   import MGraph__Query

@@ -12,7 +12,7 @@ from osbot_utils.decorators.methods.cache_on_self                   import cache
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
-from mgraph_db.mgraph.actions.MGraph__Index                         import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                           import MGraph__Index
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.utils.Dev                                          import pprint
 
