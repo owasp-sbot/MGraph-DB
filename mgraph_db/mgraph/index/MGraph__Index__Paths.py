@@ -15,7 +15,7 @@ class MGraph__Index__Paths(Type_Safe):
     # =========================================================================
     # Add Methods
     # =========================================================================
-
+    # todo: review this name, since shouldn't this method be called 'add_node_path (since we are already in the index)
     def index_node_path(self, node: Schema__MGraph__Node) -> None:                           # Index a node's path if present
         if node.node_path:
             node_path = node.node_path
