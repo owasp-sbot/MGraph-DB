@@ -651,9 +651,9 @@ class test_MGraph__Edit(TestCase):
             assert len(root_children) == 2                                       # Two children via predicate
 
             stats = index.stats()
-            assert stats['summary']['total_nodes']       == 4
-            assert stats['summary']['unique_node_paths'] == 3
-            assert stats['summary']['total_predicates']  == 1
+            assert stats.summary.total_nodes       == 4
+            assert stats.summary.unique_node_paths == 3
+            assert stats.summary.total_predicates  == 1
 
     def test_rebuild_after_modifications(self):                                  # Test rebuild reflects changes
         mgraph = MGraph()

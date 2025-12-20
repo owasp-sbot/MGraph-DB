@@ -1,4 +1,6 @@
 from unittest                                             import TestCase
+
+from osbot_utils.testing.__ import __
 from osbot_utils.utils.Files                              import file_exists, file_delete
 from mgraph_db.mgraph.MGraph                              import MGraph
 from mgraph_db.providers.simple.MGraph__Simple            import MGraph__Simple
@@ -87,33 +89,25 @@ graph TD
 
     def test__index__stats(self):
         with self.test_data.index() as _:
-            assert _.stats() == {'index_data': {'edge_to_nodes': 2,
-                                                'edges_by_path': {},
-                                                'edges_by_type': {'Schema__MGraph__Edge': 2},
-                                                'node_edge_connections': {'avg_incoming_edges': 1,
-                                                                          'avg_outgoing_edges': 1,
-                                                                          'max_incoming_edges': 1,
-                                                                          'max_outgoing_edges': 2,
-                                                                          'total_nodes': 3},
-                                                'nodes_by_path': {},
-                                                'nodes_by_type': {'Schema__Simple__Node': 3}},
-                                 'paths': {'edge_paths': {}, 'node_paths': {}},
-                                 'summary': {'edges_with_paths': 0,
-                                             'nodes_with_paths': 0,
-                                             'total_edges': 2,
-                                             'total_nodes': 3,
-                                             'total_predicates': 0,
-                                             'unique_edge_paths': 0,
-                                             'unique_node_paths': 0}} != {'index_data': {'edge_to_nodes': 2,
-                                                'edges_by_path': {},
-                                                'edges_by_type': {'Schema__MGraph__Edge': 2},
-                                                'node_edge_connections': {'avg_incoming_edges': 1,
-                                                                          'avg_outgoing_edges': 1,
-                                                                          'max_incoming_edges': 1,
-                                                                          'max_outgoing_edges': 2,
-                                                                          'total_nodes': 3},
-                                                'nodes_by_path': {},
-                                                'nodes_by_type': {'Schema__Simple__Node': 3}}}
+            assert _.stats().obj() == __(index_data=__(edge_to_nodes=2,
+                                                       edges_by_type=__(Schema__MGraph__Edge=2),
+                                                       edges_by_path=__(),
+                                                       nodes_by_type=__(Schema__Simple__Node=3),
+                                                       nodes_by_path=__(),
+                                                       node_edge_connections=__(total_nodes=3,
+                                                                                avg_incoming_edges=1,
+                                                                                avg_outgoing_edges=1,
+                                                                                max_incoming_edges=1,
+                                                                                max_outgoing_edges=2)),
+                                         summary=__(total_nodes=3,
+                                                    total_edges=2,
+                                                    total_predicates=0,
+                                                    unique_node_paths=0,
+                                                    unique_edge_paths=0,
+                                                    nodes_with_paths=0,
+                                                    edges_with_paths=0),
+                                         paths=__(node_paths=__(),
+                                                  edge_paths=__()))
 
 
 

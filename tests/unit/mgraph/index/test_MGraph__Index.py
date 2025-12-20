@@ -1,3 +1,4 @@
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats import Schema__MGraph__Index__Stats
 from mgraph_db.utils.testing.mgraph_test_ids                          import mgraph_test_ids
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id      import Obj_Id
 from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Dict import Type_Safe__Dict
@@ -927,16 +928,25 @@ class test_MGraph_Index(TestCase):
         with self.mgraph_index as _:
             stats = _.stats()
 
-            assert 'index_data' in stats
-            assert 'summary'    in stats
-            assert 'paths'      in stats
-
-            assert stats['summary']['total_nodes']       == 0
-            assert stats['summary']['total_edges']       == 0
-            assert stats['summary']['total_predicates']  == 0
-            assert stats['summary']['unique_node_paths'] == 0
-            assert stats['summary']['unique_edge_paths'] == 0
-
+            assert _.stats().obj() == __(index_data=__(edge_to_nodes=0,
+                                                       edges_by_type=__(),
+                                                       edges_by_path=__(),
+                                                       nodes_by_type=__(),
+                                                       nodes_by_path=__(),
+                                                       node_edge_connections=__(total_nodes=0,
+                                                                                avg_incoming_edges=0,
+                                                                                avg_outgoing_edges=0,
+                                                                                max_incoming_edges=0,
+                                                                                max_outgoing_edges=0)),
+                                         summary=__(total_nodes=0,
+                                                    total_edges=0,
+                                                    total_predicates=0,
+                                                    unique_node_paths=0,
+                                                    unique_edge_paths=0,
+                                                    nodes_with_paths=0,
+                                                    edges_with_paths=0),
+                                         paths=__(node_paths=__(),
+                                                  edge_paths=__()))
     def test_stats__with_data(self):                                             # Test stats with data
         with self.mgraph_index as _:
             node_1 = Schema__MGraph__Node(node_path=Node_Path("path.a"))
@@ -954,15 +964,25 @@ class test_MGraph_Index(TestCase):
             _.add_node(node_3)
             _.add_edge(edge)
 
-            stats = _.stats()
-
-            assert stats['summary']['total_nodes']       == 3
-            assert stats['summary']['total_edges']       == 1
-            assert stats['summary']['total_predicates']  == 1
-            assert stats['summary']['unique_node_paths'] == 2                    # path.a and path.b
-            assert stats['summary']['unique_edge_paths'] == 1
-            assert stats['summary']['nodes_with_paths']  == 3
-            assert stats['summary']['edges_with_paths']  == 1
+            assert _.stats().obj() == __(index_data=__(edge_to_nodes=1,
+                                                       edges_by_type=__(Schema__MGraph__Edge=1),
+                                                       edges_by_path=__(edge_path=1),
+                                                       nodes_by_type=__(Schema__MGraph__Node=3),
+                                                       nodes_by_path=__(path_a=2, path_b=1),
+                                                       node_edge_connections=__(total_nodes=3,
+                                                                                avg_incoming_edges=0,
+                                                                                avg_outgoing_edges=0,
+                                                                                max_incoming_edges=1,
+                                                                                max_outgoing_edges=1)),
+                                         summary=__(total_nodes=3,
+                                                    total_edges=1,
+                                                    total_predicates=1,
+                                                    unique_node_paths=2,                # path.a and path.b
+                                                    unique_edge_paths=1,
+                                                    nodes_with_paths=3,
+                                                    edges_with_paths=1),
+                                         paths=__(node_paths=__(path_a=2, path_b=1),
+                                                  edge_paths=__(edge_path=1)))
 
     def test_stats__paths_section(self):                                         # Test paths section in stats
         with self.mgraph_index as _:
@@ -974,12 +994,28 @@ class test_MGraph_Index(TestCase):
             _.add_node(node_2)
             _.add_node(node_3)
 
-            stats = _.stats()
+            assert _.stats().obj() == __(index_data=__(edge_to_nodes=0,
+                                                       edges_by_type=__(),
+                                                       edges_by_path=__(),
+                                                       nodes_by_type=__(Schema__MGraph__Node=3),
+                                                       nodes_by_path=__(root=2, leaf=1),
+                                                       node_edge_connections=__(total_nodes=3,
+                                                                                avg_incoming_edges=0,
+                                                                                avg_outgoing_edges=0,
+                                                                                max_incoming_edges=0,
+                                                                                max_outgoing_edges=0)),
+                                         summary=__(total_nodes=3,
+                                                    total_edges=0,
+                                                    total_predicates=0,
+                                                    unique_node_paths=2,
+                                                    unique_edge_paths=0,
+                                                    nodes_with_paths=3,
+                                                    edges_with_paths=0),
+                                         paths=__(node_paths=__(root=2, leaf=1),
+                                                  edge_paths=__()))
 
-            assert 'node_paths' in stats['paths']
-            assert 'edge_paths' in stats['paths']
-            assert stats['paths']['node_paths']['root'] == 2                     # Two nodes at root
-            assert stats['paths']['node_paths']['leaf'] == 1                     # One node at leaf
+
+            stats = _.stats()
 
     def test_stats__index_data_preserved(self):                                  # Test that index_data section preserved
         with self.mgraph_index as _:
@@ -987,10 +1023,25 @@ class test_MGraph_Index(TestCase):
             _.add_node(node)
 
             stats = _.stats()
-
-            assert 'node_edge_connections' in stats['index_data']
-            assert 'nodes_by_type'         in stats['index_data']
-            assert 'edges_by_type'         in stats['index_data']
+            assert type(stats) is Schema__MGraph__Index__Stats
+            assert stats.obj() == __(index_data=__(edge_to_nodes=0,
+                                                   edges_by_type=__(),
+                                                   edges_by_path=__(),
+                                                   nodes_by_type=__(Schema__MGraph__Node=1),
+                                                   nodes_by_path=__(),
+                                                   node_edge_connections=__(total_nodes=1,
+                                                                            avg_incoming_edges=0,
+                                                                            avg_outgoing_edges=0,
+                                                                            max_incoming_edges=0,
+                                                                            max_outgoing_edges=0)),
+                                    summary=__(total_nodes=1,
+                                               total_edges=0,
+                                               total_predicates=0,
+                                               unique_node_paths=0,
+                                               unique_edge_paths=0,
+                                               nodes_with_paths=0,
+                                               edges_with_paths=0),
+                                    paths=__(node_paths=__(), edge_paths=__()))
 
 
     # =============================================================================

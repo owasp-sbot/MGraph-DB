@@ -1,6 +1,9 @@
 from io                                                             import StringIO
 from unittest                                                       import TestCase
 from unittest.mock                                                  import patch
+
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats import Schema__MGraph__Index__Stats
+from osbot_utils.testing.Stdout import Stdout
 from osbot_utils.testing.Temp_File                                  import Temp_File
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.utils.Files                                        import file_exists
@@ -43,12 +46,32 @@ class test_MGraph__Index__Coverage(TestCase):
             node = Schema__MGraph__Node().set_node_type()
             _.add_node(node)
 
-            with patch('sys.stdout', new_callable=StringIO):                    # Capture stdout
-                result = _.print__stats()
+            with Stdout() as stdout:
+                stats = _.print__stats()
 
-            assert result is not None
-            assert type(result) is dict
-            assert 'summary' in result
+
+            assert type(stats) is Schema__MGraph__Index__Stats
+            assert stdout.value() == ('\n'
+                                      "{ 'index_data': { 'edge_to_nodes': 0,\n"
+                                      "                  'edges_by_path': {},\n"
+                                      "                  'edges_by_type': {},\n"
+                                      "                  'node_edge_connections': { 'avg_incoming_edges': 0,\n"
+                                      "                                             'avg_outgoing_edges': 0,\n"
+                                      "                                             'max_incoming_edges': 0,\n"
+                                      "                                             'max_outgoing_edges': 0,\n"
+                                      "                                             'total_nodes': 1},\n"
+                                      "                  'nodes_by_path': {},\n"
+                                      "                  'nodes_by_type': {'Schema__MGraph__Node': 1}},\n"
+                                      "  'paths': {'edge_paths': {}, 'node_paths': {}},\n"
+                                      "  'summary': { 'edges_with_paths': 0,\n"
+                                      "               'nodes_with_paths': 0,\n"
+                                      "               'total_edges': 0,\n"
+                                      "               'total_nodes': 1,\n"
+                                      "               'total_predicates': 0,\n"
+                                      "               'unique_edge_paths': 0,\n"
+                                      "               'unique_node_paths': 0}}\n")
+
+
 
     # =========================================================================
     # Remove Edge by ID Edge Cases
