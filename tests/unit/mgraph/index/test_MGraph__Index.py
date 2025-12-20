@@ -30,6 +30,7 @@ class test_MGraph_Index(TestCase):
             assert type(_           ) is MGraph__Index
             assert type(_.index_data) is Schema__MGraph__Index__Data
             assert _.obj()            == __(index_data=__SKIP__,
+                                            edges_index = __(index_data=__SKIP__),
                                             labels_index = __(index_data=__SKIP__),
                                             paths_index  = __(index_data=__SKIP__),
                                             types_index  = __(index_data=__SKIP__),

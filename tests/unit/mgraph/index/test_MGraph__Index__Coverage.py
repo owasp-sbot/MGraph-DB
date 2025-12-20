@@ -148,7 +148,8 @@ class test_MGraph__Index__Coverage(TestCase):
 
             del _.index_data.nodes_to_outgoing_edges[node_1.node_id]            # Remove from_node from outgoing
 
-            _._remove_edge_node_references(edge.edge_id, node_1.node_id, node_2.node_id, edge_type)
+            _.edges_index._remove_edge_from_node_sets(edge.edge_id, node_1.node_id, node_2.node_id)
+            _.types_index.remove_edge_type_by_node(edge.edge_id, node_1.node_id, node_2.node_id, edge_type)
 
             assert True                                                         # Should not crash
 
@@ -165,7 +166,8 @@ class test_MGraph__Index__Coverage(TestCase):
 
             del _.index_data.nodes_to_incoming_edges[node_2.node_id]            # Remove to_node from incoming
 
-            _._remove_edge_node_references(edge.edge_id, node_1.node_id, node_2.node_id, edge_type)
+            _.edges_index._remove_edge_from_node_sets(edge.edge_id, node_1.node_id, node_2.node_id)
+            _.types_index.remove_edge_type_by_node(edge.edge_id, node_1.node_id, node_2.node_id, edge_type)
 
             assert True                                                         # Should not crash
 
@@ -179,9 +181,11 @@ class test_MGraph__Index__Coverage(TestCase):
             _.add_node(node_2)
             _.add_edge(edge)
 
-            _._remove_edge_node_references(edge.edge_id, node_1.node_id, node_2.node_id, None)
+            _.edges_index._remove_edge_from_node_sets(edge.edge_id, node_1.node_id, node_2.node_id)
+            _.types_index.remove_edge_type_by_node(edge.edge_id, node_1.node_id, node_2.node_id, None)
 
             assert True                                                         # Should handle None edge_type gracefully
+
 
     # =========================================================================
     # Remove Edge Type Reference Edge Cases
@@ -189,13 +193,13 @@ class test_MGraph__Index__Coverage(TestCase):
 
     def test__remove_edge_type_reference__none_type(self):                      # Test with None edge_type_name
         with self.mgraph_index as _:
-            _._remove_edge_type_reference(Edge_Id(Obj_Id()), None)
+            _.types_index.remove_edge_type(Edge_Id(Obj_Id()), None)
 
             assert True                                                         # Should not crash
 
     def test__remove_edge_type_reference__type_not_in_index(self):              # Test when type not in edges_by_type
         with self.mgraph_index as _:
-            _._remove_edge_type_reference(Edge_Id(Obj_Id()), 'NonExistentType')
+            _.types_index.remove_edge_type(Edge_Id(Obj_Id()), 'NonExistentType')
 
             assert True                                                         # Should not crash
 
@@ -212,7 +216,7 @@ class test_MGraph__Index__Coverage(TestCase):
             edge_type = 'Schema__MGraph__Edge'
             assert edge_type in _.index_data.edges_by_type
 
-            _._remove_edge_type_reference(edge.edge_id, edge_type)
+            _.types_index.remove_edge_type(edge.edge_id, edge_type)
 
             assert edge_type not in _.index_data.edges_by_type                  # Empty set should be cleaned
 
