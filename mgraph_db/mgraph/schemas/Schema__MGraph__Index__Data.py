@@ -13,6 +13,8 @@ class Schema__MGraph__Index__Data(Type_Safe):
     edges_by_incoming_label        : Dict[Safe_Id  , Set[Edge_Id           ]]  # incoming label -> set of edge_ids
     edges_by_outgoing_label        : Dict[Safe_Id  , Set[Edge_Id           ]]  # outgoing label -> set of edge_ids
     edges_by_type                  : Dict[str      , Set[Edge_Id           ]]  # edge_type name -> set of edge_ids
+    edges_incoming_labels          : Dict[Edge_Id  , Safe_Id                ]  # edge_id → incoming_label
+    edges_outgoing_labels          : Dict[Edge_Id  , Safe_Id                ]  # edge_id → outgoing_label
     edges_predicates               : Dict[Edge_Id  , Safe_Id                ]  # edge_id -> predicate
     edges_to_nodes                 : Dict[Edge_Id  , tuple[Node_Id, Node_Id]]  # edge_id -> (from_node_id, to_node_id)
     edges_types                    : Dict[Edge_Id  , str                    ]  # edge_id -> edge_type name

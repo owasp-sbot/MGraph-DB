@@ -44,6 +44,8 @@ class test_MGraph__Values(TestCase):
                                                                        'edges_by_path'                  : {}                                              ,   # NEW: path index
                                                                        'edges_by_predicate'             : {}                                              ,
                                                                        'edges_by_type'                  : {}                                              ,
+                                                                       'edges_incoming_labels'          : {}                                              ,
+                                                                       'edges_outgoing_labels'          : {}                                              ,
                                                                        'edges_predicates'               : {}                                              ,
                                                                        'edges_to_nodes'                 : {}                                              ,
                                                                        'edges_types'                    : {}                                              ,

@@ -11,6 +11,7 @@ class Domain__MGraph__Node(Type_Safe):                                          
 
     node_data = set_as_property('node.data' , 'node_data')                                  # Node configuration property
     node_id   = set_as_property('node.data' , 'node_id'  )                                  # Node ID property
+    node_path = set_as_property('node.data' , 'node_path')                                  # Node pagh
     node_type = set_as_property('node.data' , 'node_type')                                  # Note Type property
     graph_id  = set_as_property('graph.data', 'graph_id' )                                  # Graph ID property
 
