@@ -2,6 +2,7 @@ import re
 import pytest
 from unittest                                                       import TestCase
 from mgraph_db.mgraph.MGraph                                        import MGraph
+from mgraph_db.utils.testing.mgraph_test_ids                        import mgraph_test_ids
 from osbot_utils.testing.__                                         import __, __SKIP__
 from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                 import Schema__MGraph__Graph
@@ -11,6 +12,7 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data            import Schem
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.identifiers.Graph_Path                import Graph_Path
 from osbot_utils.type_safe.primitives.domains.identifiers.Graph_Id  import Graph_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 
 
@@ -19,20 +21,21 @@ class Simple_Node(Schema__MGraph__Node): pass    # Helper class for testing
 class test_Schema__MGraph__Graph(TestCase):
 
     def setUp(self):    # Initialize test data
-        self.schema_types  = Schema__MGraph__Types(node_type      = Simple_Node,
-                                                   edge_type      = Schema__MGraph__Edge)
-        self.graph_data   = Schema__MGraph__Graph__Data   ()
-        self.node_data     = Schema__MGraph__Node__Data    ()
-        self.node          = Schema__MGraph__Node          (node_data      = self.node_data,
-                                                            node_type      = Simple_Node)
-        self.edge          = Schema__MGraph__Edge          (edge_type      = Schema__MGraph__Edge,
-                                                            from_node_id   = Obj_Id()            ,
-                                                            to_node_id     = Obj_Id()            )
-        self.graph         = Schema__MGraph__Graph         (schema_types   = self.schema_types,
-                                                            edges          = {self.edge.edge_id: self.edge},
-                                                            graph_data     = self.graph_data,
-                                                            graph_type     = Schema__MGraph__Graph,
-                                                            nodes          = {self.node.node_id: self.node}, )
+        with mgraph_test_ids():
+            self.schema_types  = Schema__MGraph__Types(node_type      = Simple_Node,
+                                                       edge_type      = Schema__MGraph__Edge)
+            self.graph_data    = Schema__MGraph__Graph__Data   ()
+            self.node_data     = Schema__MGraph__Node__Data    ()
+            self.node          = Schema__MGraph__Node          (node_data      = self.node_data,
+                                                                node_type      = Simple_Node)
+            self.edge          = Schema__MGraph__Edge          (edge_type      = Schema__MGraph__Edge,
+                                                                from_node_id   = Node_Id(Obj_Id())            ,
+                                                                to_node_id     = Node_Id(Obj_Id())            )
+            self.graph         = Schema__MGraph__Graph         (schema_types   = self.schema_types,
+                                                                edges          = {self.edge.edge_id: self.edge},
+                                                                graph_data     = self.graph_data,
+                                                                graph_type     = Schema__MGraph__Graph,
+                                                                nodes          = {self.node.node_id: self.node} )
 
     def test_init(self):    # Tests basic initialization and type checking
         assert type(self.graph)                                is Schema__MGraph__Graph
@@ -41,6 +44,27 @@ class test_Schema__MGraph__Graph(TestCase):
         assert len(self.graph.edges)                           == 1
         assert self.graph.nodes[self.node.node_id            ] == self.node
         assert self.graph.edges[self.edge.edge_id            ] == self.edge
+        assert self.graph.obj()                                == __(graph_data=__(),
+                                                                     graph_path=None,
+                                                                     graph_type='mgraph_db.mgraph.schemas.Schema__MGraph__Graph.Schema__MGraph__Graph',
+                                                                     schema_types=__(edge_type='mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge',
+                                                                                     graph_data_type=None,
+                                                                                     node_type='test_Schema__MGraph__Graph.Simple_Node',
+                                                                                     node_data_type=None),
+                                                                     index_config=None,
+                                                                     edges=__(e0000001=__(edge_data=None,
+                                                                                          edge_type='mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge',
+                                                                                          edge_label=None,
+                                                                                          edge_path=None,
+                                                                                          from_node_id='c0000002',
+                                                                                          to_node_id='c0000003',
+                                                                                          edge_id='e0000001')),
+                                                                     graph_id='a0000001',
+                                                                     nodes=__(c0000001=__(node_data=__(),
+                                                                                          node_path=None,
+                                                                                          node_type='test_Schema__MGraph__Graph.Simple_Node',
+                                                                                          node_id='c0000001')))
+
 
     def test_type_safety_validation(self):    # Tests type safety validations
         error_message = "On Schema__MGraph__Graph, invalid type for attribute 'nodes'. Expected 'typing.Dict[osbot_utils.type_safe.primitives.domains.identifiers.Node_Id.Node_Id, mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node]' but got '<class 'str'>'"
@@ -140,31 +164,3 @@ class test_Schema__MGraph__Graph(TestCase):
                                  query_class='mgraph_db.query.MGraph__Query.MGraph__Query',
                                  edit_class='mgraph_db.mgraph.actions.MGraph__Edit.MGraph__Edit',
                                  screenshot_class='mgraph_db.mgraph.actions.MGraph__Screenshot.MGraph__Screenshot')
-            # this is what it looked like before the refactoring to have the graph, node and edge types to start with None
-            # assert _.obj() == __(graph         = __(domain_types = __(node_domain_type = 'mgraph_db.mgraph.domain.Domain__MGraph__Node.Domain__MGraph__Node' ,
-            #                                                           edge_domain_type = 'mgraph_db.mgraph.domain.Domain__MGraph__Edge.Domain__MGraph__Edge') ,
-            #
-            #                                         model        = __(data = __(graph_path   = None                                                ,
-            #                                                                     edges        = __()                                               ,
-            #                                                                     graph_data   = __()                                               ,
-            #                                                                     graph_id     = graph_id                                           ,
-            #                                                                     graph_type   = 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph.Schema__MGraph__Graph' ,
-            #                                                                     nodes        = __(adf69958 = __(node_data = __(value_type = 'builtins.str' ,
-            #                                                                                                                    value      = 'this is a new value' ,
-            #                                                                                                                    key        = ''                    ) ,
-            #                                                                                                     node_id   = 'adf69958'             ,
-            #                                                                                                     node_type = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value.Schema__MGraph__Node__Value' ,
-            #                                                                                                     node_path = None))                ,
-            #                                                                     schema_types = __(edge_type        = 'mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge'             ,
-            #                                                                                       graph_data_type = 'mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data' ,
-            #                                                                                       node_type       = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node.Schema__MGraph__Node'               ,
-            #                                                                                       node_data_type  = 'mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data.Schema__MGraph__Node__Data')) ,
-            #
-            #                                                    model_types = __(node_model_type = 'mgraph_db.mgraph.models.Model__MGraph__Node.Model__MGraph__Node' ,
-            #                                                                     edge_model_type = 'mgraph_db.mgraph.models.Model__MGraph__Edge.Model__MGraph__Edge')) ,
-            #
-            #                          graph_type      = 'mgraph_db.mgraph.domain.Domain__MGraph__Graph.Domain__MGraph__Graph') ,
-            #
-            #                 query_class     = 'mgraph_db.query.MGraph__Query.MGraph__Query'                          ,
-            #                 edit_class      = 'mgraph_db.mgraph.actions.MGraph__Edit.MGraph__Edit'                   ,
-            #                 screenshot_class= 'mgraph_db.mgraph.actions.MGraph__Screenshot.MGraph__Screenshot'       )

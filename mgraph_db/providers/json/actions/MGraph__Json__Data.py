@@ -12,9 +12,11 @@ class MGraph__Json__Data(MGraph__Data):
 
     def root_property_id(self):
         root_id = self.root_node_id()                                           # get the MGraph__Json root id value
-        nodes_ids = self.index().nodes_ids__from__node_id(root_id)              # get the nodes that it connects to
+        nodes_ids = [edge.to_node_id() for edge in self.graph.edges()
+                     if edge.from_node_id() == root_id]                         # get the nodes that it connects to
         if len(nodes_ids) == 1:                                                 # in a MGraph_Json there should only be one root property
             return nodes_ids[0]                                                 # return it
+        return None
 
     def root_property_node(self):
         root_property_id = self.root_property_id()

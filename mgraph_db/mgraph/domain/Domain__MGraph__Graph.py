@@ -95,3 +95,11 @@ class Domain__MGraph__Graph(Type_Safe):
 
     def nodes_ids(self):
         return self.model.nodes_ids()
+
+    def nodes_from(self, node_id: Node_Id) -> List[Node_Id]:        # Node IDs reachable via outgoing edges from node_id
+        return [edge.to_node_id() for edge in self.edges()
+                if edge.from_node_id() == node_id]
+
+    def nodes_to(self, node_id: Node_Id) -> List[Node_Id]:          # Node IDs with edges pointing to node_id
+        return [edge.from_node_id() for edge in self.edges()
+                if edge.to_node_id() == node_id]

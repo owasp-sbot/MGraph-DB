@@ -58,11 +58,11 @@ class test_MGraph__Time_Chain__Create(TestCase):
 
         assert type(root_node) is Domain__MGraph__Node                                      # Verify root node
 
-        with self.mgraph.data() as data:
+        with self.mgraph.edit() as edit:
             assert root_node.node_data.value == "2025"                                      # Check root value
             assert root_node.node_data.value_type is Time_Chain__Year                                   # Check root type
 
-            index = data.index()
+            index = edit.index()
             nodes = index.nodes_ids__from__node_id(root_node.node_id)
             assert len(nodes) == 1                                                          # Root should only have 1 connected nodes
 
@@ -75,8 +75,8 @@ class test_MGraph__Time_Chain__Create(TestCase):
 
         assert root_1.node_id == root_2.node_id                                            # Same year should reuse node
 
-        with self.mgraph.data() as data:
-            index = data.index()
+        with self.mgraph.edit() as edit:
+            index = edit.index()
             nodes_1 = index.nodes_ids__from__node_id(root_1.node_id)
             nodes_2 = index.nodes_ids__from__node_id(root_2.node_id)
             assert nodes_1 == nodes_2
@@ -85,8 +85,8 @@ class test_MGraph__Time_Chain__Create(TestCase):
     def test_partial_chain(self):                                                          # Test partial chain creation
         last_node = self.time_chain.create_partial_chain(year=2025, month=2)              # Create year-month only
 
-        with self.mgraph.data() as data:
-            index = data.index()
+        with self.mgraph.edit() as edit:
+            index = edit.index()
             nodes = index.nodes_ids__from__node_id(last_node.node_id)
             index.print__index_data()
 #            print(last_node.node_id)
@@ -102,11 +102,12 @@ class test_MGraph__Time_Chain__Create(TestCase):
         date_time = datetime(2025, 2, 10, 12, 31, tzinfo=UTC)
         root_node = self.time_chain.create_from_datetime(date_time)
 
-        with self.mgraph.data() as data:
-            index = data.index()
+        with self.mgraph.edit() as edit:
+            index = edit.index()
             edges = index.edges_ids__from__node_id(root_node.node_id)
             assert len(edges) == 1                                                        # Root should have one outgoing edge
 
+        with self.mgraph.data() as data:
             edge = data.edge(edges[0])
             assert edge.edge.data.edge_type is Schema__MGraph__Time_Chain__Edge__Month   # Verify edge type
 
@@ -123,10 +124,10 @@ class test_MGraph__Time_Chain__Create(TestCase):
         root_1 = self.time_chain.create_from_datetime(date_time)                 # Create chain twice
         root_2 = self.time_chain.create_from_datetime(date_time)
 
-        with self.mgraph.data() as data:
+        with self.mgraph.edit() as edit:
             assert root_1.node_id == root_2.node_id                                    # Should reuse all nodes
 
-            index = data.index()
+            index = edit.index()
             nodes_1 = index.nodes_ids__from__node_id(root_1.node_id)
             nodes_2 = index.nodes_ids__from__node_id(root_2.node_id)
             assert nodes_1 == nodes_2                                                  # Should have identical structure

@@ -39,7 +39,7 @@ class test_MGraph__Query__Export__View(TestCase):
     def test__export_view__root__expanded(self):
         with self.mgraph_json.data() as _:
             root_id        = _.root_property_node().node_id
-            first_nodes_id = _.index().nodes_ids__from__node_id(root_id)
+            first_nodes_id = _.graph.nodes_from(root_id) #_.index().nodes_ids__from__node_id(root_id)
 
         #return
         with self.query as _:

@@ -236,11 +236,12 @@ class test_MGraph__Time_Series__Edit(TestCase):
 
 
         def get_utc_offset_from_point(point__node_id):
-            with self.graph.data() as data:
-                with data.index() as _:
-                    time_zone__node_id  = _.get_node_connected_to_node__outgoing(point__node_id    , 'Schema__MGraph__Time_Series__Edge__Timezone'  )
-                    utc_offset__node_id = _.get_node_connected_to_node__outgoing(time_zone__node_id, 'Schema__MGraph__Time_Series__Edge__UTC_Offset')
-                return data.node(utc_offset__node_id)
+            with self.graph.edit() as edit:
+                with edit.index() as index:
+                    time_zone__node_id  = index.get_node_connected_to_node__outgoing(point__node_id    , 'Schema__MGraph__Time_Series__Edge__Timezone'  )
+                    utc_offset__node_id = index.get_node_connected_to_node__outgoing(time_zone__node_id, 'Schema__MGraph__Time_Series__Edge__UTC_Offset')
+                with edit.data() as data:
+                    return data.node(utc_offset__node_id)
 
         point_1__node_id = point_1.node_id
         point_2__node_id = point_2.node_id

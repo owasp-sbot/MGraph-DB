@@ -27,8 +27,8 @@ class MGraph__Data(Type_Safe):
     def graph_id(self):
         return self.graph.graph_id()
 
-    def index(self):
-        return MGraph__Index.from_graph(graph=self.graph)
+    # def index(self):
+    #     return MGraph__Index.from_graph(graph=self.graph)
 
     @type_safe
     def node(self, node_id: Node_Id) -> Domain__MGraph__Node:                                                               # Get a node by its ID
