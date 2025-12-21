@@ -47,7 +47,8 @@ class MGraph(Type_Safe):                                                        
     def query(self) -> MGraph__Query:
         mgraph_data  = self.data()
         mgraph_index = self.index()
-        mgraph_query = self.query_class(mgraph_data=mgraph_data, mgraph_index=mgraph_index).setup()
+        mgraph_query = self.query_class(mgraph_data  = mgraph_data,
+                                        mgraph_index = mgraph_index).setup()            # todo: see if we still need to send the index here (since we can now get the index from the Domain_MGraph_Graph
         return mgraph_query
 
     def values(self) -> MGraph__Values:

@@ -231,7 +231,7 @@ class test_MGraph_Index(TestCase):
                 assert _.nodes_ids() == [node_1_id, node_2_id]
                 assert _.edges_ids() == [edge_1_id           ]
 
-            index         = MGraph__Index.from_graph(mgraph.graph)                                                # Create index from graph
+            index         = MGraph__Index.from_graph(mgraph.graph.model.data)                                                # Create index from graph
             nodes_by_type = index.index_data.types.nodes_by_type['Schema__MGraph__Node']
             assert node_1_id               in nodes_by_type
             assert node_2_id               in nodes_by_type
@@ -278,7 +278,7 @@ class test_MGraph_Index(TestCase):
             assert _.nodes_ids() == [node_1_id, node_2_id]
             assert _.edges_ids() == [edge_1_id           ]
 
-        index         = MGraph__Index.from_graph(mgraph.graph)                                                # Create index from graph
+        index         = MGraph__Index.from_graph(mgraph.graph.model.data)                                                # Create index from graph
         nodes_by_type = sorted(index.index_data.types.nodes_by_type['Schema__MGraph__Node'])
 
         assert nodes_by_type          == [node_1_id, node_2_id]
@@ -344,8 +344,6 @@ class test_MGraph_Index(TestCase):
         edge_2     = Test_Edge           (from_node_id=node_2.node_id, to_node_id=value_node.node_id).set_edge_type()
         edge_3     = Schema__MGraph__Edge(from_node_id=node_3.node_id, to_node_id=value_node.node_id).set_edge_type()
 
-        print()
-        print()
         with self.mgraph_index as _:
             #_.values_index.add_value_node(value_node)
             #_.add_node(value_node)

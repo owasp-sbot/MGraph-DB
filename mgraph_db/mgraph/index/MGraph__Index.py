@@ -8,16 +8,17 @@ from mgraph_db.mgraph.index.MGraph__Index__Stats                            impo
 from mgraph_db.mgraph.index.MGraph__Index__Types                            import MGraph__Index__Types
 from mgraph_db.mgraph.index.MGraph__Index__Values                           import MGraph__Index__Values
 from mgraph_db.mgraph.actions.MGraph__Type__Resolver                        import MGraph__Type__Resolver
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value                   import Schema__MGraph__Node__Value
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph import Schema__MGraph__Graph
 from mgraph_db.mgraph.schemas.identifiers.Edge_Path                         import Edge_Path
 from mgraph_db.mgraph.schemas.identifiers.Node_Path                         import Node_Path
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Config           import Schema__MGraph__Index__Config
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data             import Schema__MGraph__Index__Data
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats            import Schema__MGraph__Index__Stats
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id           import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id           import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id           import Safe_Id
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe import type_safe
 from osbot_utils.utils.Dev                                                  import pprint
-from mgraph_db.mgraph.domain.Domain__MGraph__Graph                          import Domain__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                          import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                          import Schema__MGraph__Edge
 from osbot_utils.type_safe.Type_Safe                                        import Type_Safe
@@ -26,6 +27,7 @@ from osbot_utils.utils.Json                                                 impo
 
 class MGraph__Index(Type_Safe):
     index_data   : Schema__MGraph__Index__Data                                              # Composite index data (contains sub-schemas)
+    index_config : Schema__MGraph__Index__Config    = None
     edges_index  : MGraph__Index__Edges                                                     # Edge-node structural indexing
     edit_index   : MGraph__Index__Edit                                                      # Add/remove operations
     labels_index : MGraph__Index__Labels                                                    # Label indexing
@@ -77,18 +79,6 @@ class MGraph__Index(Type_Safe):
     def remove_edge     (self, edge: Schema__MGraph__Edge   ) -> 'MGraph__Index' : self.edit_index.remove_edge(edge); return self
     def remove_edge_by_id(self, edge_id: Edge_Id            ) -> 'MGraph__Index' : self.edit_index.remove_edge_by_id(edge_id); return self
 
-    # =========================================================================
-    # Index Management
-    # =========================================================================
-
-    def load_index_from_graph(self, graph: Domain__MGraph__Graph) -> None:
-        for node_id, node in graph.model.data.nodes.items():
-            self.add_node(node)
-        for edge_id, edge in graph.model.data.edges.items():
-            self.add_edge(edge)
-
-    def save_to_file(self, target_file: str) -> None:
-        return json_file_create(self.index_data.json(), target_file)
 
     # =========================================================================
     # Stats (delegated to stats_index)
@@ -192,13 +182,35 @@ class MGraph__Index(Type_Safe):
     def edges_by_outgoing_label        (self) -> Dict: return self.labels_index.edges_by_outgoing_label()
 
     # =========================================================================
+    # Index Management
+    # =========================================================================
+
+    def load_index_from_graph(self, graph_data: Schema__MGraph__Graph) -> None:
+        for node_id, node in graph_data.nodes.items():
+            self.add_node(node)
+        for edge_id, edge in graph_data.edges.items():
+            self.add_edge(edge)
+
+    def save_to_file(self, target_file: str) -> None:
+        return json_file_create(self.index_data.json(), target_file)
+
+    @type_safe
+    def reload(self, graph_data: Schema__MGraph__Graph) -> 'MGraph__Index':
+        self.index_data = Schema__MGraph__Index__Data()                     # Fresh data
+        self._sync_index_data()                                             # Re-wire sub-indexes
+        #self.index_config = graph_data.index_config                         # Refresh config
+        self.load_index_from_graph(graph_data)                              # Rebuild
+        return self
+
+    # =========================================================================
     # Factory Methods
     # =========================================================================
 
     @classmethod
-    def from_graph(cls, graph: Domain__MGraph__Graph) -> 'MGraph__Index':
+    def from_graph(cls, graph_data: Schema__MGraph__Graph) -> 'MGraph__Index':
         with cls() as _:
-            _.load_index_from_graph(graph)
+            #_.index_config = graph_data.index_config        # Wire config
+            _.load_index_from_graph(graph_data)
             return _
 
     @classmethod

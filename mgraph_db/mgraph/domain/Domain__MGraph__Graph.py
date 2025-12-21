@@ -1,6 +1,7 @@
 from typing                                                         import List, Type
 from mgraph_db.mgraph.actions.MGraph__Type__Resolver                import MGraph__Type__Resolver
 from mgraph_db.mgraph.domain.Domain__MGraph__Types                  import Domain__MGraph__Types
+from mgraph_db.mgraph.index.MGraph__Index                           import MGraph__Index
 from mgraph_db.mgraph.models.Model__MGraph__Edge                    import Model__MGraph__Edge
 from mgraph_db.mgraph.models.Model__MGraph__Node                    import Model__MGraph__Node
 from mgraph_db.mgraph.domain.Domain__MGraph__Edge                   import Domain__MGraph__Edge
@@ -8,6 +9,7 @@ from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domai
 from mgraph_db.mgraph.models.Model__MGraph__Graph                   import Model__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
+from osbot_utils.decorators.methods.cache_on_self                   import cache_on_self
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
@@ -25,6 +27,9 @@ class Domain__MGraph__Graph(Type_Safe):
         if graph_id:
             self.model.data.graph_id = graph_id
 
+    @cache_on_self
+    def index(self) -> MGraph__Index:
+        return MGraph__Index.from_graph(self.model.data)
 
     def delete_edge(self, edge_id: Edge_Id) -> bool:
         return self.model.delete_edge(edge_id)

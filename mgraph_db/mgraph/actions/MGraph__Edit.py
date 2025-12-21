@@ -87,9 +87,7 @@ class MGraph__Edit(Type_Safe):
                                  to_node_id   = to_node_id   )
 
     def rebuild_index(self) -> MGraph__Index:                                    # Force rebuild of index, clearing cache
-        cache_manager = self.index(__return__='cache_on_self')                   # Get the cache manager
-        cache_manager.reload_next = True
-        return self.index()                                                      # Recreate fresh index
+        return self.index().reload(self.graph.model.data)
 
 
     def new_node(self, node_path: Node_Path = None, **kwargs):          # Create new node with optional path
@@ -172,4 +170,4 @@ class MGraph__Edit(Type_Safe):
 
     @cache_on_self
     def index(self) -> MGraph__Index:                                    # Cached access to index
-        return MGraph__Index.from_graph(self.graph)
+        return self.graph.index()

@@ -26,7 +26,7 @@ class test_MGraph__Query(TestCase):
     def setUp(self):
         self.mgraph       = MGraph__Simple__Test_Data().create()                    # Create test graph
         self.graph        = self.mgraph.graph
-        self.mgraph_index = MGraph__Index.from_graph(self.graph)                    # Create index
+        self.mgraph_index = self.graph.index()
         self.mgraph_data  = MGraph__Data(graph=self.mgraph.graph)                   # Create data access
         self.query        = MGraph__Query(mgraph_index = self.mgraph_index,         # Create query instance
                                           mgraph_data   = self.mgraph_data ).setup()

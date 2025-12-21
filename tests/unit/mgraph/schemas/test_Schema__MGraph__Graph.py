@@ -12,7 +12,7 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data            import Schem
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.identifiers.Graph_Path                import Graph_Path
 from osbot_utils.type_safe.primitives.domains.identifiers.Graph_Id  import Graph_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id import Node_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 
 

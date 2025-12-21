@@ -3,7 +3,6 @@ from osbot_utils.type_safe.type_safe_core.decorators.type_safe      import type_
 from mgraph_db.mgraph.domain.Domain__MGraph__Edge                   import Domain__MGraph__Edge
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
-from mgraph_db.mgraph.index.MGraph__Index                           import MGraph__Index
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id

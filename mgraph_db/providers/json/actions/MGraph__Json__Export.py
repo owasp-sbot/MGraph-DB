@@ -62,8 +62,7 @@ class MGraph__Json__Export(MGraph__Export):
         root_content = self.graph.root_content()
         if not root_content:
             return None
-
-        index = MGraph__Index.from_graph(self.graph)        # todo: replace with index = self.data().index()
+        index = self.graph.index()
         return self.process_node(root_content.node_id, index)
 
     def to_string(self, indent: Optional[int] = None) -> str:

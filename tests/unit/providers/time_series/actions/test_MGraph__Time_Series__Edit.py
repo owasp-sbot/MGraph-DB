@@ -214,7 +214,7 @@ class test_MGraph__Time_Series__Edit(TestCase):
                                     Schema__MGraph__Time_Series__Edge__Minute: 'minute',
                                     Schema__MGraph__Time_Series__Edge__Second: 'second'}
 
-        index = MGraph__Index.from_graph(data.graph)                                                # Create/get index for graph
+        index = self.graph.graph.index()                                                            # Create/get index for graph
 
         outgoing_edges = index.nodes_to_outgoing_edges().get(time_point_id, set())                 # Get all outgoing edges efficiently
 

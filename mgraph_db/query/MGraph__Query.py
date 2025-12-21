@@ -173,12 +173,11 @@ class MGraph__Query(Type_Safe):
     #                      params    = {'name': name, 'value': value})
     #     return self
 
-
     def index(self):
         return self.mgraph_index
 
     def re_index(self):
-        self.mgraph_index = MGraph__Index.from_graph(self.mgraph_data.graph)                            # todo: check how this works with the new values_index
+        self.mgraph_index.reload(self.mgraph_data.graph.model.data)
 
     def collect(self) -> List[Domain__MGraph__Node]:                                                    #  Returns list of all matching nodes in current view"""
         nodes_ids    = self.get_current_ids()[0]

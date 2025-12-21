@@ -539,13 +539,15 @@ class test_MGraph__Edit(TestCase):
 
     def test_rebuild_index__returns_fresh_index(self):                           # Test rebuild returns new index
         with self.graph_edit as _:
-            node = _.new_node()
-
             index_1 = _.index()
-            index_2 = _.rebuild_index()
+            stats_before = index_1.stats()
+            node         = _.new_node()
+            index_2      = _.rebuild_index()
+            stats_after  = index_2.stats()
 
             assert type(index_2) is MGraph__Index
-            assert index_1       is not index_2                                  # Different objects
+            assert index_1       is index_2                                     # Same objects
+            assert stats_before != stats_after
 
     def test_rebuild_index__reflects_current_state(self):                        # Test rebuild reflects graph state
         with self.graph_edit as _:
@@ -563,15 +565,21 @@ class test_MGraph__Edit(TestCase):
 
     def test_rebuild_index__clears_cache(self):                                  # Test that cache is properly cleared
         with self.graph_edit as _:
-            _ .new_node()
-            index_before = _.index()
 
+            index_before = _.index()
+            stats_before = index_before.stats()
+            _ .new_node()
             _.rebuild_index()
+            stats_after = index_before.stats()
 
             index_after = _.index()
 
-            assert index_before != index_after
-            assert index_before is not index_after                               # Cache was cleared
+            assert index_before == index_after                               # objects are the same
+            assert index_before is index_after                               # Cache was cleared
+            assert stats_before.json() != stats_after.json()                 # but stats are different
+            assert stats_before.summary.total_nodes == 0                     # because before we had no nodes
+            assert stats_after .summary.total_nodes == 1                     # and after we have one
+
 
     # =============================================================================
     # get_or_create_edge with Predicate Tests
