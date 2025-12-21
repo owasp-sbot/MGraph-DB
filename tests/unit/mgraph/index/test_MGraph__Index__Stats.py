@@ -1,30 +1,47 @@
-from unittest                                                       import TestCase
-from mgraph_db.mgraph.index.MGraph__Index__Edges                    import MGraph__Index__Edges
-from mgraph_db.mgraph.index.MGraph__Index__Stats                    import MGraph__Index__Stats
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data     import Schema__MGraph__Index__Data
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats    import Schema__MGraph__Index__Stats
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats    import Schema__MGraph__Index__Stats__Connections
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats    import Schema__MGraph__Index__Stats__Summary
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats    import Schema__MGraph__Index__Stats__Paths
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats    import Schema__MGraph__Index__Stats__Index_Data
-from osbot_utils.testing.__ import __
-from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from unittest                                                            import TestCase
+from mgraph_db.mgraph.index.MGraph__Index__Edges                         import MGraph__Index__Edges
+from mgraph_db.mgraph.index.MGraph__Index__Labels                        import MGraph__Index__Labels
+from mgraph_db.mgraph.index.MGraph__Index__Paths                         import MGraph__Index__Paths
+from mgraph_db.mgraph.index.MGraph__Index__Types                         import MGraph__Index__Types
+from mgraph_db.mgraph.index.MGraph__Index__Stats                         import MGraph__Index__Stats
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Edges   import Schema__MGraph__Index__Data__Edges
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Labels  import Schema__MGraph__Index__Data__Labels
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Paths   import Schema__MGraph__Index__Data__Paths
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Types   import Schema__MGraph__Index__Data__Types
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats         import Schema__MGraph__Index__Stats
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats         import Schema__MGraph__Index__Stats__Connections
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats         import Schema__MGraph__Index__Stats__Summary
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats         import Schema__MGraph__Index__Stats__Paths
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats         import Schema__MGraph__Index__Stats__Index_Data
+from osbot_utils.testing.__                                              import __
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id        import Node_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id        import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
 
 
 class test_MGraph__Index__Stats(TestCase):
 
     def setUp(self):
-        self.index_data  = Schema__MGraph__Index__Data()
-        self.edges_index = MGraph__Index__Edges(index_data=self.index_data)
-        self.stats_index = MGraph__Index__Stats(index_data=self.index_data, edges_index=self.edges_index)
+        self.edges_data   = Schema__MGraph__Index__Data__Edges()
+        self.labels_data  = Schema__MGraph__Index__Data__Labels()
+        self.paths_data   = Schema__MGraph__Index__Data__Paths()
+        self.types_data   = Schema__MGraph__Index__Data__Types()
+        self.edges_index  = MGraph__Index__Edges (data=self.edges_data )
+        self.labels_index = MGraph__Index__Labels(data=self.labels_data)
+        self.paths_index  = MGraph__Index__Paths (data=self.paths_data )
+        self.types_index  = MGraph__Index__Types (data=self.types_data )
+        self.stats_index  = MGraph__Index__Stats(edges_index  = self.edges_index  ,
+                                                  labels_index = self.labels_index ,
+                                                  paths_index  = self.paths_index  ,
+                                                  types_index  = self.types_index  )
 
     def test__init__(self):
         with self.stats_index as _:
-            assert type(_)             is MGraph__Index__Stats
-            assert type(_.index_data)  is Schema__MGraph__Index__Data
-            assert type(_.edges_index) is MGraph__Index__Edges
+            assert type(_)              is MGraph__Index__Stats
+            assert type(_.edges_index)  is MGraph__Index__Edges
+            assert type(_.labels_index) is MGraph__Index__Labels
+            assert type(_.paths_index)  is MGraph__Index__Paths
+            assert type(_.types_index)  is MGraph__Index__Types
 
     # =========================================================================
     # Stats Method Tests
@@ -44,7 +61,7 @@ class test_MGraph__Index__Stats(TestCase):
         edge_id   = Edge_Id(Obj_Id())
 
         # Add some data
-        self.index_data.nodes_by_type['TestNode'] = {node_id_1, node_id_2}
+        self.types_data.nodes_by_type['TestNode'] = {node_id_1, node_id_2}
         self.edges_index.index_edge(edge_id, node_id_1, node_id_2)
 
         with self.stats_index as _:
@@ -88,9 +105,9 @@ class test_MGraph__Index__Stats(TestCase):
     # =========================================================================
 
     def test_summary_stats(self):
-        self.index_data.nodes_by_type['TypeA'] = {Node_Id(Obj_Id()), Node_Id(Obj_Id())}
-        self.index_data.nodes_by_type['TypeB'] = {Node_Id(Obj_Id())}
-        self.index_data.edges_by_predicate['predicate1'] = {Edge_Id(Obj_Id())}
+        self.types_data.nodes_by_type['TypeA'] = {Node_Id(Obj_Id()), Node_Id(Obj_Id())}
+        self.types_data.nodes_by_type['TypeB'] = {Node_Id(Obj_Id())}
+        self.labels_data.edges_by_predicate['predicate1'] = {Edge_Id(Obj_Id())}
 
         with self.stats_index as _:
             result = _.summary_stats()
@@ -118,8 +135,8 @@ class test_MGraph__Index__Stats(TestCase):
         node_path = Node_Path('/test/path')
         edge_path = Edge_Path('/edge/path')
 
-        self.index_data.nodes_by_path[node_path] = {Node_Id(Obj_Id()), Node_Id(Obj_Id())}
-        self.index_data.edges_by_path[edge_path] = {Edge_Id(Obj_Id())}
+        self.paths_data.nodes_by_path[node_path] = {Node_Id(Obj_Id()), Node_Id(Obj_Id())}
+        self.paths_data.edges_by_path[edge_path] = {Edge_Id(Obj_Id())}
 
         with self.stats_index as _:
             result = _.paths_stats()
@@ -140,8 +157,8 @@ class test_MGraph__Index__Stats(TestCase):
         node_id_1 = Node_Id(Obj_Id())
         node_id_2 = Node_Id(Obj_Id())
 
-        self.index_data.nodes_by_type['TestNode'] = {node_id_1, node_id_2}
-        self.index_data.edges_by_type['TestEdge'] = {Edge_Id(Obj_Id())}
+        self.types_data.nodes_by_type['TestNode'] = {node_id_1, node_id_2}
+        self.types_data.edges_by_type['TestEdge'] = {Edge_Id(Obj_Id())}
         self.edges_index.index_edge(Edge_Id(Obj_Id()), node_id_1, node_id_2)
 
         with self.stats_index as _:

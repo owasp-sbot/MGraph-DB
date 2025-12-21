@@ -17,14 +17,13 @@ class test_MGraph__Index__Edit(TestCase):
 
     def setUp(self):
         self.index_data      = Schema__MGraph__Index__Data()
-        self.edges_index     = MGraph__Index__Edges (index_data=self.index_data)
-        self.labels_index    = MGraph__Index__Labels(index_data=self.index_data)
-        self.paths_index     = MGraph__Index__Paths (index_data=self.index_data)
-        self.types_index     = MGraph__Index__Types (index_data=self.index_data)
+        self.edges_index     = MGraph__Index__Edges (data=self.index_data.edges )
+        self.labels_index    = MGraph__Index__Labels(data=self.index_data.labels)
+        self.paths_index     = MGraph__Index__Paths (data=self.index_data.paths )
+        self.types_index     = MGraph__Index__Types (data=self.index_data.types )
         self.values_index    = MGraph__Index__Values()
         self.resolver        = MGraph__Type__Resolver()
         self.edit_index = MGraph__Index__Edit(
-            index_data   = self.index_data   ,
             edges_index  = self.edges_index  ,
             labels_index = self.labels_index ,
             paths_index  = self.paths_index  ,
@@ -35,7 +34,6 @@ class test_MGraph__Index__Edit(TestCase):
     def test__init__(self):
         with self.edit_index as _:
             assert type(_)              is MGraph__Index__Edit
-            assert type(_.index_data)   is Schema__MGraph__Index__Data
             assert type(_.edges_index)  is MGraph__Index__Edges
             assert type(_.labels_index) is MGraph__Index__Labels
             assert type(_.paths_index)  is MGraph__Index__Paths

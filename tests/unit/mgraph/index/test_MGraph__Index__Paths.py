@@ -1,25 +1,25 @@
-from unittest                                                       import TestCase
-from mgraph_db.mgraph.index.MGraph__Index__Paths                    import MGraph__Index__Paths
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
-from mgraph_db.mgraph.schemas.identifiers.Node_Path                 import Node_Path
-from mgraph_db.mgraph.schemas.identifiers.Edge_Path                 import Edge_Path
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data     import Schema__MGraph__Index__Data
-from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from unittest                                                            import TestCase
+from mgraph_db.mgraph.index.MGraph__Index__Paths                         import MGraph__Index__Paths
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                       import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                       import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.identifiers.Node_Path                      import Node_Path
+from mgraph_db.mgraph.schemas.identifiers.Edge_Path                      import Edge_Path
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Paths   import Schema__MGraph__Index__Data__Paths
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id        import Node_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id        import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
 
 
 class test_MGraph__Index__Paths(TestCase):
 
     def setUp(self):
-        self.index_data  = Schema__MGraph__Index__Data()
-        self.paths_index = MGraph__Index__Paths(index_data=self.index_data)
+        self.paths_data  = Schema__MGraph__Index__Data__Paths()
+        self.paths_index = MGraph__Index__Paths(data=self.paths_data)
 
     def test__init__(self):                                                     # Test initialization
         with self.paths_index as _:
-            assert type(_)            is MGraph__Index__Paths
-            assert type(_.index_data) is Schema__MGraph__Index__Data
+            assert type(_)       is MGraph__Index__Paths
+            assert type(_.data)  is Schema__MGraph__Index__Data__Paths
             assert _.nodes_by_path()  == {}
             assert _.edges_by_path()  == {}
 

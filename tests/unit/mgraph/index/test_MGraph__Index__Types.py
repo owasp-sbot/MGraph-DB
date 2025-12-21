@@ -2,7 +2,7 @@ from unittest                                                       import TestC
 from mgraph_db.mgraph.index.MGraph__Index__Types                    import MGraph__Index__Types
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data     import Schema__MGraph__Index__Data
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Types   import Schema__MGraph__Index__Data__Types
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
@@ -11,13 +11,13 @@ from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_I
 class test_MGraph__Index__Types(TestCase):
 
     def setUp(self):
-        self.index_data  = Schema__MGraph__Index__Data()
-        self.types_index = MGraph__Index__Types(index_data=self.index_data)
+        self.types_data  = Schema__MGraph__Index__Data__Types()
+        self.types_index = MGraph__Index__Types(data=self.types_data)
 
     def test__init__(self):                                                     # Test initialization
         with self.types_index as _:
             assert type(_)            is MGraph__Index__Types
-            assert type(_.index_data) is Schema__MGraph__Index__Data
+            assert type(_.data) is Schema__MGraph__Index__Data__Types
             assert _.nodes_types()    == {}
             assert _.nodes_by_type()  == {}
             assert _.edges_types()    == {}
@@ -154,7 +154,7 @@ class test_MGraph__Index__Types(TestCase):
 
         with self.types_index as _:
             # Manually add to edges_by_type
-            _.index_data.edges_by_type[type_name] = {edge_id}
+            _.edges_by_type()[type_name] = {edge_id}
 
             _.remove_edge_type(edge_id, type_name)
 
@@ -166,7 +166,7 @@ class test_MGraph__Index__Types(TestCase):
         type_name = 'Schema__MGraph__Edge'
 
         with self.types_index as _:
-            _.index_data.edges_by_type[type_name] = {edge_id_1, edge_id_2}
+            _.edges_by_type()[type_name] = {edge_id_1, edge_id_2}
 
             _.remove_edge_type(edge_id_1, type_name)
 

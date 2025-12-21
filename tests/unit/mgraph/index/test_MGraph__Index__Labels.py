@@ -3,7 +3,7 @@ from mgraph_db.mgraph.index.MGraph__Index__Labels                   import MGrap
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label           import Schema__MGraph__Edge__Label
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data     import Schema__MGraph__Index__Data
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Labels   import Schema__MGraph__Index__Data__Labels
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
@@ -12,13 +12,13 @@ from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_
 class test_MGraph__Index__Labels(TestCase):
 
     def setUp(self):
-        self.index_data   = Schema__MGraph__Index__Data()
-        self.labels_index = MGraph__Index__Labels(index_data=self.index_data)
+        self.labels_data  = Schema__MGraph__Index__Data__Labels()
+        self.labels_index = MGraph__Index__Labels(data=self.labels_data)
 
     def test__init__(self):                                                     # Test initialization
         with self.labels_index as _:
             assert type(_)            is MGraph__Index__Labels
-            assert type(_.index_data) is Schema__MGraph__Index__Data
+            assert type(_.data) is Schema__MGraph__Index__Data__Labels
             assert _.edges_predicates()       == {}
             assert _.edges_by_predicate()     == {}
             assert _.edges_incoming_labels()  == {}

@@ -1,13 +1,13 @@
-from typing                                                         import Set, Dict, Optional
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data     import Schema__MGraph__Index__Data
-from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
-from osbot_utils.type_safe.Type_Safe                                import Type_Safe
+from typing                                                               import Set, Dict, Optional
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                        import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Labels   import Schema__MGraph__Index__Data__Labels
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id         import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id         import Safe_Id
+from osbot_utils.type_safe.Type_Safe                                      import Type_Safe
 
 
 class MGraph__Index__Labels(Type_Safe):
-    index_data: Schema__MGraph__Index__Data                                                  # Shared index data reference
+    data: Schema__MGraph__Index__Data__Labels                                                # Dedicated labels index data
 
     # =========================================================================
     # Add Methods
@@ -19,25 +19,25 @@ class MGraph__Index__Labels(Type_Safe):
 
             if edge.edge_label.predicate:                                                    # Index by predicate
                 predicate = edge.edge_label.predicate
-                self.index_data.edges_predicates[edge_id] = predicate                        # Store edge_id to predicate mapping
+                self.data.edges_predicates[edge_id] = predicate                              # Store edge_id to predicate mapping
 
-                if predicate not in self.index_data.edges_by_predicate:                      # Store predicate to edge_id mapping
-                    self.index_data.edges_by_predicate[predicate] = set()
-                self.index_data.edges_by_predicate[predicate].add(edge_id)
+                if predicate not in self.data.edges_by_predicate:                            # Store predicate to edge_id mapping
+                    self.data.edges_by_predicate[predicate] = set()
+                self.data.edges_by_predicate[predicate].add(edge_id)
 
             if edge.edge_label.incoming:                                                     # Index by incoming label
                 incoming = edge.edge_label.incoming
-                self.index_data.edges_incoming_labels[edge_id] = incoming                    # Store reverse mapping
-                if incoming not in self.index_data.edges_by_incoming_label:
-                    self.index_data.edges_by_incoming_label[incoming] = set()
-                self.index_data.edges_by_incoming_label[incoming].add(edge_id)
+                self.data.edges_incoming_labels[edge_id] = incoming                          # Store reverse mapping
+                if incoming not in self.data.edges_by_incoming_label:
+                    self.data.edges_by_incoming_label[incoming] = set()
+                self.data.edges_by_incoming_label[incoming].add(edge_id)
 
             if edge.edge_label.outgoing:                                                     # Index by outgoing label
                 outgoing = edge.edge_label.outgoing
-                self.index_data.edges_outgoing_labels[edge_id] = outgoing                    # Store reverse mapping
-                if outgoing not in self.index_data.edges_by_outgoing_label:
-                    self.index_data.edges_by_outgoing_label[outgoing] = set()
-                self.index_data.edges_by_outgoing_label[outgoing].add(edge_id)
+                self.data.edges_outgoing_labels[edge_id] = outgoing                          # Store reverse mapping
+                if outgoing not in self.data.edges_by_outgoing_label:
+                    self.data.edges_by_outgoing_label[outgoing] = set()
+                self.data.edges_by_outgoing_label[outgoing].add(edge_id)
 
     # =========================================================================
     # Remove Methods
@@ -48,108 +48,108 @@ class MGraph__Index__Labels(Type_Safe):
 
         if edge.edge_label and edge.edge_label.predicate:                                    # Remove from predicate indexes
             predicate = edge.edge_label.predicate
-            if predicate in self.index_data.edges_by_predicate:
-                self.index_data.edges_by_predicate[predicate].discard(edge_id)
-                if not self.index_data.edges_by_predicate[predicate]:
-                    del self.index_data.edges_by_predicate[predicate]
+            if predicate in self.data.edges_by_predicate:
+                self.data.edges_by_predicate[predicate].discard(edge_id)
+                if not self.data.edges_by_predicate[predicate]:
+                    del self.data.edges_by_predicate[predicate]
 
-            if edge_id in self.index_data.edges_predicates:
-                del self.index_data.edges_predicates[edge_id]
+            if edge_id in self.data.edges_predicates:
+                del self.data.edges_predicates[edge_id]
 
         if edge.edge_label and edge.edge_label.incoming:                                     # Remove from incoming label index
             incoming = edge.edge_label.incoming
-            if incoming in self.index_data.edges_by_incoming_label:
-                self.index_data.edges_by_incoming_label[incoming].discard(edge_id)
-                if not self.index_data.edges_by_incoming_label[incoming]:
-                    del self.index_data.edges_by_incoming_label[incoming]
+            if incoming in self.data.edges_by_incoming_label:
+                self.data.edges_by_incoming_label[incoming].discard(edge_id)
+                if not self.data.edges_by_incoming_label[incoming]:
+                    del self.data.edges_by_incoming_label[incoming]
 
         if edge.edge_label and edge.edge_label.outgoing:                                     # Remove from outgoing label index
             outgoing = edge.edge_label.outgoing
-            if outgoing in self.index_data.edges_by_outgoing_label:
-                self.index_data.edges_by_outgoing_label[outgoing].discard(edge_id)
-                if not self.index_data.edges_by_outgoing_label[outgoing]:
-                    del self.index_data.edges_by_outgoing_label[outgoing]
+            if outgoing in self.data.edges_by_outgoing_label:
+                self.data.edges_by_outgoing_label[outgoing].discard(edge_id)
+                if not self.data.edges_by_outgoing_label[outgoing]:
+                    del self.data.edges_by_outgoing_label[outgoing]
 
     def remove_edge_label_by_id(self, edge_id: Edge_Id) -> None:                             # Remove edge labels using only edge ID
-        predicate = self.index_data.edges_predicates.pop(edge_id, None)                      # Remove from predicate indexes
-        if predicate and predicate in self.index_data.edges_by_predicate:
-            self.index_data.edges_by_predicate[predicate].discard(edge_id)
-            if not self.index_data.edges_by_predicate[predicate]:
-                del self.index_data.edges_by_predicate[predicate]
+        predicate = self.data.edges_predicates.pop(edge_id, None)                            # Remove from predicate indexes
+        if predicate and predicate in self.data.edges_by_predicate:
+            self.data.edges_by_predicate[predicate].discard(edge_id)
+            if not self.data.edges_by_predicate[predicate]:
+                del self.data.edges_by_predicate[predicate]
 
-        incoming = self.index_data.edges_incoming_labels.pop(edge_id, None)                  # Remove from incoming label index
-        if incoming and incoming in self.index_data.edges_by_incoming_label:
-            self.index_data.edges_by_incoming_label[incoming].discard(edge_id)
-            if not self.index_data.edges_by_incoming_label[incoming]:
-                del self.index_data.edges_by_incoming_label[incoming]
+        incoming = self.data.edges_incoming_labels.pop(edge_id, None)                        # Remove from incoming label index
+        if incoming and incoming in self.data.edges_by_incoming_label:
+            self.data.edges_by_incoming_label[incoming].discard(edge_id)
+            if not self.data.edges_by_incoming_label[incoming]:
+                del self.data.edges_by_incoming_label[incoming]
 
-        outgoing = self.index_data.edges_outgoing_labels.pop(edge_id, None)                  # Remove from outgoing label index
-        if outgoing and outgoing in self.index_data.edges_by_outgoing_label:
-            self.index_data.edges_by_outgoing_label[outgoing].discard(edge_id)
-            if not self.index_data.edges_by_outgoing_label[outgoing]:
-                del self.index_data.edges_by_outgoing_label[outgoing]
+        outgoing = self.data.edges_outgoing_labels.pop(edge_id, None)                        # Remove from outgoing label index
+        if outgoing and outgoing in self.data.edges_by_outgoing_label:
+            self.data.edges_by_outgoing_label[outgoing].discard(edge_id)
+            if not self.data.edges_by_outgoing_label[outgoing]:
+                del self.data.edges_by_outgoing_label[outgoing]
 
     # =========================================================================
     # Query Methods
     # =========================================================================
 
     def get_edge_predicate(self, edge_id: Edge_Id) -> Optional[Safe_Id]:                     # Get predicate for a specific edge
-        return self.index_data.edges_predicates.get(edge_id)
+        return self.data.edges_predicates.get(edge_id)
 
     def get_edges_by_predicate(self, predicate: Safe_Id) -> Set[Edge_Id]:                    # Get edges by predicate
-        return self.index_data.edges_by_predicate.get(predicate, set())
+        return self.data.edges_by_predicate.get(predicate, set())
 
     def get_edges_by_incoming_label(self, label: Safe_Id) -> Set[Edge_Id]:                   # Get edges by incoming label
-        return self.index_data.edges_by_incoming_label.get(label, set())
+        return self.data.edges_by_incoming_label.get(label, set())
 
     def get_edges_by_outgoing_label(self, label: Safe_Id) -> Set[Edge_Id]:                   # Get edges by outgoing label
-        return self.index_data.edges_by_outgoing_label.get(label, set())
+        return self.data.edges_by_outgoing_label.get(label, set())
 
     def get_all_predicates(self) -> Set[Safe_Id]:                                            # Get all unique predicates
-        return set(self.index_data.edges_by_predicate.keys())
+        return set(self.data.edges_by_predicate.keys())
 
     def get_all_incoming_labels(self) -> Set[Safe_Id]:                                       # Get all unique incoming labels
-        return set(self.index_data.edges_by_incoming_label.keys())
+        return set(self.data.edges_by_incoming_label.keys())
 
     def get_all_outgoing_labels(self) -> Set[Safe_Id]:                                       # Get all unique outgoing labels
-        return set(self.index_data.edges_by_outgoing_label.keys())
+        return set(self.data.edges_by_outgoing_label.keys())
 
     def has_predicate(self, predicate: Safe_Id) -> bool:                                     # Check if predicate exists
-        return predicate in self.index_data.edges_by_predicate
+        return predicate in self.data.edges_by_predicate
 
     def has_incoming_label(self, label: Safe_Id) -> bool:                                    # Check if incoming label exists
-        return label in self.index_data.edges_by_incoming_label
+        return label in self.data.edges_by_incoming_label
 
     def has_outgoing_label(self, label: Safe_Id) -> bool:                                    # Check if outgoing label exists
-        return label in self.index_data.edges_by_outgoing_label
+        return label in self.data.edges_by_outgoing_label
 
     def count_edges_by_predicate(self, predicate: Safe_Id) -> int:                           # Count edges with predicate
-        return len(self.index_data.edges_by_predicate.get(predicate, set()))
+        return len(self.data.edges_by_predicate.get(predicate, set()))
 
     def count_edges_by_incoming_label(self, label: Safe_Id) -> int:                          # Count edges with incoming label
-        return len(self.index_data.edges_by_incoming_label.get(label, set()))
+        return len(self.data.edges_by_incoming_label.get(label, set()))
 
     def count_edges_by_outgoing_label(self, label: Safe_Id) -> int:                          # Count edges with outgoing label
-        return len(self.index_data.edges_by_outgoing_label.get(label, set()))
+        return len(self.data.edges_by_outgoing_label.get(label, set()))
 
     # =========================================================================
     # Raw Data Accessors
     # =========================================================================
 
     def edges_predicates(self) -> Dict[Edge_Id, Safe_Id]:                                    # Raw accessor for edges_predicates
-        return self.index_data.edges_predicates
+        return self.data.edges_predicates
 
     def edges_by_predicate(self) -> Dict[Safe_Id, Set[Edge_Id]]:                             # Raw accessor for edges_by_predicate
-        return self.index_data.edges_by_predicate
+        return self.data.edges_by_predicate
 
     def edges_incoming_labels(self) -> Dict[Edge_Id, Safe_Id]:                               # Raw accessor for edges_incoming_labels
-        return self.index_data.edges_incoming_labels
+        return self.data.edges_incoming_labels
 
     def edges_by_incoming_label(self) -> Dict[Safe_Id, Set[Edge_Id]]:                        # Raw accessor for edges_by_incoming_label
-        return self.index_data.edges_by_incoming_label
+        return self.data.edges_by_incoming_label
 
     def edges_outgoing_labels(self) -> Dict[Edge_Id, Safe_Id]:                               # Raw accessor for edges_outgoing_labels
-        return self.index_data.edges_outgoing_labels
+        return self.data.edges_outgoing_labels
 
     def edges_by_outgoing_label(self) -> Dict[Safe_Id, Set[Edge_Id]]:                        # Raw accessor for edges_by_outgoing_label
-        return self.index_data.edges_by_outgoing_label
+        return self.data.edges_by_outgoing_label

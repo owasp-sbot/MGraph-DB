@@ -1,22 +1,22 @@
-from unittest                                                       import TestCase
-from mgraph_db.mgraph.index.MGraph__Index__Edges                    import MGraph__Index__Edges
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data     import Schema__MGraph__Index__Data
-from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from unittest                                                            import TestCase
+from mgraph_db.mgraph.index.MGraph__Index__Edges                         import MGraph__Index__Edges
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                       import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Edges   import Schema__MGraph__Index__Data__Edges
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id        import Node_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id        import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
 
 
 class test_MGraph__Index__Edges(TestCase):
 
     def setUp(self):
-        self.index_data  = Schema__MGraph__Index__Data()
-        self.edges_index = MGraph__Index__Edges(index_data=self.index_data)
+        self.edges_data  = Schema__MGraph__Index__Data__Edges()
+        self.edges_index = MGraph__Index__Edges(data=self.edges_data)
 
     def test__init__(self):                                                     # Test initialization
         with self.edges_index as _:
-            assert type(_)            is MGraph__Index__Edges
-            assert type(_.index_data) is Schema__MGraph__Index__Data
+            assert type(_)      is MGraph__Index__Edges
+            assert type(_.data) is Schema__MGraph__Index__Data__Edges
             assert _.edges_to_nodes()          == {}
             assert _.nodes_to_outgoing_edges() == {}
             assert _.nodes_to_incoming_edges() == {}
@@ -170,15 +170,12 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             _.index_edge(edge_id, from_node_id, to_node_id)
-
             result = _.get_edge_nodes(edge_id)
-
             assert result == (from_node_id, to_node_id)
 
     def test_get_edge_nodes__not_found(self):                                   # Test get_edge_nodes with nonexistent edge
         with self.edges_index as _:
             result = _.get_edge_nodes(Edge_Id(Obj_Id()))
-
             assert result is None
 
     def test_get_edge_from_node(self):                                          # Test get_edge_from_node
@@ -188,15 +185,12 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             _.index_edge(edge_id, from_node_id, to_node_id)
-
             result = _.get_edge_from_node(edge_id)
-
             assert result == from_node_id
 
-    def test_get_edge_from_node__not_found(self):                               # Test with nonexistent edge
+    def test_get_edge_from_node__not_found(self):                               # Test get_edge_from_node with nonexistent edge
         with self.edges_index as _:
             result = _.get_edge_from_node(Edge_Id(Obj_Id()))
-
             assert result is None
 
     def test_get_edge_to_node(self):                                            # Test get_edge_to_node
@@ -206,43 +200,40 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             _.index_edge(edge_id, from_node_id, to_node_id)
-
             result = _.get_edge_to_node(edge_id)
-
             assert result == to_node_id
+
+    def test_get_edge_to_node__not_found(self):                                 # Test get_edge_to_node with nonexistent edge
+        with self.edges_index as _:
+            result = _.get_edge_to_node(Edge_Id(Obj_Id()))
+            assert result is None
 
     def test_has_edge(self):                                                    # Test has_edge
         edge_id = Edge_Id(Obj_Id())
 
         with self.edges_index as _:
+            assert _.has_edge(edge_id) is False
             _.index_edge(edge_id, Node_Id(Obj_Id()), Node_Id(Obj_Id()))
-
-            assert _.has_edge(edge_id)          is True
-            assert _.has_edge(Edge_Id(Obj_Id())) is False
+            assert _.has_edge(edge_id) is True
 
     def test_edge_count(self):                                                  # Test edge_count
         with self.edges_index as _:
             assert _.edge_count() == 0
-
             _.index_edge(Edge_Id(Obj_Id()), Node_Id(Obj_Id()), Node_Id(Obj_Id()))
             _.index_edge(Edge_Id(Obj_Id()), Node_Id(Obj_Id()), Node_Id(Obj_Id()))
-            _.index_edge(Edge_Id(Obj_Id()), Node_Id(Obj_Id()), Node_Id(Obj_Id()))
-
-            assert _.edge_count() == 3
+            assert _.edge_count() == 2
 
     # =========================================================================
     # Node Edge Query Tests
     # =========================================================================
 
-    def test_get_node_outgoing_edges(self):                                     # Test get_node_outgoing_edges with node object
-        node = Schema__MGraph__Node()
+    def test_get_node_outgoing_edges(self):                                     # Test get_node_outgoing_edges
+        node    = Schema__MGraph__Node()
         edge_id = Edge_Id(Obj_Id())
 
         with self.edges_index as _:
             _.index_edge(edge_id, node.node_id, Node_Id(Obj_Id()))
-
             result = _.get_node_outgoing_edges(node)
-
             assert edge_id in result
 
     def test_get_node_id_outgoing_edges(self):                                  # Test get_node_id_outgoing_edges
@@ -251,26 +242,16 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             _.index_edge(edge_id, node_id, Node_Id(Obj_Id()))
-
             result = _.get_node_id_outgoing_edges(node_id)
-
             assert edge_id in result
 
-    def test_get_node_id_outgoing_edges__not_found(self):                       # Test with nonexistent node
-        with self.edges_index as _:
-            result = _.get_node_id_outgoing_edges(Node_Id(Obj_Id()))
-
-            assert result == set()
-
-    def test_get_node_incoming_edges(self):                                     # Test get_node_incoming_edges with node object
-        node = Schema__MGraph__Node()
+    def test_get_node_incoming_edges(self):                                     # Test get_node_incoming_edges
+        node    = Schema__MGraph__Node()
         edge_id = Edge_Id(Obj_Id())
 
         with self.edges_index as _:
             _.index_edge(edge_id, Node_Id(Obj_Id()), node.node_id)
-
             result = _.get_node_incoming_edges(node)
-
             assert edge_id in result
 
     def test_get_node_id_incoming_edges(self):                                  # Test get_node_id_incoming_edges
@@ -279,24 +260,20 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             _.index_edge(edge_id, Node_Id(Obj_Id()), node_id)
-
             result = _.get_node_id_incoming_edges(node_id)
-
             assert edge_id in result
 
     def test_get_node_all_edges(self):                                          # Test get_node_all_edges
-        node_id     = Node_Id(Obj_Id())
-        edge_id_out = Edge_Id(Obj_Id())
-        edge_id_in  = Edge_Id(Obj_Id())
+        node_id    = Node_Id(Obj_Id())
+        edge_id_1  = Edge_Id(Obj_Id())
+        edge_id_2  = Edge_Id(Obj_Id())
 
         with self.edges_index as _:
-            _.index_edge(edge_id_out, node_id, Node_Id(Obj_Id()))
-            _.index_edge(edge_id_in, Node_Id(Obj_Id()), node_id)
-
+            _.index_edge(edge_id_1, node_id, Node_Id(Obj_Id()))                  # Outgoing
+            _.index_edge(edge_id_2, Node_Id(Obj_Id()), node_id)                  # Incoming
             result = _.get_node_all_edges(node_id)
-
-            assert edge_id_out in result
-            assert edge_id_in  in result
+            assert edge_id_1 in result
+            assert edge_id_2 in result
             assert len(result) == 2
 
     def test_count_node_outgoing_edges(self):                                   # Test count_node_outgoing_edges
@@ -305,7 +282,6 @@ class test_MGraph__Index__Edges(TestCase):
         with self.edges_index as _:
             _.index_edge(Edge_Id(Obj_Id()), node_id, Node_Id(Obj_Id()))
             _.index_edge(Edge_Id(Obj_Id()), node_id, Node_Id(Obj_Id()))
-
             assert _.count_node_outgoing_edges(node_id)          == 2
             assert _.count_node_outgoing_edges(Node_Id(Obj_Id())) == 0
 
@@ -316,7 +292,6 @@ class test_MGraph__Index__Edges(TestCase):
             _.index_edge(Edge_Id(Obj_Id()), Node_Id(Obj_Id()), node_id)
             _.index_edge(Edge_Id(Obj_Id()), Node_Id(Obj_Id()), node_id)
             _.index_edge(Edge_Id(Obj_Id()), Node_Id(Obj_Id()), node_id)
-
             assert _.count_node_incoming_edges(node_id) == 3
 
     def test_has_node_outgoing_edges(self):                                     # Test has_node_outgoing_edges
@@ -324,9 +299,7 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             assert _.has_node_outgoing_edges(node_id) is False
-
             _.index_edge(Edge_Id(Obj_Id()), node_id, Node_Id(Obj_Id()))
-
             assert _.has_node_outgoing_edges(node_id) is True
 
     def test_has_node_incoming_edges(self):                                     # Test has_node_incoming_edges
@@ -334,9 +307,7 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             assert _.has_node_incoming_edges(node_id) is False
-
             _.index_edge(Edge_Id(Obj_Id()), Node_Id(Obj_Id()), node_id)
-
             assert _.has_node_incoming_edges(node_id) is True
 
     # =========================================================================
@@ -351,9 +322,7 @@ class test_MGraph__Index__Edges(TestCase):
         with self.edges_index as _:
             _.index_edge(Edge_Id(Obj_Id()), node_a, node_b)
             _.index_edge(Edge_Id(Obj_Id()), node_a, node_c)
-
             result = _.get_connected_nodes_outgoing(node_a)
-
             assert node_b in result
             assert node_c in result
             assert len(result) == 2
@@ -361,7 +330,6 @@ class test_MGraph__Index__Edges(TestCase):
     def test_get_connected_nodes_outgoing__empty(self):                         # Test with no outgoing edges
         with self.edges_index as _:
             result = _.get_connected_nodes_outgoing(Node_Id(Obj_Id()))
-
             assert result == set()
 
     def test_get_connected_nodes_incoming(self):                                # Test get_connected_nodes_incoming
@@ -372,9 +340,7 @@ class test_MGraph__Index__Edges(TestCase):
         with self.edges_index as _:
             _.index_edge(Edge_Id(Obj_Id()), node_a, node_c)
             _.index_edge(Edge_Id(Obj_Id()), node_b, node_c)
-
             result = _.get_connected_nodes_incoming(node_c)
-
             assert node_a in result
             assert node_b in result
             assert len(result) == 2
@@ -391,7 +357,6 @@ class test_MGraph__Index__Edges(TestCase):
             _.index_edge(Edge_Id(Obj_Id()), node_d, node_b)                      # B has incoming from D
 
             result = _.get_all_connected_nodes(node_b)
-
             assert node_a in result                                             # Incoming
             assert node_c in result                                             # Outgoing
             assert node_d in result                                             # Incoming
@@ -407,9 +372,7 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             _.index_edge(edge_id, node_id, Node_Id(Obj_Id()))
-
             result = _.edges_ids__from__node_id(node_id)
-
             assert isinstance(result, list)
             assert edge_id in result
 
@@ -419,9 +382,7 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             _.index_edge(edge_id, Node_Id(Obj_Id()), node_id)
-
             result = _.edges_ids__to__node_id(node_id)
-
             assert isinstance(result, list)
             assert edge_id in result
 
@@ -433,9 +394,7 @@ class test_MGraph__Index__Edges(TestCase):
         with self.edges_index as _:
             _.index_edge(Edge_Id(Obj_Id()), node_a, node_b)
             _.index_edge(Edge_Id(Obj_Id()), node_a, node_c)
-
             result = _.nodes_ids__from__node_id(node_a)
-
             assert isinstance(result, list)
             assert node_b in result
             assert node_c in result
@@ -448,9 +407,7 @@ class test_MGraph__Index__Edges(TestCase):
         with self.edges_index as _:
             _.index_edge(Edge_Id(Obj_Id()), node_a, node_c)
             _.index_edge(Edge_Id(Obj_Id()), node_b, node_c)
-
             result = _.nodes_ids__to__node_id(node_c)
-
             assert isinstance(result, list)
             assert node_a in result
             assert node_b in result
@@ -464,9 +421,7 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             _.index_edge(edge_id, Node_Id(Obj_Id()), Node_Id(Obj_Id()))
-
             result = _.edges_to_nodes()
-
             assert edge_id in result
 
     def test_nodes_to_outgoing_edges__accessor(self):                           # Test raw accessor
@@ -474,9 +429,7 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             _.index_edge(Edge_Id(Obj_Id()), node_id, Node_Id(Obj_Id()))
-
             result = _.nodes_to_outgoing_edges()
-
             assert node_id in result
 
     def test_nodes_to_incoming_edges__accessor(self):                           # Test raw accessor
@@ -484,7 +437,5 @@ class test_MGraph__Index__Edges(TestCase):
 
         with self.edges_index as _:
             _.index_edge(Edge_Id(Obj_Id()), Node_Id(Obj_Id()), node_id)
-
             result = _.nodes_to_incoming_edges()
-
             assert node_id in result

@@ -1,23 +1,27 @@
-from unittest                                                       import TestCase
-from mgraph_db.mgraph.index.MGraph__Index__Edges                    import MGraph__Index__Edges
-from mgraph_db.mgraph.index.MGraph__Index__Labels                   import MGraph__Index__Labels
-from mgraph_db.mgraph.index.MGraph__Index__Types                    import MGraph__Index__Types
-from mgraph_db.mgraph.index.MGraph__Index__Values                   import MGraph__Index__Values
-from mgraph_db.mgraph.index.MGraph__Index__Query                    import MGraph__Index__Query
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data     import Schema__MGraph__Index__Data
-from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from unittest                                                            import TestCase
+from mgraph_db.mgraph.index.MGraph__Index__Edges                         import MGraph__Index__Edges
+from mgraph_db.mgraph.index.MGraph__Index__Labels                        import MGraph__Index__Labels
+from mgraph_db.mgraph.index.MGraph__Index__Types                         import MGraph__Index__Types
+from mgraph_db.mgraph.index.MGraph__Index__Values                        import MGraph__Index__Values
+from mgraph_db.mgraph.index.MGraph__Index__Query                         import MGraph__Index__Query
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Edges   import Schema__MGraph__Index__Data__Edges
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Labels  import Schema__MGraph__Index__Data__Labels
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Types   import Schema__MGraph__Index__Data__Types
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id        import Node_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id        import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id        import Safe_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
 
 
 class test_MGraph__Index__Query(TestCase):
 
     def setUp(self):
-        self.index_data   = Schema__MGraph__Index__Data()
-        self.edges_index  = MGraph__Index__Edges (index_data=self.index_data)
-        self.labels_index = MGraph__Index__Labels(index_data=self.index_data)
-        self.types_index  = MGraph__Index__Types (index_data=self.index_data)
+        self.edges_data   = Schema__MGraph__Index__Data__Edges()
+        self.labels_data  = Schema__MGraph__Index__Data__Labels()
+        self.types_data   = Schema__MGraph__Index__Data__Types()
+        self.edges_index  = MGraph__Index__Edges (data=self.edges_data )
+        self.labels_index = MGraph__Index__Labels(data=self.labels_data)
+        self.types_index  = MGraph__Index__Types (data=self.types_data )
         self.values_index = MGraph__Index__Values()
         self.query_index  = MGraph__Index__Query(edges_index  = self.edges_index  ,
                                                   labels_index = self.labels_index ,
@@ -84,8 +88,8 @@ class test_MGraph__Index__Query(TestCase):
         predicate = Safe_Id('knows')
 
         self.edges_index.index_edge(edge_id, node_a, node_b)
-        self.index_data.edges_predicates[edge_id] = predicate
-        self.index_data.edges_by_predicate[predicate] = {edge_id}
+        self.labels_data.edges_predicates[edge_id] = predicate
+        self.labels_data.edges_by_predicate[predicate] = {edge_id}
 
         with self.query_index as _:
             result = _.get_node_outgoing_edges_by_predicate(node_a, predicate)
@@ -105,8 +109,8 @@ class test_MGraph__Index__Query(TestCase):
         predicate = Safe_Id('knows')
 
         self.edges_index.index_edge(edge_id, node_a, node_b)
-        self.index_data.edges_predicates[edge_id] = predicate
-        self.index_data.edges_by_predicate[predicate] = {edge_id}
+        self.labels_data.edges_predicates[edge_id] = predicate
+        self.labels_data.edges_by_predicate[predicate] = {edge_id}
 
         with self.query_index as _:
             result = _.get_node_incoming_edges_by_predicate(node_b, predicate)
@@ -123,9 +127,9 @@ class test_MGraph__Index__Query(TestCase):
 
         self.edges_index.index_edge(edge_id_1, node_a, node_b)
         self.edges_index.index_edge(edge_id_2, node_a, node_c)
-        self.index_data.edges_predicates[edge_id_1] = predicate
-        self.index_data.edges_predicates[edge_id_2] = predicate
-        self.index_data.edges_by_predicate[predicate] = {edge_id_1, edge_id_2}
+        self.labels_data.edges_predicates[edge_id_1] = predicate
+        self.labels_data.edges_predicates[edge_id_2] = predicate
+        self.labels_data.edges_by_predicate[predicate] = {edge_id_1, edge_id_2}
 
         with self.query_index as _:
             result = _.get_nodes_by_predicate(node_a, predicate)
@@ -144,9 +148,9 @@ class test_MGraph__Index__Query(TestCase):
 
         self.edges_index.index_edge(edge_id_1, node_a, node_c)
         self.edges_index.index_edge(edge_id_2, node_b, node_c)
-        self.index_data.edges_predicates[edge_id_1] = predicate
-        self.index_data.edges_predicates[edge_id_2] = predicate
-        self.index_data.edges_by_predicate[predicate] = {edge_id_1, edge_id_2}
+        self.labels_data.edges_predicates[edge_id_1] = predicate
+        self.labels_data.edges_predicates[edge_id_2] = predicate
+        self.labels_data.edges_by_predicate[predicate] = {edge_id_1, edge_id_2}
 
         with self.query_index as _:
             result = _.get_nodes_by_incoming_predicate(node_c, predicate)

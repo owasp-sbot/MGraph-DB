@@ -1,5 +1,5 @@
 import pytest
-from unittest                                                       import TestCase
+from unittest                                                import TestCase
 from mgraph_db.mgraph.schemas.safe_str.Safe_Str__Graph__Path import Safe_Str__Graph__Path, SAFE_STR__GRAPH__PATH__MAX_LENGTH
 
 

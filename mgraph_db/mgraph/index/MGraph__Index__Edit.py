@@ -1,4 +1,3 @@
-from typing                                                          import Tuple, Set
 from mgraph_db.mgraph.index.MGraph__Index__Edges                     import MGraph__Index__Edges
 from mgraph_db.mgraph.index.MGraph__Index__Labels                    import MGraph__Index__Labels
 from mgraph_db.mgraph.index.MGraph__Index__Paths                     import MGraph__Index__Paths
@@ -8,13 +7,11 @@ from mgraph_db.mgraph.actions.MGraph__Type__Resolver                 import MGra
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                   import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                   import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value            import Schema__MGraph__Node__Value
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data      import Schema__MGraph__Index__Data
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id    import Edge_Id
 from osbot_utils.type_safe.Type_Safe                                 import Type_Safe
 
 
 class MGraph__Index__Edit(Type_Safe):
-    index_data   : Schema__MGraph__Index__Data                                               # Shared index data
     edges_index  : MGraph__Index__Edges                                                      # Edge-node relationships
     labels_index : MGraph__Index__Labels                                                     # Edge labels
     paths_index  : MGraph__Index__Paths                                                      # Node/edge paths
@@ -75,7 +72,7 @@ class MGraph__Index__Edit(Type_Safe):
         self.remove_edge_by_id(edge.edge_id)
 
     def remove_edge_by_id(self, edge_id: Edge_Id) -> None:
-        edge_type_name = self.index_data.edges_types.pop(edge_id, None)
+        edge_type_name = self.types_index.data.edges_types.pop(edge_id, None)                # Get type before removing
 
         edge_nodes = self.edges_index.remove_edge(edge_id)
         if edge_nodes:

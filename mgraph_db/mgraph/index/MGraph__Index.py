@@ -1,15 +1,17 @@
 from typing                                                                 import Type, Set, Dict, Optional
 from mgraph_db.mgraph.index.MGraph__Index__Edges                            import MGraph__Index__Edges
+from mgraph_db.mgraph.index.MGraph__Index__Edit                             import MGraph__Index__Edit
 from mgraph_db.mgraph.index.MGraph__Index__Labels                           import MGraph__Index__Labels
-from mgraph_db.mgraph.index.MGraph__Index__Edit                        import MGraph__Index__Edit
 from mgraph_db.mgraph.index.MGraph__Index__Paths                            import MGraph__Index__Paths
 from mgraph_db.mgraph.index.MGraph__Index__Query                            import MGraph__Index__Query
 from mgraph_db.mgraph.index.MGraph__Index__Stats                            import MGraph__Index__Stats
 from mgraph_db.mgraph.index.MGraph__Index__Types                            import MGraph__Index__Types
 from mgraph_db.mgraph.index.MGraph__Index__Values                           import MGraph__Index__Values
 from mgraph_db.mgraph.actions.MGraph__Type__Resolver                        import MGraph__Type__Resolver
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value                   import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.schemas.identifiers.Edge_Path                         import Edge_Path
 from mgraph_db.mgraph.schemas.identifiers.Node_Path                         import Node_Path
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data             import Schema__MGraph__Index__Data
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats            import Schema__MGraph__Index__Stats
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id           import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id           import Node_Id
@@ -18,46 +20,46 @@ from osbot_utils.utils.Dev                                                  impo
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                          import Domain__MGraph__Graph
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                          import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                          import Schema__MGraph__Edge
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data             import Schema__MGraph__Index__Data
 from osbot_utils.type_safe.Type_Safe                                        import Type_Safe
 from osbot_utils.utils.Json                                                 import json_file_create, json_load_file
 
 
 class MGraph__Index(Type_Safe):
-    index_data      : Schema__MGraph__Index__Data                                           # Shared index data
-    edges_index     : MGraph__Index__Edges                                                  # Edge-node structural indexing
-    labels_index    : MGraph__Index__Labels                                                 # Label indexing
-    edit_index      : MGraph__Index__Edit                                              # Add/remove operations
-    paths_index     : MGraph__Index__Paths                                                  # Path indexing
-    query_index     : MGraph__Index__Query                                                  # Complex cross-index queries
-    stats_index     : MGraph__Index__Stats                                                  # Statistics calculation
-    types_index     : MGraph__Index__Types                                                  # Type indexing
-    values_index    : MGraph__Index__Values                                                 # Value node indexing
-    resolver        : MGraph__Type__Resolver                                                # Type resolution
+    index_data   : Schema__MGraph__Index__Data                                              # Composite index data (contains sub-schemas)
+    edges_index  : MGraph__Index__Edges                                                     # Edge-node structural indexing
+    edit_index   : MGraph__Index__Edit                                                      # Add/remove operations
+    labels_index : MGraph__Index__Labels                                                    # Label indexing
+    paths_index  : MGraph__Index__Paths                                                     # Path indexing
+    query_index  : MGraph__Index__Query                                                     # Complex cross-index queries
+    stats_index  : MGraph__Index__Stats                                                     # Statistics calculation
+    types_index  : MGraph__Index__Types                                                     # Type indexing
+    values_index : MGraph__Index__Values                                                    # Value node indexing
+    resolver     : MGraph__Type__Resolver                                                   # Type resolution
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self._sync_index_data()
 
     def _sync_index_data(self) -> None:
-        # Wire up index_data to all sub-indexes
-        self.edges_index.index_data     = self.index_data
-        self.labels_index.index_data    = self.index_data
-        self.paths_index.index_data     = self.index_data
-        self.types_index.index_data     = self.index_data
-        self.stats_index.index_data     = self.index_data
-        self.edit_index.index_data = self.index_data
+        # Wire up each sub-index with its dedicated schema from index_data
+        self.edges_index.data  = self.index_data.edges
+        self.labels_index.data = self.index_data.labels
+        self.paths_index.data  = self.index_data.paths
+        self.types_index.data  = self.index_data.types
 
-        # Wire up stats_index dependencies
-        self.stats_index.edges_index    = self.edges_index
+        # Wire up stats_index dependencies (uses sub-indexes directly)
+        self.stats_index.edges_index  = self.edges_index
+        self.stats_index.labels_index = self.labels_index
+        self.stats_index.paths_index  = self.paths_index
+        self.stats_index.types_index  = self.types_index
 
         # Wire up query_index dependencies
-        self.query_index.edges_index    = self.edges_index
-        self.query_index.labels_index   = self.labels_index
-        self.query_index.types_index    = self.types_index
-        self.query_index.values_index   = self.values_index
+        self.query_index.edges_index  = self.edges_index
+        self.query_index.labels_index = self.labels_index
+        self.query_index.types_index  = self.types_index
+        self.query_index.values_index = self.values_index
 
-        # Wire up mutations_index dependencies
+        # Wire up edit_index dependencies
         self.edit_index.edges_index  = self.edges_index
         self.edit_index.labels_index = self.labels_index
         self.edit_index.paths_index  = self.paths_index
@@ -66,7 +68,7 @@ class MGraph__Index(Type_Safe):
         self.edit_index.resolver     = self.resolver
 
     # =========================================================================
-    # Node/Edge Operations (delegated to mutations_index)
+    # Node/Edge Operations (delegated to edit_index)
     # =========================================================================
 
     def add_node        (self, node: Schema__MGraph__Node   ) -> None            : self.edit_index.add_node(node)
@@ -92,7 +94,8 @@ class MGraph__Index(Type_Safe):
     # Stats (delegated to stats_index)
     # =========================================================================
 
-    def stats(self) -> Schema__MGraph__Index__Stats: return self.stats_index.stats()
+    def stats(self) -> Schema__MGraph__Index__Stats:
+        return self.stats_index.stats()
 
     def print__index_data(self):
         pprint(self.index_data.json())
@@ -100,7 +103,7 @@ class MGraph__Index(Type_Safe):
 
     def print__stats(self):
         stats = self.stats()
-        pprint(stats.json())
+        stats.print()
         return stats
 
     # =========================================================================
