@@ -1,7 +1,7 @@
 from unittest                               import TestCase
 from mgraph_db.query.MGraph__Query          import MGraph__Query
 from mgraph_db.mgraph.actions.MGraph__Data  import MGraph__Data
-from mgraph_db.mgraph.actions.MGraph__Index import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index   import MGraph__Index
 from mgraph_db.mgraph.MGraph                import MGraph
 
 
@@ -20,7 +20,7 @@ class test_MGraph__Query__outgoing_Edges(TestCase):
             self.edge_bc = edit.connect_nodes(from_node=self.node_b, to_node=self.node_c)
             self.edge_cd = edit.connect_nodes(from_node=self.node_c, to_node=self.node_d)
 
-        self.mgraph_index = MGraph__Index.from_graph(self.mgraph.graph)
+        self.mgraph_index = edit.index()
         self.mgraph_data  = MGraph__Data(graph=self.mgraph.graph)
         self.query        = MGraph__Query(mgraph_index = self.mgraph_index ,
                                           mgraph_data  = self.mgraph_data  ).setup()

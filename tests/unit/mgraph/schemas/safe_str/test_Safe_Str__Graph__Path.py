@@ -1,5 +1,5 @@
 import pytest
-from unittest                                                       import TestCase
+from unittest                                                import TestCase
 from mgraph_db.mgraph.schemas.safe_str.Safe_Str__Graph__Path import Safe_Str__Graph__Path, SAFE_STR__GRAPH__PATH__MAX_LENGTH
 
 
@@ -12,6 +12,7 @@ class test_Safe_Str__Graph__Path(TestCase):
             "html.body.div.p[1]"                                    ,   # With index notation
             "node.path:html.body"                                   ,   # With namespace separator
             "config-setting.value"                                  ,   # With hyphens
+            "path/with/slashes"                                     ,   # Forward slashes
             "Domain__Node__Person"                                  ,   # Python type names are valid
             "a"                                                     ,   # Single char
             ""                                                      ,   # Empty allowed
@@ -31,7 +32,6 @@ class test_Safe_Str__Graph__Path(TestCase):
     def test_invalid_paths(self):                                                               # Test invalid path patterns
         invalid_paths = {
             "path with spaces"          : "path_with_spaces"            ,   # Spaces become _
-            "path/with/slashes"         : "path_with_slashes"           ,   # Forward slashes become _
             "path\\backslash"           : "path_backslash"              ,   # Backslashes become _
             "path<with>brackets"        : "path_with_brackets"          ,   # Angle brackets become _
             "path;semicolon"            : "path_semicolon"              ,   # Semicolons become _

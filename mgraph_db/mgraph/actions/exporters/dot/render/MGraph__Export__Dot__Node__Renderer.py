@@ -1,5 +1,5 @@
 from typing                                                                  import List
-from mgraph_db.mgraph.actions.MGraph__Index                                  import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                                    import MGraph__Index
 from mgraph_db.mgraph.actions.exporters.dot.render.MGraph__Export__Dot__Base import MGraph__Export__Dot__Base
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                            import Domain__MGraph__Node
 from osbot_utils.decorators.methods.cache_on_self                            import cache_on_self
@@ -58,7 +58,7 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
                 if shape_config.rounded:    styles.add('rounded')
                 if shape_config.style:      styles.update(shape_config.style.split(','))
 
-        index = self.mgraph_index()                                                         # used cache index for performance
+        index = self.graph.index()                                                         # used cache index for performance
 
         # Check edges where this node is the source (using the index)
 
@@ -115,7 +115,7 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
                 if font_config.size:  attrs['fontsize'] = f'fontsize="{font_config.size}"'
                 if font_config.color: attrs['fontcolor'] = f'fontcolor="{font_config.color}"'
 
-        index = self.mgraph_index()                                                         # use cached index for performance
+        index = self.graph.index()                                                         # use cached index for performance
 
         # Check edges where this node is the source (using the index)
         if node_id in index.nodes_to_outgoing_edges_by_type():
@@ -222,6 +222,6 @@ class MGraph__Export__Dot__Node__Renderer(MGraph__Export__Dot__Base):
         attrs_str = f' [{", ".join(attrs)}]' if attrs else ''
         return f'  "{node_id}"{attrs_str}'
 
-    @cache_on_self
-    def mgraph_index(self):
-        return MGraph__Index.from_graph(self.graph)
+    # @cache_on_self
+    # def mgraph_index(self):
+    #     return MGraph__Index.from_graph(self.graph)

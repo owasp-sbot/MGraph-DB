@@ -12,7 +12,7 @@ from osbot_utils.decorators.methods.cache_on_self                   import cache
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
-from mgraph_db.mgraph.actions.MGraph__Index                         import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                           import MGraph__Index
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.utils.Dev                                          import pprint
 
@@ -173,12 +173,11 @@ class MGraph__Query(Type_Safe):
     #                      params    = {'name': name, 'value': value})
     #     return self
 
-
     def index(self):
         return self.mgraph_index
 
     def re_index(self):
-        self.mgraph_index = MGraph__Index.from_graph(self.mgraph_data.graph)                            # todo: check how this works with the new values_index
+        self.mgraph_index.reload(self.mgraph_data.graph.model.data)
 
     def collect(self) -> List[Domain__MGraph__Node]:                                                    #  Returns list of all matching nodes in current view"""
         nodes_ids    = self.get_current_ids()[0]

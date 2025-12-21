@@ -3,7 +3,6 @@ from osbot_utils.type_safe.type_safe_core.decorators.type_safe      import type_
 from mgraph_db.mgraph.domain.Domain__MGraph__Edge                   import Domain__MGraph__Edge
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                  import Domain__MGraph__Graph
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
-from mgraph_db.mgraph.actions.MGraph__Index                         import MGraph__Index
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
@@ -27,8 +26,8 @@ class MGraph__Data(Type_Safe):
     def graph_id(self):
         return self.graph.graph_id()
 
-    def index(self):
-        return MGraph__Index.from_graph(graph=self.graph)
+    # def index(self):
+    #     return MGraph__Index.from_graph(graph=self.graph)
 
     @type_safe
     def node(self, node_id: Node_Id) -> Domain__MGraph__Node:                                                               # Get a node by its ID

@@ -8,7 +8,7 @@ from mgraph_db.mgraph.domain.Domain__MGraph__Node                    import Doma
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                   import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value            import Schema__MGraph__Node__Value
 from mgraph_db.providers.simple.schemas.Schema__Simple__Node         import Schema__Simple__Node
-from mgraph_db.mgraph.actions.MGraph__Index                          import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                            import MGraph__Index
 from mgraph_db.mgraph.actions.MGraph__Data                           import MGraph__Data
 from mgraph_db.providers.simple.MGraph__Simple__Test_Data            import MGraph__Simple__Test_Data
 from mgraph_db.query.MGraph__Query                                   import MGraph__Query
@@ -26,7 +26,7 @@ class test_MGraph__Query(TestCase):
     def setUp(self):
         self.mgraph       = MGraph__Simple__Test_Data().create()                    # Create test graph
         self.graph        = self.mgraph.graph
-        self.mgraph_index = MGraph__Index.from_graph(self.graph)                    # Create index
+        self.mgraph_index = self.graph.index()
         self.mgraph_data  = MGraph__Data(graph=self.mgraph.graph)                   # Create data access
         self.query        = MGraph__Query(mgraph_index = self.mgraph_index,         # Create query instance
                                           mgraph_data   = self.mgraph_data ).setup()

@@ -74,7 +74,7 @@ class test_MGraph__path_mode(TestCase):
 
         with mgraph.index() as _:
             stats = _.stats()
-            assert stats['index_data']['edge_to_nodes'] == 1
+            assert stats.index_data.edge_to_nodes == 1
 
     def test__bug__path_mode_query_works(self):                                                   # Verify query works with path-mode graphs
         mgraph = create_empty_mgraph()

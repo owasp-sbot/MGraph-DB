@@ -2,7 +2,7 @@ from unittest                                 import TestCase
 from mgraph_db.mgraph.actions.MGraph__Data    import MGraph__Data
 from mgraph_db.mgraph.actions.MGraph__Edit    import MGraph__Edit
 from mgraph_db.mgraph.MGraph                  import MGraph
-from mgraph_db.mgraph.actions.MGraph__Index   import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index     import MGraph__Index
 
 
 class test_MGraph(TestCase):

@@ -3,7 +3,7 @@ from unittest                                                                   
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value                                  import Schema__MGraph__Node__Value
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id                           import is_obj_id
 from mgraph_db.mgraph.actions.MGraph__Export                                               import MGraph__Export
-from mgraph_db.mgraph.actions.MGraph__Index                                                import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                                                  import MGraph__Index
 from mgraph_db.mgraph.actions.exporters.dot.MGraph__Export__Dot                            import MGraph__Export__Dot
 from mgraph_db.mgraph.actions.exporters.dot.utils.MGraph__Export__Dot__Time_Series__Colors import MGraph__Export__Dot__Time_Series__Colors, MGraph__Export__Dot__Time_Series__Colors__Scheme
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                                          import Domain__MGraph__Node
@@ -214,7 +214,7 @@ class test_MGraph__Time_Series__Edit(TestCase):
                                     Schema__MGraph__Time_Series__Edge__Minute: 'minute',
                                     Schema__MGraph__Time_Series__Edge__Second: 'second'}
 
-        index = MGraph__Index.from_graph(data.graph)                                                # Create/get index for graph
+        index = self.graph.graph.index()                                                            # Create/get index for graph
 
         outgoing_edges = index.nodes_to_outgoing_edges().get(time_point_id, set())                 # Get all outgoing edges efficiently
 
@@ -236,11 +236,12 @@ class test_MGraph__Time_Series__Edit(TestCase):
 
 
         def get_utc_offset_from_point(point__node_id):
-            with self.graph.data() as data:
-                with data.index() as _:
-                    time_zone__node_id  = _.get_node_connected_to_node__outgoing(point__node_id    , 'Schema__MGraph__Time_Series__Edge__Timezone'  )
-                    utc_offset__node_id = _.get_node_connected_to_node__outgoing(time_zone__node_id, 'Schema__MGraph__Time_Series__Edge__UTC_Offset')
-                return data.node(utc_offset__node_id)
+            with self.graph.edit() as edit:
+                with edit.index() as index:
+                    time_zone__node_id  = index.get_node_connected_to_node__outgoing(point__node_id    , 'Schema__MGraph__Time_Series__Edge__Timezone'  )
+                    utc_offset__node_id = index.get_node_connected_to_node__outgoing(time_zone__node_id, 'Schema__MGraph__Time_Series__Edge__UTC_Offset')
+                with edit.data() as data:
+                    return data.node(utc_offset__node_id)
 
         point_1__node_id = point_1.node_id
         point_2__node_id = point_2.node_id

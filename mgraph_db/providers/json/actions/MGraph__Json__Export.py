@@ -10,7 +10,7 @@ from osbot_utils.utils.Files                                                    
 from osbot_utils.utils.Json                                                     import json_dumps
 from mgraph_db.providers.json.domain.Domain__MGraph__Json__Graph                import Domain__MGraph__Json__Graph
 from mgraph_db.mgraph.actions.MGraph__Export                                    import MGraph__Export
-from mgraph_db.mgraph.actions.MGraph__Index                                     import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                                       import MGraph__Index
 
 class MGraph__Json__Export(MGraph__Export):
     graph: Domain__MGraph__Json__Graph
@@ -62,8 +62,7 @@ class MGraph__Json__Export(MGraph__Export):
         root_content = self.graph.root_content()
         if not root_content:
             return None
-
-        index = MGraph__Index.from_graph(self.graph)        # todo: replace with index = self.data().index()
+        index = self.graph.index()
         return self.process_node(root_content.node_id, index)
 
     def to_string(self, indent: Optional[int] = None) -> str:

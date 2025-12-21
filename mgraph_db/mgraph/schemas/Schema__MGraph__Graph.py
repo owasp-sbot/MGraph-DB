@@ -1,5 +1,6 @@
 from typing                                                         import Dict, Type
 from mgraph_db.mgraph.schemas.identifiers.Graph_Path                import Graph_Path
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Config   import Schema__MGraph__Index__Config
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
 from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
@@ -18,6 +19,8 @@ class Schema__MGraph__Graph(Type_Safe):
     graph_type   : Type['Schema__MGraph__Graph']       = None
     nodes        : Dict[Node_Id, Schema__MGraph__Node]
     schema_types : Schema__MGraph__Types               = None
+    index_config : Schema__MGraph__Index__Config       = None         # index configuration
+
 
     def __init__(self, **kwargs):
         if kwargs.get('graph_id') is None:                          # make sure .graph_id is set

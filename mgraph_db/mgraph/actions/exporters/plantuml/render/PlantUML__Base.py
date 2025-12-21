@@ -3,7 +3,7 @@ from osbot_utils.type_safe.Type_Safe                                            
 from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Id       import Safe_Str__Id
 from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Label    import Safe_Str__Label
 from mgraph_db.mgraph.domain.Domain__MGraph__Graph                                    import Domain__MGraph__Graph
-from mgraph_db.mgraph.actions.MGraph__Index                                           import MGraph__Index
+from mgraph_db.mgraph.index.MGraph__Index                                             import MGraph__Index
 
 
 class PlantUML__Base(Type_Safe):                                                      # base class for PlantUML renderers
