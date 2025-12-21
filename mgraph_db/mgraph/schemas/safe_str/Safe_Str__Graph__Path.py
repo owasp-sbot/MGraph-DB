@@ -1,7 +1,7 @@
 import re
 from osbot_utils.type_safe.primitives.core.Safe_Str import Safe_Str
 
-SAFE_STR__GRAPH__PATH__REGEX      = re.compile(r'[^a-zA-Z0-9_\-.:\[\]]')
+SAFE_STR__GRAPH__PATH__REGEX      = re.compile(r'[^a-zA-Z0-9_/\-.:\[\]]')
 SAFE_STR__GRAPH__PATH__MAX_LENGTH = 512
 
 class Safe_Str__Graph__Path(Safe_Str):
@@ -17,6 +17,7 @@ class Safe_Str__Graph__Path(Safe_Str):
         - -         : Word separation (kebab style)
         - .         : Hierarchy separator
         - :         : Namespace separator
+        - /         : Path separator
         - []        : Index notation
 
     Examples:

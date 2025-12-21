@@ -72,8 +72,6 @@ class MGraph__Index__Values(Type_Safe):
                              key       : str                               = ''  ,
                              node_type : Type[Schema__MGraph__Node__Value] = None
                         ) -> str:                      # Calculate value hash
-        if value_type is None:
-            raise ValueError("In MGraph__Index__Values.calculate_hash , value_type was None")
         type_name = f"{value_type.__module__}.{value_type.__name__}"         # Get full type path
         if key:
             hash_data = f"{type_name}::{key}::{value}"                       # Combine with key and value
