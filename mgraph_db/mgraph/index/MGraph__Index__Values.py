@@ -1,4 +1,4 @@
-from typing                                                             import Type, Optional, Union, Any
+from typing import Type, Optional, Union, Any, Dict, Set
 from osbot_utils.type_safe.type_safe_core.decorators.type_safe          import type_safe
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                       import Domain__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data         import Schema__MGraph__Node__Value__Data
@@ -13,9 +13,12 @@ SIZE__VALUE_HASH = 10                                                           
 
 class MGraph__Index__Values(Type_Safe):
     index_data : Schema__MGraph__Value__Index__Data                                      # Value index data
+    enabled     : bool = True
 
     @type_safe
     def add_value_node(self, node: Union[Domain__MGraph__Node, Schema__MGraph__Node__Value]) -> None:                # Add a value node to index
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         node_id    = node.node_id
         node_data  = node.node_data
         if isinstance(node_data, Schema__MGraph__Node__Value__Data) is False:
@@ -51,6 +54,8 @@ class MGraph__Index__Values(Type_Safe):
         return self.get_node_id_by_hash(value_hash)
 
     def remove_value_node(self, node: Schema__MGraph__Node__Value) -> None:             # Remove from all indexes
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         value_hash = self.index_data.node_to_hash.get(node.node_id)
         if value_hash:
             # Remove from main indexes
@@ -86,3 +91,45 @@ class MGraph__Index__Values(Type_Safe):
 
     def print__values_index_data(self):
         pprint(self.index_data.json())
+
+    # raw data accessors
+
+    def hash_to_node(self) -> Dict[str, Obj_Id]:
+        return self.index_data.hash_to_node
+
+    def node_to_hash(self) -> Dict[Obj_Id, str]:
+        return self.index_data.node_to_hash
+
+    def values_by_type(self) -> Dict[Type, Set[str]]:
+        return self.index_data.values_by_type
+
+    def type_by_value(self) -> Dict[str, Type]:
+        return self.index_data.type_by_value
+
+    # Query methods
+
+    def has_hash(self, value_hash: str) -> bool:
+        return value_hash in self.index_data.hash_to_node
+
+    def has_node(self, node_id: Obj_Id) -> bool:
+        return node_id in self.index_data.node_to_hash
+
+    def get_hash_for_node(self, node_id: Obj_Id) -> Optional[str]:
+        return self.index_data.node_to_hash.get(node_id)
+
+    def get_hashes_by_type(self, value_type: Type) -> Set[str]:
+        return self.index_data.values_by_type.get(value_type, set())
+
+    def get_all_hashes(self) -> Set[str]:
+        return set(self.index_data.hash_to_node.keys())
+
+    def get_all_types(self) -> Set[Type]:
+        return set(self.index_data.values_by_type.keys())
+
+    # count methods
+
+    def count_values(self) -> int:
+        return len(self.index_data.hash_to_node)
+
+    def count_by_type(self, value_type: Type) -> int:
+        return len(self.index_data.values_by_type.get(value_type, set()))

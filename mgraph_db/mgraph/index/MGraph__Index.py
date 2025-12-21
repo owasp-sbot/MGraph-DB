@@ -8,7 +8,7 @@ from mgraph_db.mgraph.index.MGraph__Index__Stats                            impo
 from mgraph_db.mgraph.index.MGraph__Index__Types                            import MGraph__Index__Types
 from mgraph_db.mgraph.index.MGraph__Index__Values                           import MGraph__Index__Values
 from mgraph_db.mgraph.actions.MGraph__Type__Resolver                        import MGraph__Type__Resolver
-from mgraph_db.mgraph.schemas.Schema__MGraph__Graph import Schema__MGraph__Graph
+from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                         import Schema__MGraph__Graph
 from mgraph_db.mgraph.schemas.identifiers.Edge_Path                         import Edge_Path
 from mgraph_db.mgraph.schemas.identifiers.Node_Path                         import Node_Path
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Config           import Schema__MGraph__Index__Config
@@ -186,10 +186,20 @@ class MGraph__Index(Type_Safe):
     # =========================================================================
 
     def load_index_from_graph(self, graph_data: Schema__MGraph__Graph) -> None:
+        self.apply_config(graph_data)
         for node_id, node in graph_data.nodes.items():
             self.add_node(node)
         for edge_id, edge in graph_data.edges.items():
             self.add_edge(edge)
+
+    def apply_config(self, graph_data: Schema__MGraph__Graph):
+        if graph_data.index_config:
+            with graph_data.index_config as _:
+                self.index_config = _
+                self.types_index.enabled  = _.types_enabled
+                self.paths_index.enabled  = _.paths_enabled
+                self.labels_index.enabled = _.labels_enabled
+                self.values_index.enabled = _.values_enabled
 
     def save_to_file(self, target_file: str) -> None:
         return json_file_create(self.index_data.json(), target_file)
@@ -198,7 +208,6 @@ class MGraph__Index(Type_Safe):
     def reload(self, graph_data: Schema__MGraph__Graph) -> 'MGraph__Index':
         self.index_data = Schema__MGraph__Index__Data()                     # Fresh data
         self._sync_index_data()                                             # Re-wire sub-indexes
-        #self.index_config = graph_data.index_config                         # Refresh config
         self.load_index_from_graph(graph_data)                              # Rebuild
         return self
 
@@ -209,7 +218,6 @@ class MGraph__Index(Type_Safe):
     @classmethod
     def from_graph(cls, graph_data: Schema__MGraph__Graph) -> 'MGraph__Index':
         with cls() as _:
-            #_.index_config = graph_data.index_config        # Wire config
             _.load_index_from_graph(graph_data)
             return _
 

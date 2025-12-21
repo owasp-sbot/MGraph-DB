@@ -1,12 +1,12 @@
-from unittest                                                       import TestCase
-from mgraph_db.mgraph.index.MGraph__Index__Labels                   import MGraph__Index__Labels
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label           import Schema__MGraph__Edge__Label
-from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Labels   import Schema__MGraph__Index__Data__Labels
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id   import Safe_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
+from unittest                                                               import TestCase
+from mgraph_db.mgraph.index.MGraph__Index__Labels                           import MGraph__Index__Labels
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                          import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                          import Schema__MGraph__Edge
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Label                   import Schema__MGraph__Edge__Label
+from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Labels     import Schema__MGraph__Index__Data__Labels
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id            import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id           import Safe_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id           import Edge_Id
 
 
 class test_MGraph__Index__Labels(TestCase):
@@ -434,3 +434,50 @@ class test_MGraph__Index__Labels(TestCase):
             result = _.edges_outgoing_labels()
 
             assert result == {}
+
+    # =========================================================================
+    # Enabled/Disabled Tests
+    # =========================================================================
+
+    def test_add_edge_label__disabled(self):                                    # Test add does nothing when disabled
+        node1 = Schema__MGraph__Node()
+        node2 = Schema__MGraph__Node()
+        label = Schema__MGraph__Edge__Label(predicate=Safe_Id('test_pred'))
+        edge  = Schema__MGraph__Edge(from_node_id=node1.node_id, to_node_id=node2.node_id, edge_label=label)
+
+        with self.labels_index as _:
+            _.enabled = False
+            _.add_edge_label(edge)
+
+            assert _.edges_predicates()   == {}                                 # Nothing indexed
+            assert _.edges_by_predicate() == {}
+
+    def test_remove_edge_label__disabled(self):                                 # Test remove does nothing when disabled
+        node1 = Schema__MGraph__Node()
+        node2 = Schema__MGraph__Node()
+        label = Schema__MGraph__Edge__Label(predicate=Safe_Id('test_pred'))
+        edge  = Schema__MGraph__Edge(from_node_id=node1.node_id, to_node_id=node2.node_id, edge_label=label)
+
+        with self.labels_index as _:
+            _.add_edge_label(edge)                                              # Add while enabled
+            assert edge.edge_id in _.edges_predicates()
+
+            _.enabled = False
+            _.remove_edge_label(edge)                                           # Remove while disabled
+
+            assert edge.edge_id in _.edges_predicates()                         # Still there
+
+    def test_remove_edge_label_by_id__disabled(self):                           # Test remove by ID does nothing when disabled
+        node1 = Schema__MGraph__Node()
+        node2 = Schema__MGraph__Node()
+        label = Schema__MGraph__Edge__Label(predicate=Safe_Id('test_pred'))
+        edge  = Schema__MGraph__Edge(from_node_id=node1.node_id, to_node_id=node2.node_id, edge_label=label)
+
+        with self.labels_index as _:
+            _.add_edge_label(edge)                                              # Add while enabled
+            assert edge.edge_id in _.edges_predicates()
+
+            _.enabled = False
+            _.remove_edge_label_by_id(edge.edge_id)                             # Remove while disabled
+
+            assert edge.edge_id in _.edges_predicates()                         # Still there

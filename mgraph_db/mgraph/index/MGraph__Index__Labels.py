@@ -7,13 +7,17 @@ from osbot_utils.type_safe.Type_Safe                                      import
 
 
 class MGraph__Index__Labels(Type_Safe):
-    data: Schema__MGraph__Index__Data__Labels                                                # Dedicated labels index data
+    data    : Schema__MGraph__Index__Data__Labels                                           # Dedicated labels index data
+    enabled : bool = True                                                                   # Whether label indexing is active
+
 
     # =========================================================================
     # Add Methods
     # =========================================================================
 
     def add_edge_label(self, edge: Schema__MGraph__Edge) -> None:                            # Index edge labels (predicate, incoming, outgoing)
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         if edge.edge_label:
             edge_id = edge.edge_id
 
@@ -44,6 +48,8 @@ class MGraph__Index__Labels(Type_Safe):
     # =========================================================================
 
     def remove_edge_label(self, edge: Schema__MGraph__Edge) -> None:                         # Remove edge labels from index
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         edge_id = edge.edge_id
 
         if edge.edge_label and edge.edge_label.predicate:                                    # Remove from predicate indexes
@@ -71,6 +77,8 @@ class MGraph__Index__Labels(Type_Safe):
                     del self.data.edges_by_outgoing_label[outgoing]
 
     def remove_edge_label_by_id(self, edge_id: Edge_Id) -> None:                             # Remove edge labels using only edge ID
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         predicate = self.data.edges_predicates.pop(edge_id, None)                            # Remove from predicate indexes
         if predicate and predicate in self.data.edges_by_predicate:
             self.data.edges_by_predicate[predicate].discard(edge_id)

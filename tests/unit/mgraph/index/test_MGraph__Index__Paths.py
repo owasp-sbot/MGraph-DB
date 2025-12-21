@@ -339,3 +339,67 @@ class test_MGraph__Index__Paths(TestCase):
 
             assert type(result)             is not None
             assert Edge_Path("accessor")    in result
+
+    # =========================================================================
+    # Enabled/Disabled Tests
+    # =========================================================================
+
+    def test_index_node_path__disabled(self):                                   # Test add does nothing when disabled
+        node = Schema__MGraph__Node(node_path=Node_Path("test.path"))
+
+        with self.paths_index as _:
+            _.enabled = False
+            _.index_node_path(node)
+
+            assert _.nodes_by_path() == {}                                      # Nothing indexed
+
+    def test_remove_node_path__disabled(self):                                  # Test remove does nothing when disabled
+        node = Schema__MGraph__Node(node_path=Node_Path("test.path"))
+
+        with self.paths_index as _:
+            _.index_node_path(node)                                             # Add while enabled
+            assert Node_Path("test.path") in _.nodes_by_path()
+
+            _.enabled = False
+            _.remove_node_path(node)                                            # Remove while disabled
+
+            assert Node_Path("test.path") in _.nodes_by_path()                  # Still there
+
+    def test_index_edge_path__disabled(self):                                   # Test add does nothing when disabled
+        node1 = Schema__MGraph__Node()
+        node2 = Schema__MGraph__Node()
+        edge  = Schema__MGraph__Edge(from_node_id=node1.node_id, to_node_id=node2.node_id, edge_path=Edge_Path("edge.path"))
+
+        with self.paths_index as _:
+            _.enabled = False
+            _.index_edge_path(edge)
+
+            assert _.edges_by_path() == {}                                      # Nothing indexed
+
+    def test_remove_edge_path__disabled(self):                                  # Test remove does nothing when disabled
+        node1 = Schema__MGraph__Node()
+        node2 = Schema__MGraph__Node()
+        edge  = Schema__MGraph__Edge(from_node_id=node1.node_id, to_node_id=node2.node_id, edge_path=Edge_Path("edge.path"))
+
+        with self.paths_index as _:
+            _.index_edge_path(edge)                                             # Add while enabled
+            assert Edge_Path("edge.path") in _.edges_by_path()
+
+            _.enabled = False
+            _.remove_edge_path(edge)                                            # Remove while disabled
+
+            assert Edge_Path("edge.path") in _.edges_by_path()                  # Still there
+
+    def test_remove_edge_path_by_id__disabled(self):                            # Test remove by ID does nothing when disabled
+        node1 = Schema__MGraph__Node()
+        node2 = Schema__MGraph__Node()
+        edge  = Schema__MGraph__Edge(from_node_id=node1.node_id, to_node_id=node2.node_id, edge_path=Edge_Path("edge.path"))
+
+        with self.paths_index as _:
+            _.index_edge_path(edge)                                             # Add while enabled
+            assert Edge_Path("edge.path") in _.edges_by_path()
+
+            _.enabled = False
+            _.remove_edge_path_by_id(edge.edge_id)                              # Remove while disabled
+
+            assert Edge_Path("edge.path") in _.edges_by_path()                  # Still there

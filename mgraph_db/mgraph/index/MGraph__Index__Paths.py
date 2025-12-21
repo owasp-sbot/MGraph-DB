@@ -10,13 +10,17 @@ from osbot_utils.type_safe.Type_Safe                                     import 
 
 
 class MGraph__Index__Paths(Type_Safe):
-    data: Schema__MGraph__Index__Data__Paths                                                 # Dedicated paths index data
+    data    : Schema__MGraph__Index__Data__Paths                                             # Dedicated paths index data
+    enabled : bool = True
+
 
     # =========================================================================
     # Add Methods
     # =========================================================================
 
     def index_node_path(self, node: Schema__MGraph__Node) -> None:                           # Index a node's path if present
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         if node.node_path:
             node_path = node.node_path
             if node_path not in self.data.nodes_by_path:
@@ -24,6 +28,8 @@ class MGraph__Index__Paths(Type_Safe):
             self.data.nodes_by_path[node_path].add(node.node_id)
 
     def index_edge_path(self, edge: Schema__MGraph__Edge) -> None:                           # Index an edge's path if present
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         if edge.edge_path:
             edge_path = edge.edge_path
             if edge_path not in self.data.edges_by_path:
@@ -35,6 +41,8 @@ class MGraph__Index__Paths(Type_Safe):
     # =========================================================================
 
     def remove_node_path(self, node: Schema__MGraph__Node) -> None:                          # Remove a node's path from index if present
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         if node.node_path:
             node_path = node.node_path
             if node_path in self.data.nodes_by_path:
@@ -43,6 +51,8 @@ class MGraph__Index__Paths(Type_Safe):
                     del self.data.nodes_by_path[node_path]
 
     def remove_edge_path(self, edge: Schema__MGraph__Edge) -> None:                          # Remove an edge's path from index if present
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         if edge.edge_path:
             edge_path = edge.edge_path
             if edge_path in self.data.edges_by_path:
@@ -51,6 +61,8 @@ class MGraph__Index__Paths(Type_Safe):
                     del self.data.edges_by_path[edge_path]
 
     def remove_edge_path_by_id(self, edge_id: Edge_Id) -> None:                              # Remove edge path using only its ID
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         for path, edge_ids in list(self.data.edges_by_path.items()):
             if edge_id in edge_ids:
                 edge_ids.discard(edge_id)

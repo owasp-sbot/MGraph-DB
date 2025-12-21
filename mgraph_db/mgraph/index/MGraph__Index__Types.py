@@ -8,13 +8,17 @@ from osbot_utils.type_safe.Type_Safe                                     import 
 
 
 class MGraph__Index__Types(Type_Safe):
-    data: Schema__MGraph__Index__Data__Types                                                 # Dedicated types index data
+    data    : Schema__MGraph__Index__Data__Types                                             # Dedicated types index data
+    enabled : bool = True
+
 
     # =========================================================================
     # Node Type - Add Methods
     # =========================================================================
 
     def index_node_type(self, node_id: Node_Id, node_type_name: str) -> None:                # Index a node's type
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         self.data.nodes_types[node_id] = node_type_name                                      # Store node_id to type mapping
 
         if node_type_name not in self.data.nodes_by_type:                                    # Store type to node_ids mapping
@@ -26,6 +30,8 @@ class MGraph__Index__Types(Type_Safe):
     # =========================================================================
 
     def remove_node_type(self, node_id: Node_Id, node_type_name: str) -> None:               # Remove a node's type from index
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         if node_id in self.data.nodes_types:                                                 # Remove from nodes_types mapping
             del self.data.nodes_types[node_id]
 
@@ -42,7 +48,8 @@ class MGraph__Index__Types(Type_Safe):
                               from_node_id: Node_Id ,
                               to_node_id  : Node_Id ,
                               edge_type_name: str   ) -> None:
-
+        if not self.enabled:                                                                 # Skip if indexing disabled
+            return
         self.data.edges_types[edge_id] = edge_type_name                                      # Store edge_id to type mapping
 
         if edge_type_name not in self.data.edges_by_type:                                    # Store type to edge_ids mapping

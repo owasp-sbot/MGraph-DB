@@ -1,11 +1,11 @@
-from unittest                                                       import TestCase
-from mgraph_db.mgraph.index.MGraph__Index__Types                    import MGraph__Index__Types
-from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
-from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
+from unittest                                                            import TestCase
+from mgraph_db.mgraph.index.MGraph__Index__Types                         import MGraph__Index__Types
+from mgraph_db.mgraph.schemas.Schema__MGraph__Node                       import Schema__MGraph__Node
+from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                       import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Types   import Schema__MGraph__Index__Data__Types
-from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
-from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id        import Node_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id        import Edge_Id
+from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id         import Obj_Id
 
 
 class test_MGraph__Index__Types(TestCase):
@@ -483,3 +483,59 @@ class test_MGraph__Index__Types(TestCase):
             result = _.nodes_to_outgoing_edges_by_type()
 
             assert from_node_id in result
+
+    # =========================================================================
+    # Enabled/Disabled Tests
+    # =========================================================================
+
+    def test_index_node_type__disabled(self):                                   # Test add does nothing when disabled
+        node_id   = Node_Id(Obj_Id())
+        type_name = 'Schema__MGraph__Node'
+
+        with self.types_index as _:
+            _.enabled = False
+            _.index_node_type(node_id, type_name)
+
+            assert _.nodes_types()   == {}                                      # Nothing indexed
+            assert _.nodes_by_type() == {}
+
+    def test_remove_node_type__disabled(self):                                  # Test remove does nothing when disabled
+        node_id   = Node_Id(Obj_Id())
+        type_name = 'Schema__MGraph__Node'
+
+        with self.types_index as _:
+            _.index_node_type(node_id, type_name)                               # Add while enabled
+            assert node_id in _.nodes_types()
+
+            _.enabled = False
+            _.remove_node_type(node_id, '')                                         # Remove while disabled
+
+            assert node_id in _.nodes_types()                                   # Still there
+
+    def test_index_edge_type__disabled(self):                                   # Test add does nothing when disabled
+        edge_id      = Edge_Id(Obj_Id())
+        from_node_id = Node_Id(Obj_Id())
+        to_node_id   = Node_Id(Obj_Id())
+        edge_type    = 'Schema__MGraph__Edge'
+
+        with self.types_index as _:
+            _.enabled = False
+            _.index_edge_type(edge_id, from_node_id, to_node_id, edge_type)
+
+            assert _.edges_types()   == {}                                      # Nothing indexed
+            assert _.edges_by_type() == {}
+
+    def test_remove_edge_type__disabled(self):                                  # Test remove does nothing when disabled
+        edge_id      = Edge_Id(Obj_Id())
+        from_node_id = Node_Id(Obj_Id())
+        to_node_id   = Node_Id(Obj_Id())
+        edge_type    = 'Schema__MGraph__Edge'
+
+        with self.types_index as _:
+            _.index_edge_type(edge_id, from_node_id, to_node_id, edge_type)     # Add while enabled
+            assert edge_id in _.edges_types()
+
+            _.enabled = False
+            _.remove_edge_type(edge_id,'')                                         # Remove while disabled
+
+            assert edge_id in _.edges_types()                                   # Still there
