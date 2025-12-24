@@ -17,7 +17,7 @@ from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats            impo
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id           import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id           import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id           import Safe_Id
-from osbot_utils.type_safe.type_safe_core.decorators.type_safe import type_safe
+from osbot_utils.type_safe.type_safe_core.decorators.type_safe              import type_safe
 from osbot_utils.utils.Dev                                                  import pprint
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                          import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                          import Schema__MGraph__Edge
