@@ -10,6 +10,7 @@ from mgraph_db.mgraph.models.Model__MGraph__Graph                   import Model
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from osbot_utils.decorators.methods.cache_on_self                   import cache_on_self
+from osbot_utils.helpers.timestamp_capture.decorators.timestamp     import timestamp
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
@@ -58,10 +59,9 @@ class Domain__MGraph__Graph(Type_Safe):
         )
         return edge_domain_type(edge=edge, graph=self.model)
 
+    @timestamp(name='mgraph_node')
     def mgraph_node(self, node: Model__MGraph__Node) -> Domain__MGraph__Node:
-        node_domain_type = self.resolver.node_domain_type(
-            self.domain_types.node_domain_type if self.domain_types else None
-        )
+        node_domain_type = self.resolver.node_domain_type(self.domain_types.node_domain_type if self.domain_types else None)
         return node_domain_type(node=node, graph=self.model)
 
     def add_edge(self, edge: Schema__MGraph__Edge):
@@ -84,6 +84,7 @@ class Domain__MGraph__Graph(Type_Safe):
         node = self.model.add_node(node)
         return self.mgraph_node(node=node)
 
+    #@timestamp(name='new_node (domain_mgraph)')
     def new_node(self, **kwargs)-> Domain__MGraph__Node:
         node = self.model.new_node(**kwargs)
         return self.mgraph_node(node=node)

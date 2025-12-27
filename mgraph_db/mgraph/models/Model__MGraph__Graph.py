@@ -1,5 +1,6 @@
 from typing                                                             import List
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Data                import Schema__MGraph__Node__Data
+from osbot_utils.helpers.timestamp_capture.decorators.timestamp         import timestamp
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id       import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id       import Node_Id
@@ -61,6 +62,7 @@ class Model__MGraph__Graph(Type_Safe):
         edge = kwargs.get('edge_type')(**kwargs)
         return self.add_edge(edge)
 
+    @timestamp(name='new_node (model_mgraph)')
     def new_node(self, **kwargs):
         if 'node_type' in kwargs and 'node_data' in kwargs:                                 # if node_type and node_data is provided, then we have all we need to create the new node
             node_type = kwargs.get('node_type')
