@@ -1,5 +1,5 @@
 from typing                                                         import Type
-from osbot_utils.type_safe.type_safe_core.decorators.type_safe      import type_safe
+from osbot_utils.helpers.timestamp_capture.decorators.timestamp     import timestamp
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
@@ -90,6 +90,7 @@ class MGraph__Edit(Type_Safe):
         return self.index().reload(self.graph.model.data)
 
 
+    @timestamp(name='new_node (mgraph_edit)')
     def new_node(self, node_path: Node_Path = None, **kwargs):          # Create new node with optional path
         with self.index() as index:
             if node_path:                                               # todo: see if we need to do this, since new_node ctor should pick it up
@@ -105,7 +106,8 @@ class MGraph__Edit(Type_Safe):
         self.index().add_edge(edge.edge.data)                           # Add to index
         return edge
 
-    @type_safe
+    #@type_safe
+    @timestamp(name='new_value')
     def new_value(self,                                                 # get or create value (since the values have to be unique)
                   value,
                   key                                          = None,
@@ -168,6 +170,7 @@ class MGraph__Edit(Type_Safe):
     def data(self):
         return self.data_type(graph=self.graph)
 
+    @timestamp(name='.index()')
     @cache_on_self
     def index(self) -> MGraph__Index:                                    # Cached access to index
         return self.graph.index()

@@ -7,6 +7,7 @@ from mgraph_db.mgraph.actions.MGraph__Type__Resolver                 import MGra
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                   import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                   import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value            import Schema__MGraph__Node__Value
+from osbot_utils.helpers.timestamp_capture.decorators.timestamp     import timestamp
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id    import Edge_Id
 from osbot_utils.type_safe.Type_Safe                                 import Type_Safe
 
@@ -23,6 +24,7 @@ class MGraph__Index__Edit(Type_Safe):
     # Node Operations
     # =========================================================================
 
+    @timestamp(name='add_node (index)')
     def add_node(self, node: Schema__MGraph__Node) -> None:
         node_id        = node.node_id
         node_type      = self.resolver.node_type(node.node_type)
