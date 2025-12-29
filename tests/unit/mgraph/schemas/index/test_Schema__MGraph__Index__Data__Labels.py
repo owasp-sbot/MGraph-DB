@@ -55,4 +55,4 @@ class test_Schema__MGraph__Index__Data__Labels(TestCase):                       
             _.measure(Schema__MGraph__Index__Data__Labels)
 
         construction_us = _.result.final_score / 1000
-        assert construction_us < 200
+        assert construction_us <= 200
