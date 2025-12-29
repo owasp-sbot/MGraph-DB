@@ -10,7 +10,7 @@ from osbot_utils.type_safe.Type_Safe                                     import 
 
 
 class MGraph__Index__Paths(Type_Safe):
-    data    : Schema__MGraph__Index__Data__Paths                                             # Dedicated paths index data
+    data    : Schema__MGraph__Index__Data__Paths = None                                      # Dedicated paths index data
     enabled : bool = True
 
 

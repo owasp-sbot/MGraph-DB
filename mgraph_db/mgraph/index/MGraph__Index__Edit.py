@@ -7,18 +7,18 @@ from mgraph_db.mgraph.actions.MGraph__Type__Resolver                 import MGra
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                   import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                   import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value            import Schema__MGraph__Node__Value
-from osbot_utils.helpers.timestamp_capture.decorators.timestamp     import timestamp
+from osbot_utils.helpers.timestamp_capture.decorators.timestamp      import timestamp
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id    import Edge_Id
 from osbot_utils.type_safe.Type_Safe                                 import Type_Safe
 
 
 class MGraph__Index__Edit(Type_Safe):
-    edges_index  : MGraph__Index__Edges                                                      # Edge-node relationships
-    labels_index : MGraph__Index__Labels                                                     # Edge labels
-    paths_index  : MGraph__Index__Paths                                                      # Node/edge paths
-    types_index  : MGraph__Index__Types                                                      # Node/edge types
-    values_index : MGraph__Index__Values                                                     # Value lookups
-    resolver     : MGraph__Type__Resolver                                                    # Type resolution
+    edges_index  : MGraph__Index__Edges      = None                                         # Edge-node relationships
+    labels_index : MGraph__Index__Labels     = None                                         # Edge labels
+    paths_index  : MGraph__Index__Paths      = None                                         # Node/edge paths
+    types_index  : MGraph__Index__Types      = None                                         # Node/edge types
+    values_index : MGraph__Index__Values     = None                                         # Value lookups
+    resolver     : MGraph__Type__Resolver    = None                                         # Type resolution
 
     # =========================================================================
     # Node Operations

@@ -62,7 +62,7 @@ class Model__MGraph__Graph(Type_Safe):
         edge = kwargs.get('edge_type')(**kwargs)
         return self.add_edge(edge)
 
-    @timestamp(name='new_node (model_mgraph)')
+    @timestamp(name='new_node (model_mgraph) - WE ARE FOCUSING HERE :) ')
     def new_node(self, **kwargs):
         if 'node_type' in kwargs and 'node_data' in kwargs:                                 # if node_type and node_data is provided, then we have all we need to create the new node
             node_type = kwargs.get('node_type')

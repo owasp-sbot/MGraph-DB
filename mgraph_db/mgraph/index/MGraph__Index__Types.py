@@ -8,7 +8,7 @@ from osbot_utils.type_safe.Type_Safe                                     import 
 
 
 class MGraph__Index__Types(Type_Safe):
-    data    : Schema__MGraph__Index__Data__Types                                             # Dedicated types index data
+    data    : Schema__MGraph__Index__Data__Types = None                                      # Dedicated types index data
     enabled : bool = True
 
 

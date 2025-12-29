@@ -14,6 +14,7 @@ from mgraph_db.mgraph.schemas.identifiers.Node_Path                         impo
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Config           import Schema__MGraph__Index__Config
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data             import Schema__MGraph__Index__Data
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats            import Schema__MGraph__Index__Stats
+from osbot_utils.type_safe.Type_Safe__On_Demand                             import Type_Safe__On_Demand
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id           import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id           import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id           import Safe_Id
@@ -21,22 +22,23 @@ from osbot_utils.type_safe.type_safe_core.decorators.type_safe              impo
 from osbot_utils.utils.Dev                                                  import pprint
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                          import Schema__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                          import Schema__MGraph__Edge
-from osbot_utils.type_safe.Type_Safe                                        import Type_Safe
 from osbot_utils.utils.Json                                                 import json_file_create, json_load_file
 
 
-class MGraph__Index(Type_Safe):
+class MGraph__Index(Type_Safe__On_Demand):
     index_data   : Schema__MGraph__Index__Data                                              # Composite index data (contains sub-schemas)
     index_config : Schema__MGraph__Index__Config    = None
     edges_index  : MGraph__Index__Edges                                                     # Edge-node structural indexing
-    edit_index   : MGraph__Index__Edit                                                      # Add/remove operations
     labels_index : MGraph__Index__Labels                                                    # Label indexing
     paths_index  : MGraph__Index__Paths                                                     # Path indexing
-    query_index  : MGraph__Index__Query                                                     # Complex cross-index queries
-    stats_index  : MGraph__Index__Stats                                                     # Statistics calculation
     types_index  : MGraph__Index__Types                                                     # Type indexing
     values_index : MGraph__Index__Values                                                    # Value node indexing
-    resolver     : MGraph__Type__Resolver                                                   # Type resolution
+
+    # multiple dependencies injection
+    edit_index   : MGraph__Index__Edit                   #                                  # Add/remove operations
+    query_index  : MGraph__Index__Query                  #                                  # Complex cross-index queries
+    stats_index  : MGraph__Index__Stats                  #                                  # Statistics calculation
+    resolver     : MGraph__Type__Resolver                #                                  # Type resolution
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -48,6 +50,7 @@ class MGraph__Index(Type_Safe):
         self.labels_index.data = self.index_data.labels
         self.paths_index.data  = self.index_data.paths
         self.types_index.data  = self.index_data.types
+
 
         # Wire up stats_index dependencies (uses sub-indexes directly)
         self.stats_index.edges_index  = self.edges_index
@@ -217,9 +220,11 @@ class MGraph__Index(Type_Safe):
 
     @classmethod
     def from_graph(cls, graph_data: Schema__MGraph__Graph) -> 'MGraph__Index':
-        with cls() as _:
-            _.load_index_from_graph(graph_data)
-            return _
+        #with timestamp_block(name="from_graph.cls()"):
+            with cls() as _:
+                #with timestamp_block(name="from_graph.load()"):
+                    _.load_index_from_graph(graph_data)
+                    return _
 
     @classmethod
     def from_file(cls, source_file: str) -> 'MGraph__Index':

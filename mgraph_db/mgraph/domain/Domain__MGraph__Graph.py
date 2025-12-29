@@ -28,6 +28,7 @@ class Domain__MGraph__Graph(Type_Safe):
         if graph_id:
             self.model.data.graph_id = graph_id
 
+    #@timestamp(name='Domain__MGraph__Graph.index()')
     @cache_on_self
     def index(self) -> MGraph__Index:
         return MGraph__Index.from_graph(self.model.data)

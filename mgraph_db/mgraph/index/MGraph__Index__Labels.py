@@ -7,7 +7,7 @@ from osbot_utils.type_safe.Type_Safe                                      import
 
 
 class MGraph__Index__Labels(Type_Safe):
-    data    : Schema__MGraph__Index__Data__Labels                                           # Dedicated labels index data
+    data    : Schema__MGraph__Index__Data__Labels  = None                                   # Dedicated labels index data
     enabled : bool = True                                                                   # Whether label indexing is active
 
 
