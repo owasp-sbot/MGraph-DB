@@ -54,10 +54,7 @@ class test_MGraph_Index(TestCase):
                                             types_index  = __(enabled      = True                    ,
                                                               data         = __SKIP__),
                                             values_index = __(enabled      = True                    ,
-                                                              index_data   = __(hash_to_node   = __(),
-                                                                                node_to_hash   = __(),
-                                                                                values_by_type = __(),
-                                                                                type_by_value  = __())),
+                                                              index_data   = None),
                                             resolver=__(mgraph_defaults=__(node_domain_type='mgraph_db.mgraph.domain.Domain__MGraph__Node.Domain__MGraph__Node',
                                                                            edge_domain_type='mgraph_db.mgraph.domain.Domain__MGraph__Edge.Domain__MGraph__Edge',
                                                                            node_model_type='mgraph_db.mgraph.models.Model__MGraph__Node.Model__MGraph__Node',
@@ -67,7 +64,7 @@ class test_MGraph_Index(TestCase):
                                                                            edge_type='mgraph_db.mgraph.schemas.Schema__MGraph__Edge.Schema__MGraph__Edge',
                                                                           edge_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Edge__Data.Schema__MGraph__Edge__Data',
                                                                           graph_type='mgraph_db.mgraph.schemas.Schema__MGraph__Graph.Schema__MGraph__Graph',
-                                                                          graph_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data'))) != __()
+                                                                          graph_data_type='mgraph_db.mgraph.schemas.Schema__MGraph__Graph__Data.Schema__MGraph__Graph__Data')))
 
 
     def test_add_node(self):    # Test adding a node to the index

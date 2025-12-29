@@ -7,7 +7,7 @@ from osbot_utils.type_safe.Type_Safe                                     import 
 
 
 class MGraph__Index__Edges(Type_Safe):
-    data: Schema__MGraph__Index__Data__Edges                                                 # Dedicated edges index data
+    data: Schema__MGraph__Index__Data__Edges  = None                                             # Dedicated edges index data
 
     # =========================================================================
     # Node Edge Sets - Initialize

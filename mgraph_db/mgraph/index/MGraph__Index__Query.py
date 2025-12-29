@@ -12,10 +12,10 @@ from osbot_utils.type_safe.Type_Safe                                 import Type
 
 
 class MGraph__Index__Query(Type_Safe):
-    edges_index : MGraph__Index__Edges                                                       # Edge-node relationships
-    labels_index: MGraph__Index__Labels                                                      # Edge labels/predicates
-    types_index : MGraph__Index__Types                                                       # Node/edge types
-    values_index: MGraph__Index__Values                                                      # Value node lookups
+    edges_index : MGraph__Index__Edges  = None                                                      # Edge-node relationships
+    labels_index: MGraph__Index__Labels = None                                                      # Edge labels/predicates
+    types_index : MGraph__Index__Types  = None                                                      # Node/edge types
+    values_index: MGraph__Index__Values = None                                                      # Value node lookups
 
     # =========================================================================
     # Value-Based Queries

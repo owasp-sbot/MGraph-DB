@@ -9,23 +9,23 @@ from mgraph_db.query.models.Model__MGraph__Query__View              import Model
 from mgraph_db.query.models.Model__MGraph__Query__Views             import Model__MGraph__Query__Views
 from mgraph_db.query.schemas.View_Id                                import View_Id
 from osbot_utils.decorators.methods.cache_on_self                   import cache_on_self
+from osbot_utils.type_safe.Type_Safe__On_Demand                     import Type_Safe__On_Demand
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
 from mgraph_db.mgraph.index.MGraph__Index                           import MGraph__Index
-from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.utils.Dev                                          import pprint
 
 VIEW__OPERATION__INITIAL = 'initial'
 
-class MGraph__Query(Type_Safe):
+class MGraph__Query(Type_Safe__On_Demand):
     mgraph_data  : MGraph__Data
     mgraph_index : MGraph__Index
     query_views  : Model__MGraph__Query__Views
     root_nodes   : Set[Node_Id]
 
     def setup(self):
-        source_nodes, source_edges = self.get_source_ids()              # get all the current nodes and edges
+        #source_nodes, source_edges = self.get_source_ids()              # get all the current nodes and edges
         self.create_view(nodes_ids = set()       ,                      # create a view for it which is the initial view
                          edges_ids = set()       ,
                          operation = 'initial'   ,

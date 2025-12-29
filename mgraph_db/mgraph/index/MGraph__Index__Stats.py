@@ -11,10 +11,10 @@ from osbot_utils.type_safe.Type_Safe                                        impo
 
 
 class MGraph__Index__Stats(Type_Safe):
-    edges_index  : MGraph__Index__Edges                                                      # For edge counting
-    labels_index : MGraph__Index__Labels                                                     # For predicate counting
-    paths_index  : MGraph__Index__Paths                                                      # For path counting
-    types_index  : MGraph__Index__Types                                                      # For type counting
+    edges_index  : MGraph__Index__Edges  = None                                               # For edge counting
+    labels_index : MGraph__Index__Labels = None                                               # For predicate counting
+    paths_index  : MGraph__Index__Paths  = None                                               # For path counting
+    types_index  : MGraph__Index__Types  = None                                               # For type counting
 
     # =========================================================================
     # Main Stats Method

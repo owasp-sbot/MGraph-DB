@@ -1,18 +1,18 @@
-from typing import Type, Optional, Union, Any, Dict, Set
+from typing                                                             import Type, Optional, Union, Any, Dict, Set
+from osbot_utils.type_safe.Type_Safe__On_Demand                         import Type_Safe__On_Demand
 from osbot_utils.type_safe.type_safe_core.decorators.type_safe          import type_safe
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                       import Domain__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value__Data         import Schema__MGraph__Node__Value__Data
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value               import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Value__Index__Data  import Schema__MGraph__Value__Index__Data
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id        import Obj_Id
-from osbot_utils.type_safe.Type_Safe                                    import Type_Safe
 from osbot_utils.utils.Dev                                              import pprint
 from osbot_utils.utils.Misc                                             import str_md5
 
 SIZE__VALUE_HASH = 10                                                                    # only use 10 chars from the md5 for the value (which is still 8 billion combinations
 
-class MGraph__Index__Values(Type_Safe):
-    index_data : Schema__MGraph__Value__Index__Data                                      # Value index data
+class MGraph__Index__Values(Type_Safe__On_Demand):
+    index_data : Schema__MGraph__Value__Index__Data = None                               # Value index data
     enabled     : bool = True
 
     @type_safe
