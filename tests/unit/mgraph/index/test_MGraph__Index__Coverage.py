@@ -1,8 +1,6 @@
-from io                                                             import StringIO
 from unittest                                                       import TestCase
-from unittest.mock                                                  import patch
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats    import Schema__MGraph__Index__Stats
-from mgraph_db.utils.testing.mgraph_test_ids import mgraph_test_ids
+from osbot_utils.testing.Graph__Deterministic__Ids                  import graph_deterministic_ids
 from osbot_utils.testing.Stdout                                     import Stdout
 from osbot_utils.testing.Temp_File                                  import Temp_File
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id    import Obj_Id
@@ -31,7 +29,7 @@ class test_MGraph__Index__Coverage(TestCase):
 
     def test_print__index_data(self):                                           # Test print__index_data method
         with self.mgraph_index as _:
-            with mgraph_test_ids():
+            with graph_deterministic_ids():
                 node = Schema__MGraph__Node().set_node_type()
                 _.add_node(node)
 

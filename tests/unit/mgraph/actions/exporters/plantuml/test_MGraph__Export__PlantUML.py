@@ -1,5 +1,5 @@
 from unittest                                                                         import TestCase
-from mgraph_db.utils.testing.mgraph_test_ids                                          import mgraph_test_ids
+from osbot_utils.testing.Graph__Deterministic__Ids                                    import graph_deterministic_ids
 from osbot_utils.utils.Objects                                                        import base_classes
 from osbot_utils.type_safe.Type_Safe                                                  import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.safe_str.Safe_Str__Label    import Safe_Str__Label
@@ -555,7 +555,7 @@ card "<<Node>>" as {n2}
 @enduml"""
 
     def test__integration__circular_graph(self):                                      # test circular graph rendering
-        with mgraph_test_ids():
+        with graph_deterministic_ids():
             static_graph    = MGraph__Static__Graph.create_circular(num_nodes=4)
         mgraph          = static_graph.graph
         mgraph_data     = mgraph.data()

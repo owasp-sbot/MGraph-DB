@@ -13,7 +13,7 @@ Usage:
 """
 
 from unittest                                                               import TestCase
-from osbot_utils.testing.performance.Performance_Measure__Session           import Perf
+from osbot_utils.helpers.performance.Performance_Measure__Session           import Perf
 from mgraph_db.mgraph.models.Model__MGraph__Graph                           import Model__MGraph__Graph
 from mgraph_db.mgraph.models.Model__MGraph__Node__Factory                   import Model__MGraph__Node__Factory
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                         import Schema__MGraph__Graph

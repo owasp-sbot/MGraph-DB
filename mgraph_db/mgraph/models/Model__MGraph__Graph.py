@@ -30,14 +30,14 @@ class Model__MGraph__Graph(Type_Safe):
         self.node_factory()        # trigger object creation (so that we don't have a little spike on the @timestamp stats)
 
     @cache_on_self
-    @timestamp(name='get__node_factory()')
+    #@timestamp(name='get__node_factory()')
     def node_factory(self):
         from mgraph_db.mgraph.models.Model__MGraph__Node__Factory import Model__MGraph__Node__Factory       # todo: find a better way to do this so that we don't have this circular dependency
         return Model__MGraph__Node__Factory(graph=self)
 
 
     @type_safe
-    @timestamp(name="model.mgraph.add_node")
+    #@timestamp(name="model.mgraph.add_node")
     def add_node(self, node: Schema__MGraph__Node) -> Model__MGraph__Node:                  # Add a node to the graph
         self.data.nodes[node.node_id] = node
         type_value                    = self.model_types.node_model_type if self.model_types else None
@@ -74,7 +74,7 @@ class Model__MGraph__Graph(Type_Safe):
         edge = kwargs.get('edge_type')(**kwargs)
         return self.add_edge(edge)
 
-    @timestamp(name='new_node (model_mgraph) - REFACTORED ')
+    #@timestamp(name='new_node (model_mgraph) - REFACTORED ')
     def new_node(self, **kwargs):                                                               # Delegate to factory
         return self.node_factory().create_node(**kwargs)
 

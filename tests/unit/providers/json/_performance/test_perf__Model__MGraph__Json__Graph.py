@@ -25,7 +25,7 @@ from mgraph_db.providers.json.schemas.Schema__MGraph__Json__Types               
 from osbot_utils.type_safe.Type_Safe                                                import Type_Safe
 
 
-from osbot_utils.testing.performance.Performance_Measure__Session import Performance_Measure__Session
+from osbot_utils.helpers.performance.Performance_Measure__Session import Performance_Measure__Session
 
 
 class test_perf__Model__MGraph__Json__Graph(TestCase):
