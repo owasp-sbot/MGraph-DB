@@ -2,7 +2,7 @@ import re
 import pytest
 from unittest                                                       import TestCase
 from mgraph_db.mgraph.MGraph                                        import MGraph
-from mgraph_db.utils.testing.mgraph_test_ids                        import mgraph_test_ids
+from osbot_utils.testing.Graph__Deterministic__Ids                  import graph_deterministic_ids
 from osbot_utils.testing.__                                         import __, __SKIP__
 from mgraph_db.mgraph.schemas.Schema__MGraph__Types                 import Schema__MGraph__Types
 from mgraph_db.mgraph.schemas.Schema__MGraph__Graph                 import Schema__MGraph__Graph
@@ -21,7 +21,7 @@ class Simple_Node(Schema__MGraph__Node): pass    # Helper class for testing
 class test_Schema__MGraph__Graph(TestCase):
 
     def setUp(self):    # Initialize test data
-        with mgraph_test_ids():
+        with graph_deterministic_ids():
             self.schema_types  = Schema__MGraph__Types(node_type      = Simple_Node,
                                                        edge_type      = Schema__MGraph__Edge)
             self.graph_data    = Schema__MGraph__Graph__Data   ()

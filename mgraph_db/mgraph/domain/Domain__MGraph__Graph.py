@@ -28,7 +28,6 @@ class Domain__MGraph__Graph(Type_Safe):
         if graph_id:
             self.model.data.graph_id = graph_id
 
-    #@timestamp(name='Domain__MGraph__Graph.index()')
     @cache_on_self
     def index(self) -> MGraph__Index:
         return MGraph__Index.from_graph(self.model.data)
@@ -60,7 +59,7 @@ class Domain__MGraph__Graph(Type_Safe):
         )
         return edge_domain_type(edge=edge, graph=self.model)
 
-    @timestamp(name='mgraph_node')
+    #@timestamp(name='mgraph_node')
     def mgraph_node(self, node: Model__MGraph__Node) -> Domain__MGraph__Node:
         node_domain_type = self.resolver.node_domain_type(self.domain_types.node_domain_type if self.domain_types else None)
         return node_domain_type(node=node, graph=self.model)
@@ -85,7 +84,6 @@ class Domain__MGraph__Graph(Type_Safe):
         node = self.model.add_node(node)
         return self.mgraph_node(node=node)
 
-    #@timestamp(name='new_node (domain_mgraph)')
     def new_node(self, **kwargs)-> Domain__MGraph__Node:
         node = self.model.new_node(**kwargs)
         return self.mgraph_node(node=node)

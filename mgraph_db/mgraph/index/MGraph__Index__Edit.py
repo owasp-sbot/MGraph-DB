@@ -24,7 +24,7 @@ class MGraph__Index__Edit(Type_Safe):
     # Node Operations
     # =========================================================================
 
-    @timestamp(name='add_node (index)')
+    #@timestamp(name='add_node (index)')
     def add_node(self, node: Schema__MGraph__Node) -> None:
         node_id        = node.node_id
         node_type      = self.resolver.node_type(node.node_type)

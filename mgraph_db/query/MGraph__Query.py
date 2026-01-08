@@ -9,7 +9,7 @@ from mgraph_db.query.models.Model__MGraph__Query__View              import Model
 from mgraph_db.query.models.Model__MGraph__Query__Views             import Model__MGraph__Query__Views
 from mgraph_db.query.schemas.View_Id                                import View_Id
 from osbot_utils.decorators.methods.cache_on_self                   import cache_on_self
-from osbot_utils.type_safe.Type_Safe__On_Demand                     import Type_Safe__On_Demand
+from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
@@ -18,7 +18,7 @@ from osbot_utils.utils.Dev                                          import pprin
 
 VIEW__OPERATION__INITIAL = 'initial'
 
-class MGraph__Query(Type_Safe__On_Demand):
+class MGraph__Query(Type_Safe):
     mgraph_data  : MGraph__Data
     mgraph_index : MGraph__Index
     query_views  : Model__MGraph__Query__Views

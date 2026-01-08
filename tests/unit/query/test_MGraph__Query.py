@@ -1,6 +1,5 @@
 import pytest
 from unittest                                                        import TestCase
-from osbot_utils.type_safe.Type_Safe__On_Demand                      import Type_Safe__On_Demand
 from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Set import Type_Safe__Set
 from osbot_utils.testing.__                                          import __
 from mgraph_db.mgraph.MGraph                                         import MGraph
@@ -35,7 +34,7 @@ class test_MGraph__Query(TestCase):
     def test_init(self):                                                       # Test initialization
         with self.query as _:
             assert type(_)              is MGraph__Query
-            assert base_types(_)        == [Type_Safe__On_Demand, Type_Safe, object]
+            assert base_types(_)        == [Type_Safe, object]
             assert type(_.mgraph_index) is MGraph__Index
             assert type(_.mgraph_data)  is MGraph__Data
             assert _.obj()              == __(mgraph_data  = _.mgraph_data .obj(),

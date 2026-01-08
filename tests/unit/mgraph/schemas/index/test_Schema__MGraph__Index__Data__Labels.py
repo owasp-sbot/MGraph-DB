@@ -1,6 +1,6 @@
 from unittest                                                               import TestCase
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data__Labels     import Schema__MGraph__Index__Data__Labels
-from osbot_utils.testing.performance.Performance_Measure__Session           import Performance_Measure__Session
+from osbot_utils.helpers.performance.Performance_Measure__Session           import Performance_Measure__Session
 from osbot_utils.type_safe.Type_Safe                                        import Type_Safe
 from osbot_utils.type_safe.type_safe_core.collections.Type_Safe__Dict       import Type_Safe__Dict
 

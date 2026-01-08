@@ -38,10 +38,10 @@ class test_Model__MGraph__Node__Factory(TestCase):
             assert type(_)                         is Model__MGraph__Node__Factory
             assert base_classes(_)                 == [Type_Safe, object]
             assert _.graph                         is self.graph
-            assert type(_._type_annotations_cache) is Type_Safe__Dict
-            assert type(_._data_type_cache       ) is Type_Safe__Dict
-            assert len(_._type_annotations_cache)  == 0                                     # Caches start empty
-            assert len(_._data_type_cache       )  == 0
+            assert type(_.type_annotations_cache) is Type_Safe__Dict
+            assert type(_.data_type_cache) is Type_Safe__Dict
+            assert len(_.type_annotations_cache) == 0                                     # Caches start empty
+            assert len(_.data_type_cache) == 0
 
     def test_create_node__default_type(self):                                               # Test node creation with default type from schema_types
         with self.factory as _:
@@ -150,17 +150,17 @@ class test_Model__MGraph__Node__Factory(TestCase):
 
     def test__get_type_annotations__caching(self):                                          # Test that annotations are cached
         with self.factory as _:
-            assert len(_._type_annotations_cache) == 0
+            assert len(_.type_annotations_cache) == 0
 
             annotations_1 = _._get_type_annotations(Simple_Node)
-            assert len(_._type_annotations_cache) == 1
+            assert len(_.type_annotations_cache) == 1
 
             annotations_2 = _._get_type_annotations(Simple_Node)                            # Should hit cache
             assert annotations_1 is annotations_2                                           # Same dict object
-            assert len(_._type_annotations_cache) == 1                                      # No new entry
+            assert len(_.type_annotations_cache) == 1                                      # No new entry
 
             _._get_type_annotations(Custom_Node)                                            # Different type
-            assert len(_._type_annotations_cache) == 2
+            assert len(_.type_annotations_cache) == 2
 
     def test_cache_stats(self):                                                             # Test cache statistics
         with self.factory as _:
@@ -175,13 +175,13 @@ class test_Model__MGraph__Node__Factory(TestCase):
     def test_clear_caches(self):                                                            # Test cache clearing
         with self.factory as _:
             _.create_node()                                                                 # Populate caches
-            assert len(_._type_annotations_cache) > 0
+            assert len(_.type_annotations_cache) > 0
 
             result = _.clear_caches()
 
             assert result is _                                                              # Returns self for chaining
-            assert len(_._type_annotations_cache) == 0
-            assert len(_._data_type_cache      ) == 0
+            assert len(_.type_annotations_cache) == 0
+            assert len(_.data_type_cache) == 0
 
     # --- Node Data Creation Tests ---
 

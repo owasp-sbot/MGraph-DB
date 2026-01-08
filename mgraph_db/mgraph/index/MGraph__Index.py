@@ -14,7 +14,7 @@ from mgraph_db.mgraph.schemas.identifiers.Node_Path                         impo
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Config           import Schema__MGraph__Index__Config
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Data             import Schema__MGraph__Index__Data
 from mgraph_db.mgraph.schemas.index.Schema__MGraph__Index__Stats            import Schema__MGraph__Index__Stats
-from osbot_utils.type_safe.Type_Safe__On_Demand                             import Type_Safe__On_Demand
+from osbot_utils.type_safe.Type_Safe                                        import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id           import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id           import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Safe_Id           import Safe_Id
@@ -25,8 +25,8 @@ from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                          impo
 from osbot_utils.utils.Json                                                 import json_file_create, json_load_file
 
 
-class MGraph__Index(Type_Safe__On_Demand):
-    index_data   : Schema__MGraph__Index__Data                                              # Composite index data (contains sub-schemas)
+class MGraph__Index(Type_Safe):
+    index_data   : Schema__MGraph__Index__Data                                                   # Composite index data (contains sub-schemas)
     index_config : Schema__MGraph__Index__Config    = None
     edges_index  : MGraph__Index__Edges                                                     # Edge-node structural indexing
     labels_index : MGraph__Index__Labels                                                    # Label indexing
