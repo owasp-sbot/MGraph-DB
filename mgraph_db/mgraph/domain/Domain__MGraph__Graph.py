@@ -10,7 +10,6 @@ from mgraph_db.mgraph.models.Model__MGraph__Graph                   import Model
 from mgraph_db.mgraph.schemas.Schema__MGraph__Edge                  import Schema__MGraph__Edge
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node                  import Schema__MGraph__Node
 from osbot_utils.decorators.methods.cache_on_self                   import cache_on_self
-from osbot_utils.helpers.timestamp_capture.decorators.timestamp     import timestamp
 from osbot_utils.type_safe.Type_Safe                                import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id   import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id   import Node_Id

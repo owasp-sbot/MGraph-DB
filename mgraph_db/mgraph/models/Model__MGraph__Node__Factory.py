@@ -9,8 +9,6 @@
     """
 
 from typing                                                                 import Dict, Tuple
-from osbot_utils.helpers.timestamp_capture.context_managers.timestamp_block import timestamp_block
-from osbot_utils.helpers.timestamp_capture.decorators.timestamp             import timestamp
 from osbot_utils.type_safe.Type_Safe                                        import Type_Safe
 from osbot_utils.type_safe.primitives.domains.identifiers.Obj_Id            import Obj_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id           import Node_Id
@@ -57,14 +55,11 @@ class Model__MGraph__Node__Factory(Type_Safe):
         node_kwargs, data_kwargs                 = self._split_kwargs(kwargs, node_type, node_data_type)
 
         node_data                                = self._create_node_data(node_data_type, data_kwargs)
-        with timestamp_block("_create_with_type_resolution.node_type"):
-            node                                     = node_type(node_data=node_data, **node_kwargs)
+        node                                     = node_type(node_data=node_data, **node_kwargs)
 
-        with timestamp_block("_create_with_type_resolution.add_node_type"):
-            if add_node_type:                                                                   # Set node_type if not using defaults
-                node.node_type = node_type
-        with timestamp_block("_create_with_type_resolution.return"):
-            return self.graph.add_node(node)
+        if add_node_type:                                                                   # Set node_type if not using defaults
+            node.node_type = node_type
+        return self.graph.add_node(node)
 
     #@timestamp(name="_resolve_node_types")
     def _resolve_node_types(self, kwargs: Dict) -> Tuple[type, type, bool]:                 # Returns (node_type, node_data_type, add_node_type_to_node)

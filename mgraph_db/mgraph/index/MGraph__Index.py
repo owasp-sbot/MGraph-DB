@@ -207,7 +207,7 @@ class MGraph__Index(Type_Safe):
     def save_to_file(self, target_file: str) -> None:
         return json_file_create(self.index_data.json(), target_file)
 
-    @type_safe
+    #@type_safe # todo: re-enable this once we have add support for @type safe to check Type_Safe__Config for method calling type safety
     def reload(self, graph_data: Schema__MGraph__Graph) -> 'MGraph__Index':
         self.index_data = Schema__MGraph__Index__Data()                     # Fresh data
         self._sync_index_data()                                             # Re-wire sub-indexes

@@ -15,7 +15,7 @@ class MGraph__Index__Values(Type_Safe):
     index_data : Schema__MGraph__Value__Index__Data                               # Value index data
     enabled     : bool = True
 
-    @type_safe
+    #@type_safe # todo: re-enable this once we have add support for @type safe to check Type_Safe__Config for method calling type safety
     def add_value_node(self, node: Union[Domain__MGraph__Node, Schema__MGraph__Node__Value]) -> None:                # Add a value node to index
         if not self.enabled:                                                                 # Skip if indexing disabled
             return
@@ -71,12 +71,14 @@ class MGraph__Index__Values(Type_Safe):
             if value_hash in self.index_data.type_by_value:
                 del self.index_data.type_by_value[value_hash]
 
-    @type_safe
+    #@type_safe
     def calculate_hash(self, value_type: Type                                    ,
                              value     : Any                                     ,
                              key       : str                               = ''  ,
                              node_type : Type[Schema__MGraph__Node__Value] = None
                         ) -> str:                      # Calculate value hash
+        if value_type is None:
+            raise ValueError("Parameter 'value_type' is not optional but got None") # simulates one of @type_safe checks
         type_name = f"{value_type.__module__}.{value_type.__name__}"         # Get full type path
         if key:
             hash_data = f"{type_name}::{key}::{value}"                       # Combine with key and value

@@ -1,11 +1,8 @@
 from typing                                                                 import List
 from osbot_utils.decorators.methods.cache_on_self                           import cache_on_self
-from osbot_utils.helpers.timestamp_capture.context_managers.timestamp_block import timestamp_block
-from osbot_utils.helpers.timestamp_capture.decorators.timestamp             import timestamp
 from osbot_utils.type_safe.primitives.domains.identifiers.Edge_Id           import Edge_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Node_Id           import Node_Id
 from osbot_utils.type_safe.primitives.domains.identifiers.Graph_Id          import Graph_Id
-from osbot_utils.type_safe.type_safe_core.decorators.type_safe              import type_safe
 from osbot_utils.type_safe.type_safe_core.methods.type_safe_property        import set_as_property
 from mgraph_db.mgraph.models.Model__MGraph__Types                           import Model__MGraph__Types
 from mgraph_db.mgraph.models.Model__MGraph__Edge                            import Model__MGraph__Edge
@@ -36,17 +33,14 @@ class Model__MGraph__Graph(Type_Safe):
         return Model__MGraph__Node__Factory(graph=self)
 
 
-    @type_safe
-    #@timestamp(name="model.mgraph.add_node")
+    #@type_safe # todo: re-enable this once we have add support for @type safe to check Type_Safe__Config for method calling type safety
     def add_node(self, node: Schema__MGraph__Node) -> Model__MGraph__Node:                  # Add a node to the graph
         self.data.nodes[node.node_id] = node
         type_value                    = self.model_types.node_model_type if self.model_types else None
-        with timestamp_block(name="model.mgraph.add_node.node_model_type (find)"):
-            node_model_type               = self.resolver.node_model_type(type_value)
-        with timestamp_block(name="model.mgraph.add_node.node_model_type (invoke)"):
-            return node_model_type(data=node)
+        node_model_type               = self.resolver.node_model_type(type_value)
+        return node_model_type(data=node)
 
-    @type_safe
+    #@type_safe
     def add_edge(self, edge: Schema__MGraph__Edge) -> Model__MGraph__Edge:                  # Add an edge to the graph
         if edge.from_node_id not in self.data.nodes:
             raise ValueError(f"From node {edge.from_node_id} not found")
@@ -130,7 +124,7 @@ class Model__MGraph__Graph(Type_Safe):
     def nodes_ids(self):
         return list(self.data.nodes.keys())
 
-    @type_safe
+    #@type_safe
     def delete_node(self, node_id: Node_Id) -> bool:                                        # Remove a node and all its connected edges
         if node_id not in self.data.nodes:
             return False
@@ -146,7 +140,7 @@ class Model__MGraph__Graph(Type_Safe):
         del self.data.nodes[node_id]
         return True
 
-    @type_safe
+    #@type_safe
     def delete_edge(self, edge_id: Edge_Id) -> bool:                                        # Remove an edge from the graph
         if edge_id not in self.data.edges:
             return False

@@ -1,5 +1,4 @@
 from typing                                                         import Type
-from osbot_utils.helpers.timestamp_capture.decorators.timestamp     import timestamp
 from mgraph_db.mgraph.domain.Domain__MGraph__Node                   import Domain__MGraph__Node
 from mgraph_db.mgraph.schemas.Schema__MGraph__Node__Value           import Schema__MGraph__Node__Value
 from mgraph_db.mgraph.actions.MGraph__Data                          import MGraph__Data
@@ -113,14 +112,24 @@ class MGraph__Edit(Type_Safe):
                   key                                          = None,
                   node_type: Type[Schema__MGraph__Node__Value] = None,
                   node_path: Node_Path                         = None,
-                  **kwargs__new_node                                    # extra values that will be provided to the new_node method (if used). this can be used to provide a node_id value (to make the node_id value deterministic)
+                  node_id  : Node_Id                           = None,
+                  **kwargs__new_node                                                            # extra values that will be provided to the new_node method (if used). this can be used to provide a node_id value (to make the node_id value deterministic)
              ) -> Domain__MGraph__Node:
-        node_id = self.index().values_index.get_node_id_by_value(value_type=type(value), value=str(value), key=key, node_type=node_type)
-        if node_id:
-            return self.data().node(node_id)
+        if node_id is None:                                                                     # if a Node_id was not provided, try to create it
+            node_id = self.index().values_index.get_node_id_by_value(value_type = type(value),
+                                                                     value      = str (value),
+                                                                     key        = key        ,
+                                                                     node_type  = node_type  )
+
+        if node_id:                                                                             # if a Node_id is available (via param or via get_node_id_by_value)
+            domain_node = self.data().node(node_id)                                             # try to get it
+            if domain_node:                                                                     # and if it was found
+                return domain_node                                                              # return it
+            else:                                                                               # if not
+                kwargs__new_node['node_id'] = node_id                                           # use it as param for new node
         if node_type is None:
             node_type= Schema__MGraph__Node__Value
-        return self.new_node(node_type  = node_type,
+        return self.new_node(node_type  = node_type ,                                           # create a new node if couldn't be found
                              value_type = type(value),
                              value      = str(value), key=key,
                              node_path  = node_path,

@@ -24,7 +24,7 @@ class MGraph__Export__Dot(MGraph__Export__Base):
     dot_code        : str                                        = None
 
 
-    def __init__(self, graph, config: Optional[MGraph__Export__Dot__Config] = None):
+    def __init__(self, graph = None, config: Optional[MGraph__Export__Dot__Config] = None):
         super().__init__(graph=graph)
         self.config           = config or MGraph__Export__Dot__Config()           #todo: refactor this to a setup method (since ctor's should really not be doing much                                                               # Initialize component classes
         self.node_renderer    = MGraph__Export__Dot__Node__Renderer   (config=self.config, graph=self.graph)
