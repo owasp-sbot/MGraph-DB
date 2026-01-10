@@ -29,7 +29,7 @@ class MGraph__Data(Type_Safe):
     # def index(self):
     #     return MGraph__Index.from_graph(graph=self.graph)
 
-    @type_safe
+    #@type_safe # todo: re-enable this once we have add support for @type safe to check Type_Safe__Config for method calling type safety
     def node(self, node_id: Node_Id) -> Domain__MGraph__Node:                                                               # Get a node by its ID
         return self.graph.node(node_id)
 

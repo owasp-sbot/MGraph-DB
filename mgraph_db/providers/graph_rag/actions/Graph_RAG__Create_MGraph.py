@@ -119,7 +119,7 @@ class Graph_RAG__Create_MGraph(Type_Safe):
                 self.link__text_id (entity.text_id  )
             else:
                 self.add__text_id(entity.text_id)
-    @type_safe
+    #@type_safe # todo: re-enable this once we have add support for @type safe to check Type_Safe__Config for method calling type safety
     def add_entity(self, entity: Schema__Graph_RAG__Entity):
         with self.builder() as _:
             _.root()

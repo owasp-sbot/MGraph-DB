@@ -19,7 +19,7 @@ class Mermaid__Edit(MGraph__Edit):
         self.render_config().directives.append(directive)
         return self
 
-    @type_safe
+    #@type_safe # todo: re-enable this once we have add support for @type safe to check Type_Safe__Config for method calling type safety
     def add_edge(self, from_node_key:Safe_Id, to_node_key:Safe_Id, label:str=None) -> Domain__Mermaid__Edge:
         nodes__by_key = self.data().nodes__by_key()
         from_node     = nodes__by_key.get(from_node_key)            # todo: add method to data to get these nodes

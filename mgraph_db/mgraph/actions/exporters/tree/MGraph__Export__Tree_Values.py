@@ -80,7 +80,7 @@ class MGraph__Export__Tree_Values(MGraph__Export__Base):
 
         return node_data
 
-    @type_safe
+    #@type_safe # todo: re-enable this once we have add support for @type safe to check Type_Safe__Config for method calling type safety
     def format_output(self) -> Dict[str, Any]:                                                      # Format the processed data as a tree structure
         self.visited_nodes = set()                                                                  # Reset visited nodes for each run
 

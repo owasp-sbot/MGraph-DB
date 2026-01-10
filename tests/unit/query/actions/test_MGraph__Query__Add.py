@@ -58,7 +58,8 @@ class test_MGraph__Query__Add(TestCase):
         assert current_nodes    == {node.node_id}
         assert current_edges    == set()  # No edges added
 
-        error_message = "Parameter 'node_id' expected type <class 'osbot_utils.type_safe.primitives.domains.identifiers.Node_Id.Node_Id'>, but got <class 'str'>"
+        #error_message = "Parameter 'node_id' expected type <class 'osbot_utils.type_safe.primitives.domains.identifiers.Node_Id.Node_Id'>, but got <class 'str'>"
+        error_message = "in Node_Id: value provided was not a valid Node_Id: invalid_id"    # with @type_safe disabled, this is the error we now get
         with pytest.raises(ValueError, match=re.escape(error_message)):
             add_action.add_node_id('invalid_id')                                            # Test adding non-existent node
         current_nodes, current_edges = self.query.get_current_ids()
@@ -90,7 +91,8 @@ class test_MGraph__Query__Add(TestCase):
         assert current_nodes == {node_1.node_id, node_2.node_id, node_3.node_id}
 
         # Test adding mix of valid and invalid nodes
-        error_message = "Parameter 'node_id' expected type <class 'osbot_utils.type_safe.primitives.domains.identifiers.Node_Id.Node_Id'>, but got <class 'str'>"
+        #error_message = "Parameter 'node_id' expected type <class 'osbot_utils.type_safe.primitives.domains.identifiers.Node_Id.Node_Id'>, but got <class 'str'>"
+        error_message = "in Node_Id: value provided was not a valid Node_Id: invalid_id" # with @type_safe disabled this is the message we get
         with pytest.raises(ValueError, match=re.escape(error_message)):
             add_action.add_nodes_ids({node_1.node_id, 'invalid_id'})
 
@@ -98,9 +100,11 @@ class test_MGraph__Query__Add(TestCase):
         assert current_nodes == {node_1.node_id, node_2.node_id, node_3.node_id}
 
         # Test adding only invalid nodes
-        error_message = "Parameter 'node_id' expected type <class 'osbot_utils.type_safe.primitives.domains.identifiers.Node_Id.Node_Id'>, but got <class 'str'>"
+        #error_message = "Parameter 'node_id' expected type <class 'osbot_utils.type_safe.primitives.domains.identifiers.Node_Id.Node_Id'>, but got <class 'str'>"
+        error_message = "in Node_Id: value provided was not a valid Node_Id: invalid_1" # with @type_safe disabled this is the message we get
         with pytest.raises(ValueError, match=re.escape(error_message)):
-            add_action.add_nodes_ids({'invalid_1', 'invalid_2'})
+            #add_action.add_nodes_ids({'invalid_1', 'invalid_2'})           # this is a set
+            add_action.add_nodes_ids({'invalid_1'})                         # so we need to only have one value to make the error deterministic
 
         current_nodes, _ = self.query.get_current_ids()
         assert current_nodes == {node_1.node_id, node_2.node_id, node_3.node_id}

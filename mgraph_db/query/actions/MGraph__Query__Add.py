@@ -11,7 +11,7 @@ from osbot_utils.type_safe.Type_Safe                                import Type_
 class MGraph__Query__Add(Type_Safe):
     query: Domain__MGraph__Query                                                    # Reference to domain query
 
-    @type_safe
+    #@type_safe # todo: re-enable this once we have add support for @type safe to check Type_Safe__Config for method calling type safety
     def add_node_id(self, node_id: Node_Id) -> 'MGraph__Query__Add':               # Add specific node to view
         if not self.query.mgraph_data.node(node_id):                              # Validate node exists
             return self
